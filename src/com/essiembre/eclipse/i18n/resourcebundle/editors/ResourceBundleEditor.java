@@ -165,14 +165,16 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
             }
             for (int i = 0; i < resources.length; i++) {
                 IResource resource = resources[i];
-                String regex = "^(" + bundleName + ")(_{0,1})(.*)(\\."
-                             + file.getFileExtension() + ")$";
+                String regex = "^(" + bundleName + ")"
+                        + "((_[a-z]{2})|(_[a-z]{2}_[A-Z]{2})"
+                        + "|(_[a-z]{2}_[A-Z]{2}_\\w*))?(\\."
+                        + file.getFileExtension() + ")$";
                 String resourceName = resource.getName();
                 if (resource instanceof IFile && resourceName.matches(regex)) {
                     Bundle bundle = new Bundle();
                     
                     // Build local title
-                    String localeText = resourceName.replaceFirst(regex, "$3");
+                    String localeText = resourceName.replaceFirst(regex, "$2");
                     StringTokenizer tokens = 
                         new StringTokenizer(localeText, "_");
                     List localeSections = new ArrayList();
