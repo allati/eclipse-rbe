@@ -3,7 +3,7 @@
 <plugin
    id="com.essiembre.eclipse.i18n.resourcebundle"
    name="ResourceBundle Editor Plug-in"
-   version="0.1.1"
+   version="0.2.0"
    provider-name="Essiembre Consultant Inc."
    class="com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin">
 
@@ -28,7 +28,7 @@
       <editor
             name="ResourceBundle Editor"
             extensions="properties"
-            icon="icons/sample.gif"
+            icon="icons/propertiesfile.gif"
             contributorClass="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditorContributor"
             class="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditor"
             id="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditor">
@@ -43,7 +43,7 @@
       </category>
       <wizard
             name="ResourceBundle"
-            icon="icons/sample.gif"
+            icon="icons/resourcebundle.gif"
             category="com.essiembre.eclipse.i18n.resourcebundle"
             class="com.essiembre.eclipse.i18n.resourcebundle.wizards.ResourceBundleWizard"
             id="com.essiembre.eclipse.i18n.resourcebundle.wizards.ResourceBundleWizard">
