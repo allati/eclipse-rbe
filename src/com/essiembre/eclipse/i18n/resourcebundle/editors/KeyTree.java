@@ -20,14 +20,19 @@
  */
 package com.essiembre.eclipse.i18n.resourcebundle.editors;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -38,12 +43,15 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+
+import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
 import com.essiembre.eclipse.i18n.resourcebundle.preferences.Preferences;
 
 /**
@@ -53,6 +61,22 @@ import com.essiembre.eclipse.i18n.resourcebundle.preferences.Preferences;
  */
 public class KeyTree extends Tree {
 
+    /** Key image. */
+    private static Image keyImage = loadImage("icons/key.gif");
+    /** Key group image. */
+    private static Image keyGroupImage = loadImage("icons/keyGroup.gif");
+    /** Key warning image. */
+    private static Image keyWarnImage = loadImage("icons/keyWarn.gif");
+    /** Key group warning image. */
+    private static Image keyGroupWarnImage = 
+            loadImage("icons/keyGroupWarn.gif");
+
+    
+    /** Warning key image. */
+    private static Image warnKeyImage = loadImage("icons/warning_co.gif");
+    /** Warning group image. */
+    private static Image warnGroupImage = loadImage("icons/warn.gif");
+    
     /** Font when a tree item as no child. */
     private Font groupFont; //TODO make this one bold + gray
     /** Default font for tree item. */
@@ -74,7 +98,7 @@ public class KeyTree extends Tree {
     public KeyTree(Composite parent, final Bundles bundles) {
         super(parent, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         this.bundles = bundles;
-
+        
         // Compute fonts
         keyFont = getFont();
         FontData[] fontData = getFont().getFontData();
@@ -220,6 +244,7 @@ public class KeyTree extends Tree {
         //TODO have a method to escape some values.
         String escapedSeparator = "\\" + Preferences.getKeyGroupSeparator();
         
+        boolean isValueMissing = bundles.isValueMissing(key);
         String[] groups = key.split(escapedSeparator);
         TreeItem treeItem = null;
         StringBuffer group = new StringBuffer();
@@ -236,9 +261,13 @@ public class KeyTree extends Tree {
                 } else {
                     groupItem = new TreeItem(treeItem, SWT.NONE);
                 }
+                groupItem.setImage(keyGroupImage);
             }
             groupItem.setText(groups[i]);
             groupItem.setFont(groupFont);
+            if (isValueMissing) {
+                groupItem.setImage(keyGroupWarnImage);
+            }
             keyItems.put(group.toString(), groupItem);
             treeItem = groupItem;
         }
@@ -251,6 +280,11 @@ public class KeyTree extends Tree {
         }
         treeItem.setText(keyLeaf);
         treeItem.setData(key);
+        if (!isValueMissing) {
+           treeItem.setImage(keyImage);
+        } else {
+           treeItem.setImage(keyWarnImage);
+        }
         if (group.length() > 0) {
             group.append(Preferences.getKeyGroupSeparator());
         }
@@ -308,4 +342,98 @@ public class KeyTree extends Tree {
         }
         return path.toString();
     }
+
+    /**
+     * Loads an image.
+     * @param path image path, relative to plugin
+     * @return image
+     */
+    private static Image loadImage(String path) {
+        URL url = null;
+        try {
+        url = new URL(ResourceBundlePlugin.getDefault().getBundle().getEntry(
+                "/"), path);
+        } catch (MalformedURLException e) {
+        }
+        return ImageDescriptor.createFromURL(url).createImage();
+    }
+    
+    /**
+     * Returns the root item of a branch.
+     * @param treeItem tree item to get its branch root item
+     * @return tree item
+     */
+    private TreeItem getBranchRoot(TreeItem treeItem) {
+        TreeItem rootItem = treeItem;
+        while (rootItem.getParentItem() != null) {
+            rootItem = rootItem.getParentItem();
+        }
+        return rootItem;        
+    }
+
+    /**
+     * Refresh all icons associated with the branch the given key is in.
+     * @param key the key for which to refrench the branch
+     */
+    protected void refreshBranchIcons(String key) {
+        TreeItem item = (TreeItem) keyItems.get(key);
+        refreshBranchIcons(getBranchRoot(item));
+    }
+    
+    /**
+     * Refreshes all icons in a branch identified by a branch root.
+     * @param branchRoot tree item
+     */
+    protected void refreshBranchIcons(TreeItem branchRoot) {
+        Collection branchItems = new ArrayList();
+        branchItems.add(branchRoot);
+        findAllItemsInGroup(branchItems, branchRoot);
+
+        // Set all items to default icons
+        for (Iterator iter = branchItems.iterator(); iter.hasNext();) {
+            TreeItem branchItem = (TreeItem) iter.next();
+            if (branchItem.getItemCount() == 0) {
+                branchItem.setImage(keyImage);
+            } else {
+                branchItem.setImage(keyGroupImage);
+            }
+        }
+        
+        // Add warnings where appropriate
+        //TODO have a method to escape some values.
+        String escapedSeparator = "\\" + Preferences.getKeyGroupSeparator();
+        String[] keys = getAllKeysInGroup(branchRoot);
+        for (int i = 0; i < keys.length; i++) {
+            String key = keys[i];
+            if (bundles.isValueMissing(key)) {
+                TreeItem[] path = getKeyPathItems(key);
+                for (int j = 0; j < path.length; j++) {
+                    TreeItem item = path[j];
+                    if (item.getItemCount() == 0) {
+                        item.setImage(keyWarnImage);
+                    } else {
+                        item.setImage(keyGroupWarnImage);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Gets all items in a path for given key.
+     * @param key key to get path from
+     * @return path
+     */
+    private TreeItem[] getKeyPathItems(String key) {
+        List items = new ArrayList();
+        TreeItem item = (TreeItem) keyItems.get(key);
+        items.add(item);
+        while (item.getParentItem() != null) {
+            item = item.getParentItem();
+            items.add(item);
+        }
+        Collections.reverse(items);
+        return (TreeItem[]) items.toArray(new TreeItem[] {});
+    }
+    
 }
