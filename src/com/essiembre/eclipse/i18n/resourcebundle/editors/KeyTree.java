@@ -20,8 +20,6 @@
  */
 package com.essiembre.eclipse.i18n.resourcebundle.editors;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -52,8 +49,6 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-
-import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
 import com.essiembre.eclipse.i18n.resourcebundle.preferences.Preferences;
 
 /**
@@ -64,20 +59,17 @@ import com.essiembre.eclipse.i18n.resourcebundle.preferences.Preferences;
 public class KeyTree extends Tree {
 
     /** Key image. */
-    private static Image keyImage = loadImage("icons/key.gif");
+    private static Image keyImage = 
+            BundleUtils.loadImage("icons/key.gif");
     /** Key group image. */
-    private static Image keyGroupImage = loadImage("icons/keyGroup.gif");
+    private static Image keyGroupImage = 
+            BundleUtils.loadImage("icons/keyGroup.gif");
     /** Key warning image. */
-    private static Image keyWarnImage = loadImage("icons/keyWarn.gif");
+    private static Image keyWarnImage = 
+            BundleUtils.loadImage("icons/keyWarn.gif");
     /** Key group warning image. */
     private static Image keyGroupWarnImage = 
-            loadImage("icons/keyGroupWarn.gif");
-
-    
-    /** Warning key image. */
-    private static Image warnKeyImage = loadImage("icons/warning_co.gif");
-    /** Warning group image. */
-    private static Image warnGroupImage = loadImage("icons/warn.gif");
+            BundleUtils.loadImage("icons/keyGroupWarn.gif");
     
     /** Font when a tree item as no child. */
     private Font groupFont; //TODO make this one bold + gray
@@ -86,8 +78,9 @@ public class KeyTree extends Tree {
     //TODO add a font for when a group is also a key (bold + black)
     
     /** All tree items, keyed by key or group key name. */
-    private Map keyItems = new HashMap();
-    
+    private Map keyTreeItems = new HashMap();
+    /** Flat or Tree mode? */
+    private boolean keyTreeFlat = Preferences.isKeyTreeFlat();
     
     /** All bundles. */
     private Bundles bundles;
@@ -175,7 +168,7 @@ public class KeyTree extends Tree {
     }
     
     public void refresh(String selectedKey) {
-        keyItems.clear();
+        keyTreeItems.clear();
         removeAll();
         for (Iterator iter = bundles.getKeys().iterator(); iter.hasNext();) {
             String key = (String) iter.next();
@@ -188,19 +181,18 @@ public class KeyTree extends Tree {
                 keyItem = new TreeItem(this, SWT.NONE);
                 keyItem.setText(key);
                 keyItem.setData(key);
-                keyItems.put(key, keyItem);
+                keyTreeItems.put(key, keyItem);
             }
         }
         if (selectedKey != null) {
             setSelection(new TreeItem[] {
-                    (TreeItem) keyItems.get(selectedKey) });
+                    (TreeItem) keyTreeItems.get(selectedKey) });
             showSelection();
         }
     }
     
     private String addGroupKeyItem(String key) {
-        //TODO have a method to escape some values.
-        String escapedSeparator = "\\" + Preferences.getKeyGroupSeparator();
+        String escapedSeparator = getKeyGroupSeparator();
         
         boolean isValueMissing = bundles.isValueMissing(key);
         String[] groups = key.split(escapedSeparator);
@@ -208,10 +200,10 @@ public class KeyTree extends Tree {
         StringBuffer group = new StringBuffer();
         for (int i = 0; i < groups.length - 1; i++) {
             if (i > 0) {
-                group.append(Preferences.getKeyGroupSeparator());
+                group.append(getKeyGroupSeparator());
             }
             group.append(groups[i]);
-            TreeItem groupItem = (TreeItem) keyItems.get(group.toString());
+            TreeItem groupItem = (TreeItem) keyTreeItems.get(group.toString());
             // Create new group
             if (groupItem == null) {
                 if (treeItem == null) {
@@ -226,7 +218,7 @@ public class KeyTree extends Tree {
             if (isValueMissing) {
                 groupItem.setImage(keyGroupWarnImage);
             }
-            keyItems.put(group.toString(), groupItem);
+            keyTreeItems.put(group.toString(), groupItem);
             treeItem = groupItem;
         }
         // Add leaf
@@ -244,10 +236,10 @@ public class KeyTree extends Tree {
            treeItem.setImage(keyWarnImage);
         }
         if (group.length() > 0) {
-            group.append(Preferences.getKeyGroupSeparator());
+            group.append(getKeyGroupSeparator());
         }
         group.append(keyLeaf);
-        keyItems.put(group.toString(), treeItem);
+        keyTreeItems.put(group.toString(), treeItem);
         return group.toString();
     }
     
@@ -295,27 +287,13 @@ public class KeyTree extends Tree {
         StringBuffer path = new StringBuffer(item.getText());
         TreeItem parentItem = item;
         while ((parentItem = parentItem.getParentItem()) != null) {
-            path.insert(0, Preferences.getKeyGroupSeparator());
+            path.insert(0, getKeyGroupSeparator());
             path.insert(0, parentItem.getText());
         }
         return path.toString();
     }
 
-    /**
-     * Loads an image.
-     * @param path image path, relative to plugin
-     * @return image
-     */
-    private static Image loadImage(String path) {
-        URL url = null;
-        try {
-        url = new URL(ResourceBundlePlugin.getDefault().getBundle().getEntry(
-                "/"), path);
-        } catch (MalformedURLException e) {
-        }
-        return ImageDescriptor.createFromURL(url).createImage();
-    }
-    
+   
     /**
      * Returns the root item of a branch.
      * @param treeItem tree item to get its branch root item
@@ -334,7 +312,7 @@ public class KeyTree extends Tree {
      * @param key the key for which to refrench the branch
      */
     protected void refreshBranchIcons(String key) {
-        TreeItem item = (TreeItem) keyItems.get(key);
+        TreeItem item = (TreeItem) keyTreeItems.get(key);
         refreshBranchIcons(getBranchRoot(item));
     }
     
@@ -358,8 +336,7 @@ public class KeyTree extends Tree {
         }
         
         // Add warnings where appropriate
-        //TODO have a method to escape some values.
-        String escapedSeparator = "\\" + Preferences.getKeyGroupSeparator();
+        String escapedSeparator = getKeyGroupSeparator();
         String[] keys = getAllKeysInGroup(branchRoot);
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
@@ -384,7 +361,7 @@ public class KeyTree extends Tree {
      */
     private TreeItem[] getKeyPathItems(String key) {
         List items = new ArrayList();
-        TreeItem item = (TreeItem) keyItems.get(key);
+        TreeItem item = (TreeItem) keyTreeItems.get(key);
         items.add(item);
         while (item.getParentItem() != null) {
             item = item.getParentItem();
@@ -470,4 +447,38 @@ public class KeyTree extends Tree {
     }
 
     
+    /**
+     * Gets the "keyTreeFlat" attribute.
+     * @return Returns the keyTreeFlat.
+     */
+    public boolean isKeyTreeFlat() {
+        return keyTreeFlat;
+    }
+    /**
+     * Sets the "keyTreeFlat" attribute.
+     * @param keyTreeFlat The keyTreeFlat to set.
+     */
+    public void setKeyTreeFlat(boolean keyTreeFlat) {
+        this.keyTreeFlat = keyTreeFlat;
+        refresh();
+        if (getItemCount() > 0) {
+            setSelection(new TreeItem[] {getItems()[0]}); 
+        }
+        bundles.refreshTextBoxes(getSelectedKey());
+
+    }
+    
+    /**
+     * Gets an escaped key group separator if we are creating groups, 
+     * <code>null</code> otherwise (flat view).
+     * @return group separator
+     */
+    private String getKeyGroupSeparator() {
+        if (isKeyTreeFlat()) {
+            return "=";  // escape on something we know won't be in a key
+        } else {
+            //TODO only escape on certain characters.
+            return "\\" + Preferences.getKeyGroupSeparator();
+        }
+    }
 }
