@@ -138,6 +138,8 @@ public class Bundle {
             textBox.setText("");
             if (key == null) {
                 textBox.setEnabled(false);
+            } else {
+                textBox.setEnabled(true);
             }
         } else {
             textBox.setText((String) data.get(key));
