@@ -32,12 +32,6 @@ public class ResourceBundlePlugin extends AbstractUIPlugin {
 	private static ResourceBundlePlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
-//    public static final String P_GROUP_SEPARATOR = "groupSeparator";
-//    public static final String P_ALIGN_EQUAL_SIGNS = "alignEqualSigns";
-//    public static final String P_GROUP_LEVEL_DEEP = "groupLevelDeep";
-//    public static final String P_GROUP_LINE_BREAKS = "groupLineBreaks";
-//    public static final String P_GROUP_ALIGN_EQUAL_SIGNS = 
-//            "groupAlignEqualSigns";
 	
 	/**
 	 * The constructor.
