@@ -193,7 +193,7 @@ public class Bundle {
             if (line.indexOf("#") == 0 && data.size() == 0) {
                 comments.add(line.substring(1));
             // parse regular lines
-            } else if (line.indexOf("#") != 0 && equalPosition > 1) {
+            } else if (line.indexOf("#") != 0 && equalPosition >= 1) {
                 while (line.lastIndexOf("\\") == line.length() -1) {
                     int lineBreakPosition = line.lastIndexOf("\\");
                     line.replace(
