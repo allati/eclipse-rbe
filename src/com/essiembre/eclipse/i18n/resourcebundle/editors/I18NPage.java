@@ -199,4 +199,13 @@ public class I18NPage extends ScrolledComposite {
         return keyTree.getSelectedKey();
     }
 
+    /**
+     * Refreshes all fields and data linked to this page. This includes
+     * resource bundle data, text boxes, and key tree.
+     */
+    public void refresh(){
+        bundles.refreshData();
+        bundles.refreshTextBoxes(keyTree.getSelectedKey());
+        keyTree.refresh(keyTree.getSelectedKey());
+    }
 }
