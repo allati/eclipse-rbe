@@ -1,5 +1,11 @@
 Here is an overview of changes for each releases:
 
+Release 0.?.? (200?-??-??)
+--------------------------
+º New: Added popup menu to key tree for deleting/renaming items.
+º New: Can now toggle between flat and hierarchical view of keys.
+
+
 Release 0.2.0 (2004-12-02)
 --------------------------
 º New: Warning icons are now displayed when a key is missing at least one value.
