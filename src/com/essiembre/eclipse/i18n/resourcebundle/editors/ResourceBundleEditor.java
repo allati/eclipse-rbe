@@ -217,8 +217,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
     protected void pageChange(int newPageIndex) {
         super.pageChange(newPageIndex);
         if (newPageIndex == 0) {
-            bundles.refreshData();
-            bundles.refreshTextBoxes(i18nPage.getActivePropertyKey());
+            i18nPage.refresh();
         }
     }
 
