@@ -48,6 +48,15 @@ public final class BundleUtils {
     /** System line separator. */
     private static final String LINE_SEPARATOR = 
             System.getProperty("line.separator");
+
+    /** A table of hex digits */
+    private static final char[] HEX_DIGITS = {
+        '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+    };
+
+    /** Special resouce bundle characters. */
+    private static final String specialSaveChars = "=: \t\r\n\f#!";
+    
     
     /**
      * Constructor.
@@ -113,6 +122,10 @@ public final class BundleUtils {
             }
             
             // Build line
+            if (RBPreferences.getConvertUnicodeToEncoded()) {
+                key = BundleUtils.convertUnicodeToEncoded(key);
+                value = BundleUtils.convertUnicodeToEncoded(value);
+            }
             appendKey(text, key, equalIndex);
             appendValue(text, value, equalIndex);
             text.append(lineBreak);
@@ -251,5 +264,98 @@ public final class BundleUtils {
         }
         return ImageDescriptor.createFromURL(url).createImage();
     }
+    
+    /**
+     * Converts encoded &#92;uxxxx to unicode chars
+     * and changes special saved chars to their original forms
+     * This method was copied from <code>Properties.loadConvert(String)</code>.
+     * @see java.util.Properties#loadConvert(java.lang.String)
+     */
+    public static String convertEncodedToUnicode(String theString) {
+        char aChar;
+        int len = theString.length();
+        StringBuffer outBuffer = new StringBuffer(len);
 
+        for (int x = 0; x < len;) {
+            aChar = theString.charAt(x++);
+            if (aChar == '\\') {
+                aChar = theString.charAt(x++);
+                if (aChar == 'u') {
+                    // Read the xxxx
+                    int value = 0;
+                    for (int i = 0; i < 4; i++) {
+                        aChar = theString.charAt(x++);
+                        switch (aChar) {
+                        case '0': case '1': case '2': case '3': case '4':
+                        case '5': case '6': case '7': case '8': case '9':
+                            value = (value << 4) + aChar - '0';
+                            break;
+                        case 'a': case 'b': case 'c':
+                        case 'd': case 'e': case 'f':
+                            value = (value << 4) + 10 + aChar - 'a';
+                            break;
+                        case 'A': case 'B': case 'C':
+                        case 'D': case 'E': case 'F':
+                            value = (value << 4) + 10 + aChar - 'A';
+                            break;
+                        default:
+                            throw new IllegalArgumentException(
+                                    "Malformed \\uxxxx encoding.");
+                        }
+                    }
+                    outBuffer.append((char) value);
+                } else {
+                    if (aChar == 't')
+                        aChar = '\t';
+                    else if (aChar == 'r')
+                        aChar = '\r';
+                    else if (aChar == 'n')
+                        aChar = '\n';
+                    else if (aChar == 'f')
+                        aChar = '\f';
+                    outBuffer.append(aChar);
+                }
+            } else
+                outBuffer.append(aChar);
+        }
+        return outBuffer.toString();
+    }
+    
+    /**
+     * Converts unicodes to encoded &#92;uxxxx
+     * and writes out any of the characters in specialSaveChars
+     * with a preceding slash
+     * @see java.util.Properties#saveConvert(java.lang.String, boolean)
+     */
+    public static String convertUnicodeToEncoded(
+            String theString /*, boolean escapeSpace */) {
+        int len = theString.length();
+        StringBuffer outBuffer = new StringBuffer(len * 2);
+
+        for (int x = 0; x < len; x++) {
+            char aChar = theString.charAt(x);
+            if ((aChar < 0x0020) || (aChar > 0x007e)) {
+                outBuffer.append('\\');
+                outBuffer.append('u');
+                outBuffer.append(toHex((aChar >> 12) & 0xF));
+                outBuffer.append(toHex((aChar >> 8) & 0xF));
+                outBuffer.append(toHex((aChar >> 4) & 0xF));
+                outBuffer.append(toHex(aChar & 0xF));
+            } else {
+                outBuffer.append(aChar);
+            }
+        }
+        return outBuffer.toString();
+    }
+
+
+    /**
+     * Convert a nibble to a hex character
+     * @param   nibble  the nibble to convert.
+     */
+    private static char toHex(int nibble) {
+        return HEX_DIGITS[(nibble & 0xF)];
+    }
+
+    
 }
