@@ -20,14 +20,13 @@
  */
 package com.essiembre.eclipse.i18n.resourcebundle.editors;
 
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -101,23 +100,23 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
 		}
 	}
 	private void createActions() {
-		sampleAction = new Action() {
-			public void run() {
-				MessageDialog.openInformation(null, "ResourceBundle Editor Plug-in", "Sample Action Executed");
-			}
-		};
-		sampleAction.setText("Sample Action");
-		sampleAction.setToolTipText("Sample Action tool tip");
-		sampleAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(IDE.SharedImages.IMG_OBJS_TASK_TSK));
+//		sampleAction = new Action() {
+//			public void run() {
+//				MessageDialog.openInformation(null, "ResourceBundle Editor Plug-in", "Sample Action Executed");
+//			}
+//		};
+//		sampleAction.setText("Sample Action");
+//		sampleAction.setToolTipText("Sample Action tool tip");
+//		sampleAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//				getImageDescriptor(IDE.SharedImages.IMG_OBJS_TASK_TSK));
 	}
 	public void contributeToMenu(IMenuManager manager) {
-		IMenuManager menu = new MenuManager("Editor &Menu");
-		manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
-		menu.add(sampleAction);
+//		IMenuManager menu = new MenuManager("Editor &Menu");
+//		manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
+//		menu.add(sampleAction);
 	}
 	public void contributeToToolBar(IToolBarManager manager) {
-		manager.add(new Separator());
-		manager.add(sampleAction);
+//		manager.add(new Separator());
+//		manager.add(sampleAction);
 	}
 }
