@@ -166,7 +166,7 @@ public class I18NPage extends ScrolledComposite {
                     if (!text.equals(textBeforeUpdate)) {
                         Bundle bundle = bundles.getBundle(textBox);                        
                         Map data = bundle.getData();
-                        data.put(keyTree.getSelection()[0].getText(),
+                        data.put(keyTree.getSelectedKey(),
                                  textBox.getText());
                         bundle.refreshEditor();
                     }
@@ -198,6 +198,5 @@ public class I18NPage extends ScrolledComposite {
     public String getActivePropertyKey(){
         return keyTree.getSelectedKey();
     }
-
 
 }
