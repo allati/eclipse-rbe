@@ -1,8 +1,12 @@
 Here is an overview of changes for each releases:
 
-Release 0.?.? (2004-??-??)
+Release 0.2.0 (2004-12-02)
 --------------------------
+º New: Warning icons are now displayed when a key is missing at least one value.
+º New: Icons are now used for reprenting keys and groups of keys.
 º New (feature #1075306): Now possible to rename and delete groups of key.
+º Fix (bug #1077596): When editing a value and clicking on a different key, 
+  the field value no longer gets saved under the newly selected key.
 
 
 Release 0.1.1 (2004-11-29)
