@@ -31,12 +31,15 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
+import com.essiembre.eclipse.i18n.resourcebundle.preferences.Preferences;
 
 /**
  * Internationalization page where one can edit all resource bundle entries 
@@ -49,6 +52,14 @@ public class I18NPage extends ScrolledComposite {
     /** Minimum height of text fields. */
     private static final int TEXT_MINIMUM_HEIGHT = 50;
 
+    /** Hierarchical layout image. */
+    private static Image hierarchicalImage = 
+            BundleUtils.loadImage("icons/hierarchicalLayout.gif");
+    /** Flat layout image. */
+    private static Image flatImage = 
+            BundleUtils.loadImage("icons/flatLayout.gif");
+
+    
     /** All bundles. */
     private Bundles bundles;
     
@@ -91,19 +102,68 @@ public class I18NPage extends ScrolledComposite {
         Composite leftComposite = new Composite(sashForm, SWT.BORDER);
         leftComposite.setLayout(new GridLayout(1, false));
 
-        // Properties key tree
-        keyTree = new KeyTree(leftComposite, bundles);
-        
-        //--- Bottom section ---
-        Composite bottomComposite = new Composite(leftComposite, SWT.NONE);
+        //--- Top section ---
+        Composite topComposite = new Composite(leftComposite, SWT.NONE);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         gridLayout.horizontalSpacing = 0;
         gridLayout.verticalSpacing = 0;
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
-        bottomComposite.setLayout(gridLayout);
+        topComposite.setLayout(gridLayout);
         GridData gridData = new GridData();
+        gridData.horizontalAlignment = GridData.END;
+        gridData.verticalAlignment = GridData.CENTER;
+        gridData.grabExcessHorizontalSpace = true;
+        topComposite.setLayoutData(gridData);
+
+        final Button hierModeButton = new Button(topComposite, SWT.TOGGLE);
+        hierModeButton.setImage(hierarchicalImage);
+        final Button flatModeButton = new Button(topComposite, SWT.TOGGLE);
+        flatModeButton.setImage(flatImage);
+        if (Preferences.isKeyTreeFlat()) {
+            flatModeButton.setSelection(true);
+            flatModeButton.setEnabled(false);
+        } else {
+            hierModeButton.setSelection(true);
+            hierModeButton.setEnabled(false);
+        }
+        //TODO merge the two listeners into one
+        hierModeButton.addSelectionListener(new SelectionAdapter () {
+            public void widgetSelected(SelectionEvent event) {
+                if (hierModeButton.getSelection()) {
+                    flatModeButton.setSelection(false);
+                    flatModeButton.setEnabled(true);
+                    hierModeButton.setEnabled(false);
+                    keyTree.setKeyTreeFlat(false);
+                }
+            }
+        });
+        flatModeButton.addSelectionListener(new SelectionAdapter () {
+            public void widgetSelected(SelectionEvent event) {
+                if (flatModeButton.getSelection()) {
+                    hierModeButton.setSelection(false);
+                    hierModeButton.setEnabled(true);
+                    flatModeButton.setEnabled(false);
+                    keyTree.setKeyTreeFlat(true);
+                }
+            }
+        });
+
+        
+        //--- Key tree ---
+        keyTree = new KeyTree(leftComposite, bundles);
+        
+        //--- Bottom section ---
+        Composite bottomComposite = new Composite(leftComposite, SWT.NONE);
+        gridLayout = new GridLayout();
+        gridLayout.numColumns = 2;
+        gridLayout.horizontalSpacing = 0;
+        gridLayout.verticalSpacing = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.marginHeight = 0;
+        bottomComposite.setLayout(gridLayout);
+        gridData = new GridData();
         gridData.horizontalAlignment = GridData.FILL;
         gridData.verticalAlignment = GridData.CENTER;
         gridData.grabExcessHorizontalSpace = true;
