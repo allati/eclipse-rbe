@@ -52,7 +52,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-import com.essiembre.eclipse.i18n.resourcebundle.preferences.Preferences;
+import com.essiembre.eclipse.i18n.resourcebundle.preferences.RBPreferences;
 
 /**
  * Tree for displaying and navigating through resource bundle keys.
@@ -81,7 +81,7 @@ public class KeysComposite extends Composite {
             BundleUtils.loadImage("icons/flatLayout.gif");
     
     /** Font when a tree item as no child. */
-    private Font groupFont; //TODO make this one bold + gray
+    private Font groupFont;
     /** Default font for tree item. */
     private Font keyFont;
     //TODO add a font for when a group is also a key (bold + black)
@@ -91,7 +91,8 @@ public class KeysComposite extends Composite {
     /** All tree items, keyed by key or group key name. */
     private Map keyTreeItems = new HashMap();
     /** Flat or Tree mode? */
-    private boolean keyTreeFlat = Preferences.isKeyTreeFlat();
+    private boolean keyTreeHierarchical = 
+            RBPreferences.getKeyTreeHierarchical();
     
     /** Text box to add a new key. */
     private Text addTextBox;
@@ -140,12 +141,12 @@ public class KeysComposite extends Composite {
         hierModeButton.setImage(hierarchicalImage);
         final Button flatModeButton = new Button(topComposite, SWT.TOGGLE);
         flatModeButton.setImage(flatImage);
-        if (Preferences.isKeyTreeFlat()) {
-            flatModeButton.setSelection(true);
-            flatModeButton.setEnabled(false);
-        } else {
+        if (keyTreeHierarchical) {
             hierModeButton.setSelection(true);
             hierModeButton.setEnabled(false);
+        } else {
+            flatModeButton.setSelection(true);
+            flatModeButton.setEnabled(false);
         }
         //TODO merge the two listeners into one
         hierModeButton.addSelectionListener(new SelectionAdapter () {
@@ -154,7 +155,7 @@ public class KeysComposite extends Composite {
                     flatModeButton.setSelection(false);
                     flatModeButton.setEnabled(true);
                     hierModeButton.setEnabled(false);
-                    setKeyTreeFlat(false);
+                    setKeyTreeHierarchical(true);
                 }
             }
         });
@@ -164,7 +165,7 @@ public class KeysComposite extends Composite {
                     hierModeButton.setSelection(false);
                     hierModeButton.setEnabled(true);
                     flatModeButton.setEnabled(false);
-                    setKeyTreeFlat(true);
+                    setKeyTreeHierarchical(false);
                 }
             }
         });
@@ -311,7 +312,7 @@ public class KeysComposite extends Composite {
         StringBuffer group = new StringBuffer();
         for (int i = 0; i < groups.length - 1; i++) {
             if (i > 0) {
-                group.append(Preferences.getKeyGroupSeparator());
+                group.append(RBPreferences.getKeyGroupSeparator());
             }
             group.append(groups[i]);
             TreeItem groupItem = (TreeItem) keyTreeItems.get(group.toString());
@@ -347,7 +348,7 @@ public class KeysComposite extends Composite {
            treeItem.setImage(keyWarnImage);
         }
         if (group.length() > 0) {
-            group.append(Preferences.getKeyGroupSeparator());
+            group.append(RBPreferences.getKeyGroupSeparator());
         }
         group.append(keyLeaf);
         keyTreeItems.put(group.toString(), treeItem);
@@ -398,7 +399,7 @@ public class KeysComposite extends Composite {
         StringBuffer path = new StringBuffer(item.getText());
         TreeItem parentItem = item;
         while ((parentItem = parentItem.getParentItem()) != null) {
-            path.insert(0, Preferences.getKeyGroupSeparator());
+            path.insert(0, RBPreferences.getKeyGroupSeparator());
             path.insert(0, parentItem.getText());
         }
         return path.toString();
@@ -447,7 +448,7 @@ public class KeysComposite extends Composite {
         }
         
         // Add warnings where appropriate
-        String escapedSeparator = Preferences.getKeyGroupSeparator();
+        String escapedSeparator = RBPreferences.getKeyGroupSeparator();
         String[] keys = getAllKeysInGroup(branchRoot);
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
@@ -512,7 +513,6 @@ public class KeysComposite extends Composite {
                 String newGroup = dialog.getValue();
                 String[] keys = getAllKeysInGroup(getSelectedItem());
                 for (int i = 0; i < keys.length; i++) {
-                    //TODO ensure key/newGroup are full (unique)
                     bundles.modifyKey(keys[i], keys[i].replaceFirst(
                             "^" + path, newGroup));
                 }
@@ -559,18 +559,18 @@ public class KeysComposite extends Composite {
 
     
     /**
-     * Gets the "keyTreeFlat" attribute.
-     * @return Returns the keyTreeFlat.
+     * Gets the "keyTreeHierarchical" attribute.
+     * @return Returns the keyTreeHierarchical.
      */
-    public boolean isKeyTreeFlat() {
-        return keyTreeFlat;
+    public boolean isKeyTreeHierarchical() {
+        return keyTreeHierarchical;
     }
     /**
-     * Sets the "keyTreeFlat" attribute.
-     * @param keyTreeFlat The keyTreeFlat to set.
+     * Sets the "keyTreeHierarchical" attribute.
+     * @param keyTreeHierarchical The keyTreeHierarchical to set.
      */
-    public void setKeyTreeFlat(boolean keyTreeFlat) {
-        this.keyTreeFlat = keyTreeFlat;
+    public void setKeyTreeHierarchical(boolean keyTreeHierarchical) {
+        this.keyTreeHierarchical = keyTreeHierarchical;
         refresh();
         if (keyTree.getItemCount() > 0) {
             keyTree.setSelection(new TreeItem[] {keyTree.getItems()[0]}); 
@@ -585,11 +585,10 @@ public class KeysComposite extends Composite {
      * @return group separator
      */
     private String getEscapedKeyGroupSeparator() {
-        if (isKeyTreeFlat()) {
-            return "=";  // escape on something we know won't be in a key
+        if (isKeyTreeHierarchical()) {
+            return "\\Q" + RBPreferences.getKeyGroupSeparator() + "\\E";
         } else {
-            //TODO only escape on certain characters.
-            return "\\" + Preferences.getKeyGroupSeparator();
+            return "=";  // escape on something we know won't be in a key
         }
     }
     
