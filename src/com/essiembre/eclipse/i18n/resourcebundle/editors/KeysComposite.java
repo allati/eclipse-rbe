@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
 import com.essiembre.eclipse.i18n.resourcebundle.preferences.RBPreferences;
 
 /**
@@ -202,14 +203,16 @@ public class KeysComposite extends Composite {
         // Add popup menu
         Menu menu = new Menu (this);
         MenuItem renameItem = new MenuItem (menu, SWT.PUSH);
-        renameItem.setText ("&Rename");
+        renameItem.setText(
+                ResourceBundlePlugin.getResourceString("key.rename"));
         renameItem.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 renameKeyOrGroup();
             }
         });
         MenuItem deleteItem = new MenuItem (menu, SWT.PUSH);
-        deleteItem.setText ("&Delete");
+        deleteItem.setText(
+                ResourceBundlePlugin.getResourceString("key.delete"));
         deleteItem.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 deleteKeyOrGroup();
@@ -249,7 +252,7 @@ public class KeysComposite extends Composite {
         
         // Add button        
         Button addButton = new Button(bottomComposite, SWT.PUSH);
-        addButton.setText("Add");
+        addButton.setText(ResourceBundlePlugin.getResourceString("key.add"));
         addButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
                 addPropertyKey();
