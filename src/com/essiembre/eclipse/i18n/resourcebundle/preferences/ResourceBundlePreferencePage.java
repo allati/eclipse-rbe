@@ -60,6 +60,9 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
     private Text keyGroupSeparator;
     private Button alignEqualSigns;
 
+    private Button convertUnicodeToEncoded;
+    private Button convertEncodedToUnicode;
+    
     private Button groupKeys;
     private Text groupLevelDeep;
     private Text groupLineBreaks;
@@ -91,15 +94,33 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
         
         // Key group separator
         field = createFieldComposite(composite);
-        new Label(field, SWT.NONE).setText("Key group separator:");
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString("prefs.groupSep"));
         keyGroupSeparator = new Text(field, SWT.BORDER);
         keyGroupSeparator.setText(
                 prefs.getString(RBPreferences.KEY_GROUP_SEPARATOR));
         keyGroupSeparator.setTextLimit(2);
         
+        // Convert unicode to encoded?
+        field = createFieldComposite(composite);
+        convertUnicodeToEncoded = new Button(field, SWT.CHECK);
+        convertUnicodeToEncoded.setSelection(
+                prefs.getBoolean(RBPreferences.CONVERT_UNICODE_TO_ENCODED));
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString("prefs.convertUnicode"));
+
+        // Convert encoded to unicode?
+        field = createFieldComposite(composite);
+        convertEncodedToUnicode = new Button(field, SWT.CHECK);
+        convertEncodedToUnicode.setSelection(
+                prefs.getBoolean(RBPreferences.CONVERT_ENCODED_TO_UNICODE));
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString("prefs.convertEncoded"));
+        
         // Format group
         Group formatGroup = new Group(composite, SWT.NONE);
-        formatGroup.setText("Formatting options:");
+        formatGroup.setText(
+                ResourceBundlePlugin.getResourceString("prefs.formatOptions"));
         formatGroup.setLayout(new GridLayout(1, false));
         formatGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -113,7 +134,8 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 refreshEnabledStatuses();
             }
         });
-        new Label(field, SWT.NONE).setText("Align equal signs.");
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString("prefs.alignEquals"));
 
         // Group keys?
         field = createFieldComposite(formatGroup);
@@ -124,35 +146,42 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 refreshEnabledStatuses();
             }
         });
-        new Label(field, SWT.NONE).setText("Group keys.");
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString("prefs.groupKeys"));
 
         // Group keys by how many level deep?
         field = createFieldComposite(formatGroup, indentPixels);
-        new Label(field, SWT.NONE).setText("How many level deep:");
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString("prefs.levelDeep"));
         groupLevelDeep = new Text(field, SWT.BORDER);
         groupLevelDeep.setText(prefs.getString(RBPreferences.GROUP_LEVEL_DEEP));
         groupLevelDeep.setTextLimit(2);
         setWidthInChars(groupLevelDeep, 2);
         groupLevelDeep.addKeyListener(new IntTextValidatorKeyListener(
-                "The 'How many level deep' field must be numeric."));
+                ResourceBundlePlugin.getResourceString(
+                        "prefs.levelDeep.error")));
         
         // How many lines between groups?
         field = createFieldComposite(formatGroup, indentPixels);
-        new Label(field, SWT.NONE).setText("How many lines between groups:");
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString("prefs.linesBetween"));
         groupLineBreaks = new Text(field, SWT.BORDER);
         groupLineBreaks.setText(
                 prefs.getString(RBPreferences.GROUP_LINE_BREAKS));
         groupLineBreaks.setTextLimit(2);
         setWidthInChars(groupLineBreaks, 2);
         groupLineBreaks.addKeyListener(new IntTextValidatorKeyListener(
-                "The 'How many lines between groups' field must be numeric."));
+                ResourceBundlePlugin.getResourceString(
+                        "prefs.linesBetween.error")));
 
         // Align equal signs within groups?
         field = createFieldComposite(formatGroup, indentPixels);
         groupAlignEqualSigns = new Button(field, SWT.CHECK);
         groupAlignEqualSigns.setSelection(
                 prefs.getBoolean(RBPreferences.GROUP_ALIGN_EQUAL_SIGNS));
-        new Label(field, SWT.NONE).setText("Align equal signs within groups.");
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString(
+                        "prefs.groupAlignEquals"));
 
         // Wrap lines?
         field = createFieldComposite(formatGroup);
@@ -163,18 +192,20 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 refreshEnabledStatuses();
             }
         });
-        new Label(field, SWT.NONE).setText("Wrap lines.");
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString("prefs.wrapLines"));
         
         // After how many characters should we wrap?
         field = createFieldComposite(formatGroup, indentPixels);
         new Label(field, SWT.NONE).setText(
-                "Wrap lines after how many characters:");
+                ResourceBundlePlugin.getResourceString("prefs.wrapLinesChar"));
         wrapCharLimit = new Text(field, SWT.BORDER);
         wrapCharLimit.setText(prefs.getString(RBPreferences.WRAP_CHAR_LIMIT));
         wrapCharLimit.setTextLimit(4);
         setWidthInChars(wrapCharLimit, 4);
         wrapCharLimit.addKeyListener(new IntTextValidatorKeyListener(
-                "The 'Wrap lines after...' field must be numeric."));
+                ResourceBundlePlugin.getResourceString(
+                        "prefs.wrapLinesChar.error")));
         
         // Align wrapped lines with equal signs?
         field = createFieldComposite(formatGroup, indentPixels);
@@ -187,19 +218,21 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
             }
         });
         new Label(field, SWT.NONE).setText(
-                "Align wrapped lines with equal signs.");
+                ResourceBundlePlugin.getResourceString(
+                        "prefs.wrapAlignEquals"));
 
         // How many spaces/tabs to use for indenting?
         field = createFieldComposite(formatGroup, indentPixels);
         new Label(field, SWT.NONE).setText(
-                "How many spaces to use for indentation:");
+                ResourceBundlePlugin.getResourceString("prefs.wrapIndent"));
         wrapIndentSpaces = new Text(field, SWT.BORDER);
         wrapIndentSpaces.setText(
                 prefs.getString(RBPreferences.WRAP_INDENT_SPACES));
         wrapIndentSpaces.setTextLimit(2);
         setWidthInChars(wrapIndentSpaces, 2);
         wrapIndentSpaces.addKeyListener(new IntTextValidatorKeyListener(
-                "The 'How many spaces to use...' field must be numeric."));
+                ResourceBundlePlugin.getResourceString(
+                        "prefs.wrapIndent.error")));
 
         refreshEnabledStatuses();
         
@@ -224,6 +257,10 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
         IPreferenceStore prefs = getPreferenceStore();
         prefs.setValue(RBPreferences.KEY_GROUP_SEPARATOR,
                 keyGroupSeparator.getText());
+        prefs.setValue(RBPreferences.CONVERT_ENCODED_TO_UNICODE,
+                convertEncodedToUnicode.getSelection());
+        prefs.setValue(RBPreferences.CONVERT_UNICODE_TO_ENCODED,
+                convertUnicodeToEncoded.getSelection());
         prefs.setValue(RBPreferences.ALIGN_EQUAL_SIGNS,
                 alignEqualSigns.getSelection());
         prefs.setValue(RBPreferences.GROUP_KEYS,
@@ -254,6 +291,10 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
         IPreferenceStore prefs = getPreferenceStore();
         keyGroupSeparator.setText(
                 prefs.getDefaultString(RBPreferences.KEY_GROUP_SEPARATOR));
+        convertEncodedToUnicode.setSelection(prefs.getDefaultBoolean(
+                RBPreferences.CONVERT_ENCODED_TO_UNICODE));
+        convertUnicodeToEncoded.setSelection(prefs.getDefaultBoolean(
+                RBPreferences.CONVERT_UNICODE_TO_ENCODED));
         alignEqualSigns.setSelection(
                 prefs.getDefaultBoolean(RBPreferences.ALIGN_EQUAL_SIGNS));
         groupKeys.setSelection(
