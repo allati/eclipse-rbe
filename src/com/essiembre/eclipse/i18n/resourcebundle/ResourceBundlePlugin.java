@@ -20,8 +20,12 @@
  */
 package com.essiembre.eclipse.i18n.resourcebundle;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.plugin.*;
 import org.osgi.framework.BundleContext;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -39,20 +43,22 @@ public class ResourceBundlePlugin extends AbstractUIPlugin {
 	public ResourceBundlePlugin() {
 		super();
 		plugin = this;
-		try {
-			resourceBundle = ResourceBundle.getBundle(
-                    "com.essiembre.eclipse.i18n.resourcebundle."
-                  + "ResourceBundlePluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
 	}
-
+    
 	/**
 	 * This method is called upon plug-in activation
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+        try {
+            URL messagesUrl = find(new Path("$nl$/messages.properties"));
+            if(messagesUrl != null) {
+                resourceBundle = new PropertyResourceBundle(
+                        messagesUrl.openStream());
+            }
+        } catch (IOException x) {
+            resourceBundle = null;
+        }
 	}
 
 	/**
