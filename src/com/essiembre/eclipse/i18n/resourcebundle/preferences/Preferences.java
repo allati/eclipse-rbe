@@ -72,4 +72,8 @@ public final class Preferences {
         return false;
     }
 
+    public static boolean isGeneratorShown() {
+        return true;
+    }
+
 }
