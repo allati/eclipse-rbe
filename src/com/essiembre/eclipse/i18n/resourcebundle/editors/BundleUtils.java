@@ -20,10 +20,14 @@
  */
 package com.essiembre.eclipse.i18n.resourcebundle.editors;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 
 import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
 import com.essiembre.eclipse.i18n.resourcebundle.preferences.Preferences;
@@ -158,4 +162,18 @@ public final class BundleUtils {
         return null;
     }
 
+    /**
+     * Loads an image.
+     * @param path image path, relative to plugin
+     * @return image
+     */
+    public static Image loadImage(String path) {
+        URL url = null;
+        try {
+        url = new URL(ResourceBundlePlugin.getDefault().getBundle().getEntry(
+                "/"), path);
+        } catch (MalformedURLException e) {
+        }
+        return ImageDescriptor.createFromURL(url).createImage();
+    }
 }
