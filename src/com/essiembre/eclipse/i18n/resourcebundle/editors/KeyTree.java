@@ -149,11 +149,12 @@ public class KeyTree extends Tree {
                     }
                 } else {
                     // Rename all keys in group
+                    String path = getItemPath(item);
                     InputDialog dialog = new InputDialog(
                             getShell(), "Rename key group",
-                            "Rename key group \"" + item.getText() 
+                            "Rename key group \"" + path 
                                   + "\" to (all nested keys wll be renamed):",
-                            item.getText(), null);
+                            path, null);
                     dialog.open();
                     if (dialog.getReturnCode() == Window.OK ) {
                         String newGroup = dialog.getValue();
@@ -161,9 +162,8 @@ public class KeyTree extends Tree {
                         for (int i = 0; i < keys.length; i++) {
                             //TODO ensure key/newGroup are full (unique)
                             bundles.modifyKey(keys[i], keys[i].replaceFirst(
-                                    item.getText(), newGroup));
+                                    "^" + path, newGroup));
                         }
-                        // TODO ensure key is full to have selection
                         refresh(newGroup);
                     }
                 }
@@ -291,5 +291,21 @@ public class KeyTree extends Tree {
         for (int i = 0; i < items.length; i++) {
             findAllItemsInGroup(treeItems, items[i]);
         }
+    }
+    
+    /**
+     * Gets an item's path, which is all labels in a branch, separated by
+     * preffered character separator.
+     * @param item tree item
+     * @return path
+     */
+    private String getItemPath(TreeItem item) {
+        StringBuffer path = new StringBuffer(item.getText());
+        TreeItem parentItem = item;
+        while ((parentItem = parentItem.getParentItem()) != null) {
+            path.insert(0, Preferences.getKeyGroupSeparator());
+            path.insert(0, parentItem.getText());
+        }
+        return path.toString();
     }
 }
