@@ -8,7 +8,9 @@ Description
 Documentation
 -------------
 
-    No documentation is currently available.
+    No documentation is currently available.  If you cannot see newly added
+    features when upgrading from one version to another, delete the 
+    existing version first.
 
 
 Contact Information
