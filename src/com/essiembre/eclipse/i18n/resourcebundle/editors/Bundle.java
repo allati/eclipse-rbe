@@ -49,6 +49,8 @@ public class Bundle {
     private Map data;
     /** Text box used for this bundle. */
     private Text textBox;
+    /** Header comments. */
+    private List comments = new ArrayList();
     
     /**
      * Constructor.
@@ -151,9 +153,12 @@ public class Bundle {
      * Refreshes an editor, with bundle data.
      */
     public void refreshEditor() {
+        String content = null;
         IDocument doc = editor.getDocumentProvider().getDocument(
                 editor.getEditorInput());
-        doc.set(BundleUtils.formatData(data));
+        content = BundleUtils.generateComments(comments);
+        content += BundleUtils.generateContent(data);
+        doc.set(content);
     }
     
     /**
@@ -175,12 +180,18 @@ public class Bundle {
                 editor.getEditorInput());
         StringTokenizer tokenizer =
                 new StringTokenizer(doc.get(), "\n\r");
-        Map newData = new TreeMap();
+        Map data = new TreeMap();
+        List comments = new ArrayList();
         while (tokenizer.hasMoreTokens()) {
             StringBuffer line = 
                     new StringBuffer(tokenizer.nextToken().trim());
             int equalPosition = line.indexOf("=");
-            if (line.indexOf("#") != 0 && equalPosition > 1) {
+
+            // parse header comment lines
+            if (line.indexOf("#") == 0 && data.size() == 0) {
+                comments.add(line.substring(1));
+            // parse regular lines
+            } else if (line.indexOf("#") != 0 && equalPosition > 1) {
                 while (line.lastIndexOf("\\") == line.length() -1) {
                     int lineBreakPosition = line.lastIndexOf("\\");
                     line.replace(
@@ -189,10 +200,25 @@ public class Bundle {
                     line.append(tokenizer.nextToken().trim());
                 }
                 String key = line.substring(0, equalPosition);
-                newData.put(
-                        key.trim(), line.substring(equalPosition + 1).trim());
+                data.put(key.trim(), line.substring(equalPosition + 1).trim());
             }
         }
-        this.data = newData;
+        this.data = data;
+        this.comments = comments;
+    }
+
+    /**
+     * Gets the "comments" attribute.
+     * @return Returns the comments.
+     */
+    public List getComments() {
+        return comments;
+    }
+    /**
+     * Sets the "comments" attribute.
+     * @param comments The comments to set.
+     */
+    public void setComments(List comments) {
+        this.comments = comments;
     }
 }
