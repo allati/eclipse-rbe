@@ -192,7 +192,7 @@ public class KeyTree extends Tree {
     }
     
     private String addGroupKeyItem(String key) {
-        String escapedSeparator = getKeyGroupSeparator();
+        String escapedSeparator = getEscapedKeyGroupSeparator();
         
         boolean isValueMissing = bundles.isValueMissing(key);
         String[] groups = key.split(escapedSeparator);
@@ -200,7 +200,7 @@ public class KeyTree extends Tree {
         StringBuffer group = new StringBuffer();
         for (int i = 0; i < groups.length - 1; i++) {
             if (i > 0) {
-                group.append(getKeyGroupSeparator());
+                group.append(Preferences.getKeyGroupSeparator());
             }
             group.append(groups[i]);
             TreeItem groupItem = (TreeItem) keyTreeItems.get(group.toString());
@@ -236,7 +236,7 @@ public class KeyTree extends Tree {
            treeItem.setImage(keyWarnImage);
         }
         if (group.length() > 0) {
-            group.append(getKeyGroupSeparator());
+            group.append(Preferences.getKeyGroupSeparator());
         }
         group.append(keyLeaf);
         keyTreeItems.put(group.toString(), treeItem);
@@ -287,7 +287,7 @@ public class KeyTree extends Tree {
         StringBuffer path = new StringBuffer(item.getText());
         TreeItem parentItem = item;
         while ((parentItem = parentItem.getParentItem()) != null) {
-            path.insert(0, getKeyGroupSeparator());
+            path.insert(0, Preferences.getKeyGroupSeparator());
             path.insert(0, parentItem.getText());
         }
         return path.toString();
@@ -336,7 +336,7 @@ public class KeyTree extends Tree {
         }
         
         // Add warnings where appropriate
-        String escapedSeparator = getKeyGroupSeparator();
+        String escapedSeparator = Preferences.getKeyGroupSeparator();
         String[] keys = getAllKeysInGroup(branchRoot);
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
@@ -473,7 +473,7 @@ public class KeyTree extends Tree {
      * <code>null</code> otherwise (flat view).
      * @return group separator
      */
-    private String getKeyGroupSeparator() {
+    private String getEscapedKeyGroupSeparator() {
         if (isKeyTreeFlat()) {
             return "=";  // escape on something we know won't be in a key
         } else {
