@@ -1,11 +1,16 @@
 Here is an overview of changes for each releases:
 
+Release 0.?.? (2005-??-??)
+--------------------------
+º New (feature #1099520):  Eclipse 3.1 (M4+) users can now enjoy the new
+  Eclipse Properties File Editor, for the "plain" editor tabs of the 
+  ResourceBundle Editor.
+
 Release 0.5.1 (2005-01-07)
 --------------------------
 º Icon for key groups is now the same as single keys (this resolves some 
   inconsistencies). 
 º Fix (bug #1097273): UI labels are now present.
-
 
 Release 0.5.0 (2004-12-28)
 --------------------------
