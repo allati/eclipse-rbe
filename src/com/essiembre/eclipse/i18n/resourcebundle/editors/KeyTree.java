@@ -20,6 +20,9 @@
  */
 package com.essiembre.eclipse.i18n.resourcebundle.editors;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -97,15 +100,34 @@ public class KeyTree extends Tree {
             public void keyReleased(KeyEvent event) {
                 if (event.character == SWT.DEL) {
                     String key = getSelectedKey();
+                    TreeItem item = getSelectedItem();
                     MessageBox msgBox = new MessageBox(
                             getShell(), SWT.ICON_QUESTION|SWT.OK|SWT.CANCEL);
-                    msgBox.setMessage(
-                            "Are you sure you want to delete \"" + key + "\"?");
-                    msgBox.setText("Delete?");
-                    if (msgBox.open() == SWT.OK) {
-                        bundles.removeKey(key);
-                        refresh();
-                        bundles.refreshTextBoxes(key);
+                    if (item.getItemCount() == 0) {
+                        // Delete single key
+                        msgBox.setMessage("Are you sure you want to "
+                                + "delete \"" + key + "\"?");
+                        msgBox.setText("Delete key?");
+                        if (msgBox.open() == SWT.OK) {
+                            bundles.removeKey(key);
+                            refresh();
+                            bundles.refreshTextBoxes(key);
+                        }
+                    } else {
+                        // Delete group
+                        msgBox.setMessage("Are you sure you want to "
+                                + "delete all keys under \"" 
+                                + item.getText() + "\"?");
+                        msgBox.setText("Delete keys?");
+                        if (msgBox.open() == SWT.OK) {
+                            String[] keys = 
+                                    getAllKeysInGroup(getSelectedItem());
+                            for (int i = 0; i < keys.length; i++) {
+                                bundles.removeKey(keys[i]);
+                            }
+                            refresh();
+                            bundles.refreshTextBoxes(key);
+                        }
                     }
                 }
             }
@@ -113,7 +135,9 @@ public class KeyTree extends Tree {
         addMouseListener(new MouseAdapter() {
             public void mouseDoubleClick(MouseEvent event) {
                 String key = getSelectedKey();
-                if (key != null) {
+                TreeItem item = getSelectedItem();
+                if (item.getItemCount() == 0) {
+                    // Rename single item
                     InputDialog dialog = new InputDialog(
                             getShell(), "Rename key",
                             "Rename \"" + key + "\" to:", key, null);
@@ -124,10 +148,23 @@ public class KeyTree extends Tree {
                         refresh(newKey);
                     }
                 } else {
-                    // We are dealing with a group, toggle collapse/expand
-                    TreeItem treeItem = getSelectedItem();
-                    if (treeItem != null) {
-                        treeItem.setExpanded(!treeItem.getExpanded());
+                    // Rename all keys in group
+                    InputDialog dialog = new InputDialog(
+                            getShell(), "Rename key group",
+                            "Rename key group \"" + item.getText() 
+                                  + "\" to (all nested keys wll be renamed):",
+                            item.getText(), null);
+                    dialog.open();
+                    if (dialog.getReturnCode() == Window.OK ) {
+                        String newGroup = dialog.getValue();
+                        String[] keys = getAllKeysInGroup(getSelectedItem());
+                        for (int i = 0; i < keys.length; i++) {
+                            //TODO ensure key/newGroup are full (unique)
+                            bundles.modifyKey(keys[i], keys[i].replaceFirst(
+                                    item.getText(), newGroup));
+                        }
+                        // TODO ensure key is full to have selection
+                        refresh(newGroup);
                     }
                 }
             }
@@ -220,5 +257,39 @@ public class KeyTree extends Tree {
         group.append(keyLeaf);
         keyItems.put(group.toString(), treeItem);
         return group.toString();
+    }
+    
+    /**
+     * Gets all keys under a group item.  This includes all descendants, not
+     * just direct ones.
+     * @param groupItem item under which to get all keys
+     * @return all keys under given group item
+     */
+    public String[] getAllKeysInGroup(TreeItem groupItem) {
+        Collection allItems = new ArrayList();
+        allItems.add(groupItem);
+        findAllItemsInGroup(allItems, groupItem);
+        Collection keys = new ArrayList();
+        for (Iterator iter = allItems.iterator(); iter.hasNext();) {
+            TreeItem item = (TreeItem) iter.next();
+            if (item.getData() != null) {
+                keys.add((String) item.getData());
+            }
+        }
+        return (String[]) keys.toArray(new String[]{});
+    }
+    
+    /**
+     * Store all intems in given group, in given collection.
+     * @param treeItems all tree items found under group, plus initial content
+     * @param groupItem item under which to get children
+     */
+    private void findAllItemsInGroup(
+            Collection treeItems, TreeItem groupItem) {
+        TreeItem[] items = groupItem.getItems();
+        treeItems.addAll(Arrays.asList(items));
+        for (int i = 0; i < items.length; i++) {
+            findAllItemsInGroup(treeItems, items[i]);
+        }
     }
 }
