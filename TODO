@@ -1,10 +1,5 @@
-- Tree view of keys.
-- Indicate keys with a least one empty bundle value.
 - View for showing resource bundles only.
 - New wizard for creating bundles for all supported locales.
-- Contextual popup
-- Better icons.
-- Flat vs Tree
 
 In Window/Preferences	
 -----------------------
