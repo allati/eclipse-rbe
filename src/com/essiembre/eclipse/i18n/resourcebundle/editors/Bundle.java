@@ -206,6 +206,9 @@ public class Bundle {
                 if (RBPreferences.getConvertEncodedToUnicode()) {
                     key = BundleUtils.convertEncodedToUnicode(key);
                     value = BundleUtils.convertEncodedToUnicode(value);
+                } else {
+                    value = value.replaceAll("\\\\r", "\r");
+                    value = value.replaceAll("\\\\n", "\n");
                 }
                 data.put(key, value);
             }
