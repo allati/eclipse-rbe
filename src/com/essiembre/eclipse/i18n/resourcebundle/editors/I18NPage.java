@@ -27,21 +27,13 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import com.essiembre.eclipse.i18n.resourcebundle.preferences.Preferences;
 
 /**
  * Internationalization page where one can edit all resource bundle entries 
@@ -54,21 +46,11 @@ public class I18NPage extends ScrolledComposite {
     /** Minimum height of text fields. */
     private static final int TEXT_MINIMUM_HEIGHT = 50;
 
-    /** Hierarchical layout image. */
-    private static Image hierarchicalImage = 
-            BundleUtils.loadImage("icons/hierarchicalLayout.gif");
-    /** Flat layout image. */
-    private static Image flatImage = 
-            BundleUtils.loadImage("icons/flatLayout.gif");
-
     /** All bundles. */
     private Bundles bundles;
     
-    /** All resource bundle keys. */
-    private KeyTree keyTree;
-    
-    /** Text box to add a new key. */
-    private Text addTextBox;
+    /** Keys related controls. */
+    private KeysComposite keysComposite;
     
     /** Text before it is updated in a field having focus. */
     private String textBeforeUpdate;
@@ -100,111 +82,12 @@ public class I18NPage extends ScrolledComposite {
         setMinWidth(400);
         setMinHeight(bundles.count() * TEXT_MINIMUM_HEIGHT);
 
-        createSashLeftSide(sashForm);
+        keysComposite = new KeysComposite(sashForm, bundles);
         createSashRightSide(sashForm);
                 
         sashForm.setWeights(new int[]{25, 75});
     }
 
-    /**
-     * Creates left side of main sash form.
-     * @param sashForm parent sash form
-     */
-    private void createSashLeftSide(SashForm sashForm) {
-        Composite leftComposite = new Composite(sashForm, SWT.BORDER);
-        leftComposite.setLayout(new GridLayout(1, false));
-
-        //--- Top section ---
-        Composite topComposite = new Composite(leftComposite, SWT.NONE);
-        GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
-        gridLayout.horizontalSpacing = 0;
-        gridLayout.verticalSpacing = 0;
-        gridLayout.marginWidth = 0;
-        gridLayout.marginHeight = 0;
-        topComposite.setLayout(gridLayout);
-        GridData gridData = new GridData();
-        gridData.horizontalAlignment = GridData.END;
-        gridData.verticalAlignment = GridData.CENTER;
-        gridData.grabExcessHorizontalSpace = true;
-        topComposite.setLayoutData(gridData);
-
-        final Button hierModeButton = new Button(topComposite, SWT.TOGGLE);
-        hierModeButton.setImage(hierarchicalImage);
-        final Button flatModeButton = new Button(topComposite, SWT.TOGGLE);
-        flatModeButton.setImage(flatImage);
-        if (Preferences.isKeyTreeFlat()) {
-            flatModeButton.setSelection(true);
-            flatModeButton.setEnabled(false);
-        } else {
-            hierModeButton.setSelection(true);
-            hierModeButton.setEnabled(false);
-        }
-        //TODO merge the two listeners into one
-        hierModeButton.addSelectionListener(new SelectionAdapter () {
-            public void widgetSelected(SelectionEvent event) {
-                if (hierModeButton.getSelection()) {
-                    flatModeButton.setSelection(false);
-                    flatModeButton.setEnabled(true);
-                    hierModeButton.setEnabled(false);
-                    keyTree.setKeyTreeFlat(false);
-                }
-            }
-        });
-        flatModeButton.addSelectionListener(new SelectionAdapter () {
-            public void widgetSelected(SelectionEvent event) {
-                if (flatModeButton.getSelection()) {
-                    hierModeButton.setSelection(false);
-                    hierModeButton.setEnabled(true);
-                    flatModeButton.setEnabled(false);
-                    keyTree.setKeyTreeFlat(true);
-                }
-            }
-        });
-
-        
-        //--- Key tree ---
-        keyTree = new KeyTree(leftComposite, bundles);
-        
-        //--- Bottom section ---
-        Composite bottomComposite = new Composite(leftComposite, SWT.NONE);
-        gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
-        gridLayout.horizontalSpacing = 0;
-        gridLayout.verticalSpacing = 0;
-        gridLayout.marginWidth = 0;
-        gridLayout.marginHeight = 0;
-        bottomComposite.setLayout(gridLayout);
-        gridData = new GridData();
-        gridData.horizontalAlignment = GridData.FILL;
-        gridData.verticalAlignment = GridData.CENTER;
-        gridData.grabExcessHorizontalSpace = true;
-        bottomComposite.setLayoutData(gridData);
-
-        // Text box
-        addTextBox = new Text(bottomComposite, SWT.BORDER);
-        gridData = new GridData();
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.horizontalAlignment = GridData.FILL;
-        addTextBox.setLayoutData(gridData);
-        addTextBox.addKeyListener(new KeyAdapter() {
-            public void keyReleased(KeyEvent event) {
-                if (event.character == SWT.CR) {
-                    addPropertyKey();
-                }
-            }
-        });
-        
-        // Add button        
-        Button addButton = new Button(bottomComposite, SWT.PUSH);
-        addButton.setText("Add");
-        addButton.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-                addPropertyKey();
-            }
-        });
-        
-    }
 
     /**
      * Creates right side of main sash form.
@@ -233,7 +116,8 @@ public class I18NPage extends ScrolledComposite {
                 public void focusGained(FocusEvent event) {
                     Text textBox = (Text) event.widget;
                     textBeforeUpdate = textBox.getText();
-                    textBox.setData("selectedKey", keyTree.getSelectedKey());
+                    textBox.setData(
+                            "selectedKey", keysComposite.getSelectedKey());
                 }
                 public void focusLost(FocusEvent event) {
                     Text textBox = (Text) event.widget;
@@ -248,7 +132,7 @@ public class I18NPage extends ScrolledComposite {
                         if (text == null || text.trim().length() == 0
                                 || textBeforeUpdate == null 
                                 || textBeforeUpdate.trim().length() == 0) {
-                            keyTree.refreshBranchIcons(selectedKey);
+                            keysComposite.refreshBranchIcons(selectedKey);
                         }
                     }
                 }
@@ -258,24 +142,11 @@ public class I18NPage extends ScrolledComposite {
     }
 
     /**
-     * Adds a property key to resource bundle, based on content of 
-     * bottom "add" text box.
-     */
-    private void addPropertyKey(){
-        String key = addTextBox.getText();
-        if (key != null) {
-            bundles.addKey(key);
-        }
-        keyTree.refresh(key);
-        bundles.refreshTextBoxes(keyTree.getSelectedKey());
-    }
-    
-    /**
      * Gets the currently active property key.
      * @return active property key 
      */
     public String getActivePropertyKey(){
-        return keyTree.getSelectedKey();
+        return keysComposite.getSelectedKey();
     }
 
     /**
@@ -284,7 +155,7 @@ public class I18NPage extends ScrolledComposite {
      */
     public void refresh(){
         bundles.refreshData();
-        bundles.refreshTextBoxes(keyTree.getSelectedKey());
-        keyTree.refresh(keyTree.getSelectedKey());
+        bundles.refreshTextBoxes(keysComposite.getSelectedKey());
+        keysComposite.refresh(keysComposite.getSelectedKey());
     }
 }
