@@ -1,5 +1,10 @@
 Here is an overview of changes for each releases:
 
+Release 0.?.? (2004-??-??)
+--------------------------
+º New (feature #1075306): Now possible to rename and delete groups of key.
+
+
 Release 0.1.1 (2004-11-29)
 --------------------------
 º Fix (bug #1075490): Values now always saved under the right key.
