@@ -1,5 +1,10 @@
 Here is an overview of changes for each releases:
 
+Release 0.3.1 (2004-12-05)
+--------------------------
+º New: The textbox to add a new key now has its content matching selected key.
+º Fix: Now working with Eclipse 3.1 (tested with 3.1 M6).
+
 Release 0.3.0 (2004-12-04)
 --------------------------
 º New: Added popup menu to key tree for deleting/renaming items.
