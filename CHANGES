@@ -1,5 +1,10 @@
 Here is an overview of changes for each releases:
 
+Release 0.5.4 (2005-03-08)
+--------------------------
+º Fix (bug #1126175): New line and carriage return characters are now always
+  escaped (as '\n' and '\r') when saved, and unescaped when loaded.
+
 Release 0.5.3 (2005-03-06)
 --------------------------
 º Fix (bug #1154785): Saving now saves the content of a text field currently 
@@ -9,8 +14,8 @@ Release 0.5.3 (2005-03-06)
   values.
 º Fix (bug #1116119): Short keys with equal sign at position 1 in properties
   files are now being recognized and loaded properly.
-º Fix: New line characters ('\n') for values are now converted to spaces while
-  carriage returns ('\r') are simply removed. 
+º Fix (bug #1126175): New line characters ('\n') for values are now converted 
+  to spaces while carriage returns ('\r') are simply removed. 
 
 Release 0.5.2 (2005-01-31)
 --------------------------
