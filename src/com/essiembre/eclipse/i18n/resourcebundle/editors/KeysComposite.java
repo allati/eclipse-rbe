@@ -67,13 +67,13 @@ public class KeysComposite extends Composite {
             BundleUtils.loadImage("icons/key.gif");
     /** Key group image. */
     private static Image keyGroupImage = 
-            BundleUtils.loadImage("icons/keyGroup.gif");
+            BundleUtils.loadImage("icons/key.gif");
     /** Key warning image. */
     private static Image keyWarnImage = 
             BundleUtils.loadImage("icons/keyWarn.gif");
     /** Key group warning image. */
     private static Image keyGroupWarnImage = 
-            BundleUtils.loadImage("icons/keyGroupWarn.gif");
+            BundleUtils.loadImage("icons/keyWarn.gif");
     /** Hierarchical layout image. */
     private static Image hierarchicalImage = 
             BundleUtils.loadImage("icons/hierarchicalLayout.gif");
