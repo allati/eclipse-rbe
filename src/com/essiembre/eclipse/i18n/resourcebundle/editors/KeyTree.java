@@ -46,6 +46,8 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -123,76 +125,32 @@ public class KeyTree extends Tree {
         addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent event) {
                 if (event.character == SWT.DEL) {
-                    String key = getSelectedKey();
-                    TreeItem item = getSelectedItem();
-                    MessageBox msgBox = new MessageBox(
-                            getShell(), SWT.ICON_QUESTION|SWT.OK|SWT.CANCEL);
-                    if (item.getItemCount() == 0) {
-                        // Delete single key
-                        msgBox.setMessage("Are you sure you want to "
-                                + "delete \"" + key + "\"?");
-                        msgBox.setText("Delete key?");
-                        if (msgBox.open() == SWT.OK) {
-                            bundles.removeKey(key);
-                            refresh();
-                            bundles.refreshTextBoxes(key);
-                        }
-                    } else {
-                        // Delete group
-                        msgBox.setMessage("Are you sure you want to "
-                                + "delete all keys under \"" 
-                                + item.getText() + "\"?");
-                        msgBox.setText("Delete keys?");
-                        if (msgBox.open() == SWT.OK) {
-                            String[] keys = 
-                                    getAllKeysInGroup(getSelectedItem());
-                            for (int i = 0; i < keys.length; i++) {
-                                bundles.removeKey(keys[i]);
-                            }
-                            refresh();
-                            bundles.refreshTextBoxes(key);
-                        }
-                    }
+                    deleteKeyOrGroup();
                 }
             }
         });
         addMouseListener(new MouseAdapter() {
             public void mouseDoubleClick(MouseEvent event) {
-                String key = getSelectedKey();
-                TreeItem item = getSelectedItem();
-                if (item.getItemCount() == 0) {
-                    // Rename single item
-                    InputDialog dialog = new InputDialog(
-                            getShell(), "Rename key",
-                            "Rename \"" + key + "\" to:", key, null);
-                    dialog.open();
-                    if (dialog.getReturnCode() == Window.OK ) {
-                        String newKey = dialog.getValue();
-                        bundles.modifyKey(key, newKey);
-                        refresh(newKey);
-                    }
-                } else {
-                    // Rename all keys in group
-                    String path = getItemPath(item);
-                    InputDialog dialog = new InputDialog(
-                            getShell(), "Rename key group",
-                            "Rename key group \"" + path 
-                                  + "\" to (all nested keys wll be renamed):",
-                            path, null);
-                    dialog.open();
-                    if (dialog.getReturnCode() == Window.OK ) {
-                        String newGroup = dialog.getValue();
-                        String[] keys = getAllKeysInGroup(getSelectedItem());
-                        for (int i = 0; i < keys.length; i++) {
-                            //TODO ensure key/newGroup are full (unique)
-                            bundles.modifyKey(keys[i], keys[i].replaceFirst(
-                                    "^" + path, newGroup));
-                        }
-                        refresh(newGroup);
-                    }
-                }
+                renameKeyOrGroup();
             }
         });
+        // Add popup menu
+        Menu menu = new Menu (this);
+        MenuItem renameItem = new MenuItem (menu, SWT.PUSH);
+        renameItem.setText ("&Rename");
+        renameItem.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                renameKeyOrGroup();
+            }
+        });
+        MenuItem deleteItem = new MenuItem (menu, SWT.PUSH);
+        deleteItem.setText ("&Delete");
+        deleteItem.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                deleteKeyOrGroup();
+            }
+        });
+        setMenu(menu);
     }
 
     public TreeItem getSelectedItem() {
@@ -435,5 +393,81 @@ public class KeyTree extends Tree {
         Collections.reverse(items);
         return (TreeItem[]) items.toArray(new TreeItem[] {});
     }
+    
+    /**
+     * Renames a key or group of key.
+     */
+    private void renameKeyOrGroup() {
+        String key = getSelectedKey();
+        TreeItem item = getSelectedItem();
+        if (item.getItemCount() == 0) {
+            // Rename single item
+            InputDialog dialog = new InputDialog(
+                    getShell(), "Rename key",
+                    "Rename \"" + key + "\" to:", key, null);
+            dialog.open();
+            if (dialog.getReturnCode() == Window.OK ) {
+                String newKey = dialog.getValue();
+                bundles.modifyKey(key, newKey);
+                refresh(newKey);
+            }
+        } else {
+            // Rename all keys in group
+            String path = getItemPath(item);
+            InputDialog dialog = new InputDialog(
+                    getShell(), "Rename key group",
+                    "Rename key group \"" + path 
+                          + "\" to (all nested keys wll be renamed):",
+                    path, null);
+            dialog.open();
+            if (dialog.getReturnCode() == Window.OK ) {
+                String newGroup = dialog.getValue();
+                String[] keys = getAllKeysInGroup(getSelectedItem());
+                for (int i = 0; i < keys.length; i++) {
+                    //TODO ensure key/newGroup are full (unique)
+                    bundles.modifyKey(keys[i], keys[i].replaceFirst(
+                            "^" + path, newGroup));
+                }
+                refresh(newGroup);
+            }
+        }
+    }
+
+    /**
+     * Deletes a key or group of key.
+     */
+    private void deleteKeyOrGroup() {
+        String key = getSelectedKey();
+        TreeItem item = getSelectedItem();
+        MessageBox msgBox = new MessageBox(
+                getShell(), SWT.ICON_QUESTION|SWT.OK|SWT.CANCEL);
+        if (item.getItemCount() == 0) {
+            // Delete single key
+            msgBox.setMessage("Are you sure you want to "
+                    + "delete \"" + key + "\"?");
+            msgBox.setText("Delete key?");
+            if (msgBox.open() == SWT.OK) {
+                bundles.removeKey(key);
+                refresh();
+                bundles.refreshTextBoxes(key);
+            }
+        } else {
+            // Delete group
+            msgBox.setMessage("Are you sure you want to "
+                    + "delete all keys under \"" 
+                    + item.getText() + "\"?");
+            msgBox.setText("Delete keys?");
+            if (msgBox.open() == SWT.OK) {
+                String[] keys = 
+                        getAllKeysInGroup(getSelectedItem());
+                for (int i = 0; i < keys.length; i++) {
+                    bundles.removeKey(keys[i]);
+                }
+                refresh();
+                bundles.refreshTextBoxes(key);
+            }
+        }
+    }
+
     
 }
