@@ -67,5 +67,9 @@ public final class Preferences {
     public static boolean isAlignGroupEqualSigns() {
         return true;
     }
-        
+
+    public static boolean isKeyTreeFlat() {
+        return false;
+    }
+
 }
