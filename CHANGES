@@ -1,5 +1,13 @@
 Here is an overview of changes for each releases:
 
+Release 0.1.1 (2004-11-29)
+--------------------------
+º Fix (bug #1075490): Values now always saved under the right key.
+º Fix (bug #1075485): Keys deleted in all editors now removed from tree.
+º Fix (bug #1075473 and #1075303): When a field is disabled, it is re-enabled
+  upon selecting a valid key, whether the value for it is empty or not.
+
+
 Release 0.1.0 (2004-11-28)
 --------------------------
 º Initial development release.
