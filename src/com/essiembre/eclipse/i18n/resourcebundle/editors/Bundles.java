@@ -181,4 +181,20 @@ public class Bundles {
     public int count() {
         return bundles.size();
     }
+    
+    /**
+     * Is there one or more values missing for the given key.
+     * @param key the key to check for missing values
+     * @return <code>true</code> if missing
+     */
+    public boolean isValueMissing(String key) {
+        for (Iterator iter = bundles.iterator(); iter.hasNext();) {
+            Bundle bundle = (Bundle) iter.next();
+            String value = (String) bundle.getData().get(key);
+            if (value == null || value.trim().length() == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
