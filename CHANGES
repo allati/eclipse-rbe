@@ -1,5 +1,9 @@
 Here is an overview of changes for each releases:
 
+Release 0.?.? (2005-??-??)
+--------------------------
+º New: Interface text now supports Spanish.
+
 Release 0.5.4 (2005-03-08)
 --------------------------
 º Fix (bug #1126175): New line and carriage return characters are now always
