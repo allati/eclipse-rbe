@@ -1,5 +1,9 @@
 Here is an overview of changes for each releases:
 
+Release 0.?.? (200?-??-??)
+--------------------------
+º New: Now displaying country flags, when speficied in properties file locale.
+
 Release 0.3.1 (2004-12-05)
 --------------------------
 º New: The textbox to add a new key now has its content matching selected key.
