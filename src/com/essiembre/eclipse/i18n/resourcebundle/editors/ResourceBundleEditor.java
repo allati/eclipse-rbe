@@ -72,6 +72,11 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
     private static Image propertyImage = 
             BundleUtils.loadImage("icons/propertiesfile.gif");
 
+    /** Class name of Properties file editor (Eclipse 3.1). */
+    private static final String PROPERTIES_EDITOR_CLASS_NAME = 
+            "org.eclipse.jdt.internal.ui.propertiesfileeditor."
+          + "PropertiesFileEditor";
+    
     
     /**
      * Creates a multi-page editor example.
@@ -206,7 +211,15 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
                     
                     IEditorInput newEditorInput = 
                             new FileEditorInput((IFile) resource);
-                    TextEditor textEditor = new TextEditor();
+                    TextEditor textEditor = null;
+                    try {
+                        // Use PropertiesFileEditor if available
+                        textEditor = (TextEditor) Class.forName(
+                                PROPERTIES_EDITOR_CLASS_NAME).newInstance();
+                    } catch (Exception e) {
+                        // Use default editor otherwise
+                        textEditor = new TextEditor();
+                    }
                     textEditor.init(site, newEditorInput);
                     bundle.setEditor(textEditor);
                     bundles.addBundle(bundle);
