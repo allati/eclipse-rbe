@@ -1,5 +1,6 @@
 - View for showing resource bundles only.
 - New wizard for creating bundles for all supported locales.
+- "Add" text box should be prefilled with current selection.
 
 In Window/Preferences	
 -----------------------
