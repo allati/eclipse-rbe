@@ -117,7 +117,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
 				containerText.setText(container.getFullPath().toString());
 			}
 		}
-		fileText.setText("content.properties");
+		fileText.setText("messages.properties");
 	}
 	
 	/**
