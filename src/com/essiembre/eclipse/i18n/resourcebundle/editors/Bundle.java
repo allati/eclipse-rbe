@@ -32,6 +32,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.editors.text.TextEditor;
 
+import com.essiembre.eclipse.i18n.resourcebundle.preferences.RBPreferences;
+
 /**
  * A single ResourceBundle related resources.
  * @author Pascal Essiembre
@@ -199,8 +201,13 @@ public class Bundle {
                             lineBreakPosition + 1, "");
                     line.append(tokenizer.nextToken().trim());
                 }
-                String key = line.substring(0, equalPosition);
-                data.put(key.trim(), line.substring(equalPosition + 1).trim());
+                String key = line.substring(0, equalPosition).trim();
+                String value = line.substring(equalPosition + 1).trim();
+                if (RBPreferences.getConvertEncodedToUnicode()) {
+                    key = BundleUtils.convertEncodedToUnicode(key);
+                    value = BundleUtils.convertEncodedToUnicode(value);
+                }
+                data.put(key, value);
             }
         }
         this.data = data;
