@@ -3,7 +3,7 @@
 <plugin
    id="com.essiembre.eclipse.i18n.resourcebundle"
    name="%plugin.name"
-   version="0.5.1"
+   version="0.5.2"
    provider-name="%plugin.provider"
    class="com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin">
 
@@ -28,10 +28,10 @@
          point="org.eclipse.ui.editors">
       <editor
             name="%editor.rbe"
-            extensions="properties"
             icon="icons/propertiesfile.gif"
-            contributorClass="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditorContributor"
+            extensions="properties"
             class="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditor"
+            contributorClass="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditorContributor"
             id="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditor">
       </editor>
    </extension>
@@ -64,18 +64,16 @@
          <view
                ratio="0.5"
                relative="org.eclipse.ui.views.TaskList"
-               relationship="right"
-               id="com.essiembre.eclipse.i18n.resourcebundle.views.ResourceBundleView">
+               id="com.essiembre.eclipse.i18n.resourcebundle.views.ResourceBundleView"
+               relationship="right">
          </view>
       </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
-<!--
-      <scope name="foo" class="com.example.FooPrefs" />
--->
-      <initializer class="com.essiembre.eclipse.i18n.resourcebundle.preferences.ResourceBundlePreferenceInitializer"/>
+      <initializer
+            class="com.essiembre.eclipse.i18n.resourcebundle.preferences.ResourceBundlePreferenceInitializer">
+      </initializer>
    </extension>
-   
 
 </plugin>
