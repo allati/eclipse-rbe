@@ -31,6 +31,8 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -59,7 +61,6 @@ public class I18NPage extends ScrolledComposite {
     private static Image flatImage = 
             BundleUtils.loadImage("icons/flatLayout.gif");
 
-    
     /** All bundles. */
     private Bundles bundles;
     
@@ -71,7 +72,10 @@ public class I18NPage extends ScrolledComposite {
     
     /** Text before it is updated in a field having focus. */
     private String textBeforeUpdate;
-        
+
+    /** Bold font. */
+    private Font boldFont;
+    
     /**
      * Constructor.
      * @param parent parent component.
@@ -81,6 +85,14 @@ public class I18NPage extends ScrolledComposite {
         super(parent, style);
         this.bundles = bundles; 
 
+        // Compute fonts
+        FontData[] fontData = getFont().getFontData();
+        for (int i = 0; i < fontData.length; i++) {
+            fontData[i].setStyle(SWT.BOLD);
+        }
+        boldFont = new Font(getDisplay(), fontData);
+
+        // Create screen        
         SashForm sashForm = new SashForm(this, SWT.NONE);
         setContent(sashForm);
         setExpandHorizontal(true);
@@ -205,10 +217,12 @@ public class I18NPage extends ScrolledComposite {
             Bundle bundle = bundles.getBundle(i);
 
             Label label = new Label(rightComposite, SWT.NONE);
-            label.setText(bundle.getTitle());
+            label.setText(bundle.getTitle() + ":");
+            label.setFont(boldFont);
             
             Text textBox = new Text(rightComposite, SWT.MULTI | SWT.WRAP | 
                     SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+            textBox.setEnabled(false);
             GridData gridData = new GridData();
             gridData.verticalAlignment = GridData.FILL;
             gridData.grabExcessVerticalSpace = true;
@@ -240,8 +254,6 @@ public class I18NPage extends ScrolledComposite {
                 }
             });
             bundle.setTextBox(textBox);
-            
-            //label.setFont(new Font());
         }
     }
 
