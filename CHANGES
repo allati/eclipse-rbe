@@ -1,10 +1,12 @@
 Here is an overview of changes for each releases:
 
-Release 0.?.? (2005-??-??)
+Release 0.5.2 (2005-??-??)
 --------------------------
 º New (feature #1099520):  Eclipse 3.1 (M4+) users can now enjoy the new
   Eclipse Properties File Editor, for the "plain" editor tabs of the 
   ResourceBundle Editor.
+º Fix (bug #1112881): The plugin is no longer loading more properties files
+  than it should in some circomstances.
 
 Release 0.5.1 (2005-01-07)
 --------------------------
