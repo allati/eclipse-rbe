@@ -1,0 +1,26 @@
+- Tree view of keys.
+- Indicate keys with a least one empty bundle value.
+- View for showing resource bundles only.
+- New wizard for creating bundles for all supported locales.
+- Contextual popup
+- Better icons.
+- Flat vs Tree
+
+In Window/Preferences	
+-----------------------
+
+Generic:
+  Group character separator: ___
+
+
+Formatting options:
+  [ ] Align equal signs
+
+  [ ] Group keys
+      Level deep: ___
+      Insert ___ line(s) after each group.
+      [ ] Align equal signs within group
+
+  [ ] Wrap lines after ___ characters.
+      ( ) Indent subsequent lines by ___ [spaces/tabs].
+      ( ) Align begining of subsequent lines with equal sign.   	

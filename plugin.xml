@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="com.essiembre.eclipse.i18n.resourcebundle"
+   name="ResourceBundle Editor Plug-in"
+   version="1.0.0"
+   provider-name="Essiembre Consultant Inc."
+   class="com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin">
+
+   <runtime>
+      <library name="resourcebundle.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+   </requires>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="ResourceBundle Editor"
+            extensions="properties"
+            icon="icons/sample.gif"
+            contributorClass="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditorContributor"
+            class="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditor"
+            id="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            parentCategory="Java"
+            name="Java"
+            id="com.essiembre.eclipse.i18n.resourcebundle">
+      </category>
+      <wizard
+            name="ResourceBundle"
+            icon="icons/sample.gif"
+            category="com.essiembre.eclipse.i18n.resourcebundle"
+            class="com.essiembre.eclipse.i18n.resourcebundle.wizards.ResourceBundleWizard"
+            id="com.essiembre.eclipse.i18n.resourcebundle.wizards.ResourceBundleWizard">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="ResourceBundle"
+            class="com.essiembre.eclipse.i18n.resourcebundle.preferences.ResourceBundlePreferencePage"
+            id="com.essiembre.eclipse.i18n.resourcebundle.preferences.ResourceBundlePreferencePage">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="com.essiembre.eclipse.i18n.resourcebundle.views.ResourceBundleView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>
