@@ -2,9 +2,9 @@
 <?eclipse version="3.0"?>
 <plugin
    id="com.essiembre.eclipse.i18n.resourcebundle"
-   name="ResourceBundle Editor Plug-in"
-   version="0.4.0"
-   provider-name="Essiembre Consultant Inc."
+   name="%plugin.name"
+   version="0.5.0"
+   provider-name="%plugin.provider"
    class="com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin">
 
    <runtime>
@@ -26,7 +26,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="ResourceBundle Editor"
+            name="%editor.rbe"
             extensions="properties"
             icon="icons/propertiesfile.gif"
             contributorClass="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditorContributor"
@@ -37,8 +37,7 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <category
-            parentCategory="Java"
-            name="Java"
+            name="%wizard.rb"
             id="com.essiembre.eclipse.i18n.resourcebundle">
       </category>
       <wizard
@@ -52,7 +51,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            name="ResourceBundle"
+            name="%editor.rbe"
             class="com.essiembre.eclipse.i18n.resourcebundle.preferences.ResourceBundlePreferencePage"
             id="com.essiembre.eclipse.i18n.resourcebundle.preferences.ResourceBundlePreferencePage">
       </page>
