@@ -62,6 +62,13 @@ public final class RBPreferences {
     /** Number of spaces to indent subsequent lines. */
     public static final String WRAP_INDENT_SPACES = "wrapIndentSpaces";
     
+    /** Should unicode values be converted to their encoded equivalent. */
+    public static final String CONVERT_UNICODE_TO_ENCODED = 
+            "convertUnicodeToEncoded";
+    /** Should encoded values be converted to their unicode equivalent. */
+    public static final String CONVERT_ENCODED_TO_UNICODE = 
+            "convertEncodedToUnicode";
+    
     
     
     /** RBPreferences. */
@@ -127,4 +134,13 @@ public final class RBPreferences {
         return PREFS.getInt(WRAP_INDENT_SPACES);
     }
 
+    public static boolean getConvertEncodedToUnicode() {
+        return PREFS.getBoolean(CONVERT_ENCODED_TO_UNICODE);
+    }
+
+    public static boolean getConvertUnicodeToEncoded() {
+        return PREFS.getBoolean(CONVERT_UNICODE_TO_ENCODED);
+    }
+
+    
 }
