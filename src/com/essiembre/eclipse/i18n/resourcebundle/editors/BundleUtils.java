@@ -109,8 +109,8 @@ public final class BundleUtils {
             
             // handle new lines in value (replace with spaces)
 			if (value != null){
-	            value = value.replaceAll("\r", "");
-	            value = value.replaceAll("\n", " ");
+	            value = value.replaceAll("\r", "\\\\r");
+	            value = value.replaceAll("\n", "\\\\n");
 			} else {
 				value = "";
 		    }
