@@ -3,7 +3,7 @@
 <plugin
    id="com.essiembre.eclipse.i18n.resourcebundle"
    name="ResourceBundle Editor Plug-in"
-   version="0.2.0"
+   version="0.3.0"
    provider-name="Essiembre Consultant Inc."
    class="com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin">
 
