@@ -28,6 +28,8 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
@@ -36,6 +38,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.editors.text.TextEditor;
 
 /**
  * Internationalization page where one can edit all resource bundle entries 
@@ -59,6 +62,11 @@ public class I18NPage extends ScrolledComposite {
 
     /** Bold font. */
     private Font boldFont;
+	
+	/** Data selected key id */
+	private static final String SELECTED_KEY = "selectedKey";
+    /** Text box currently being edited. */
+    private Text activeTextBox;
     
     /**
      * Constructor.
@@ -135,26 +143,34 @@ public class I18NPage extends ScrolledComposite {
             textBox.setLayoutData(gridData);
             textBox.addFocusListener(new FocusListener() {
                 public void focusGained(FocusEvent event) {
-                    Text textBox = (Text) event.widget;
-                    textBeforeUpdate = textBox.getText();
-                    textBox.setData(
-                            "selectedKey", keysComposite.getSelectedKey());
+                    activeTextBox = (Text) event.widget;
+                    textBeforeUpdate = activeTextBox.getText();
+                    activeTextBox.setData(
+							SELECTED_KEY, keysComposite.getSelectedKey());
                 }
                 public void focusLost(FocusEvent event) {
+                    refreshEditorOnChanges();
+                    activeTextBox = null;
+                }
+            });
+            textBox.addKeyListener(new KeyAdapter() {
+                public void keyReleased(KeyEvent event) {
                     Text textBox = (Text) event.widget;
-                    String text = textBox.getText();
-                    if (!text.equals(textBeforeUpdate)) {
-                        Bundle bundle = bundles.getBundle(textBox);                        
-                        Map data = bundle.getData();
-                        String selectedKey = 
-                                (String) textBox.getData("selectedKey");
-                        data.put(selectedKey, textBox.getText());
-                        bundle.refreshEditor();
-                        if (text == null || text.trim().length() == 0
-                                || textBeforeUpdate == null 
-                                || textBeforeUpdate.trim().length() == 0) {
-                            keysComposite.refreshBranchIcons(selectedKey);
+                    TextEditor editor = bundles.getBundle(textBox).getEditor();
+                    // Text field has changed: make editor dirty if not already
+                    if (textBeforeUpdate != null 
+                            && !textBeforeUpdate.equals(textBox.getText())) {
+                        // Make the editor dirty if not already.  If it is, 
+                        // we wait until field focus lost (or save) to 
+                        // update it completely.
+                        if (!editor.isDirty()) {
+                            refreshEditorOnChanges();
                         }
+                    // Text field is the same as original (make non-dirty)
+                    } else {
+                        if (editor.isDirty()) {
+                            editor.doRevertToSaved();
+                        }                        
                     }
                 }
             });
@@ -179,7 +195,31 @@ public class I18NPage extends ScrolledComposite {
         bundles.refreshTextBoxes(keysComposite.getSelectedKey());
         keysComposite.refresh(keysComposite.getSelectedKey());
     }
+
     
+	/**
+	 * Refreshes the editor associated with the active text box (if any)
+     * if it has changed.
+	 */
+	public void refreshEditorOnChanges(){
+        if (activeTextBox != null) {
+            String text = activeTextBox.getText();
+            if (!text.equals(textBeforeUpdate)) {
+                Bundle bundle = bundles.getBundle(activeTextBox);                        
+                Map data = bundle.getData();
+                String selectedKey = 
+                        (String) activeTextBox.getData(SELECTED_KEY);
+                data.put(selectedKey, activeTextBox.getText());
+                bundle.refreshEditor();
+                if (text == null || text.trim().length() == 0
+                        || textBeforeUpdate == null 
+                        || textBeforeUpdate.trim().length() == 0) {
+                    keysComposite.refreshBranchIcons(selectedKey);
+                }
+            }
+        }
+	}
+	
     /**
      * Loads country icon based on locale country.
      * @param locale the locale on which to grab the country
