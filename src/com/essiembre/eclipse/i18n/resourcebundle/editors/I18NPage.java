@@ -20,6 +20,7 @@
  */
 package com.essiembre.eclipse.i18n.resourcebundle.editors;
 
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -29,6 +30,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -99,14 +101,33 @@ public class I18NPage extends ScrolledComposite {
         for (int i = 0; i <  bundles.count(); i++) {
             Bundle bundle = bundles.getBundle(i);
 
-            Label label = new Label(rightComposite, SWT.NONE);
-            label.setText(bundle.getTitle() + ":");
-            label.setFont(boldFont);
+            // Label row
+            Composite labelComposite = new Composite(rightComposite, SWT.NONE);
+            GridLayout gridLayout = new GridLayout();
+            gridLayout.numColumns = 2;
+            gridLayout.horizontalSpacing = 0;
+            gridLayout.verticalSpacing = 0;
+            gridLayout.marginWidth = 0;
+            gridLayout.marginHeight = 0;
+            labelComposite.setLayout(gridLayout);
+            labelComposite.setLayoutData(
+                    new GridData(GridData.FILL_HORIZONTAL));
+            Label txtLabel = new Label(labelComposite, SWT.NONE);
+            txtLabel.setText(bundle.getTitle() + ":");
+            txtLabel.setFont(boldFont);
+            Image image = loadCountryIcon(bundle.getLocale());
+            Label imgLabel = new Label(labelComposite, SWT.NONE);
+            GridData gridData = new GridData();
+            gridData.horizontalAlignment = GridData.END;
+            gridData.grabExcessHorizontalSpace = true;
+            imgLabel.setLayoutData(gridData);
+            imgLabel.setImage(image);
             
+            // Textbox row
             Text textBox = new Text(rightComposite, SWT.MULTI | SWT.WRAP | 
                     SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
             textBox.setEnabled(false);
-            GridData gridData = new GridData();
+            gridData = new GridData();
             gridData.verticalAlignment = GridData.FILL;
             gridData.grabExcessVerticalSpace = true;
             gridData.horizontalAlignment = GridData.FILL;
@@ -140,7 +161,7 @@ public class I18NPage extends ScrolledComposite {
             bundle.setTextBox(textBox);
         }
     }
-
+    
     /**
      * Gets the currently active property key.
      * @return active property key 
@@ -157,5 +178,22 @@ public class I18NPage extends ScrolledComposite {
         bundles.refreshData();
         bundles.refreshTextBoxes(keysComposite.getSelectedKey());
         keysComposite.refresh(keysComposite.getSelectedKey());
+    }
+    
+    /**
+     * Loads country icon based on locale country.
+     * @param locale the locale on which to grab the country
+     * @return an image, or <code>null</code> if no match could be made
+     */
+    private Image loadCountryIcon(Locale locale) {
+        String countryCode = null;
+        if (locale != null && locale.getCountry() != null) {
+            countryCode = locale.getCountry().toLowerCase();
+        }
+        if (countryCode != null && countryCode.length() > 0) {
+            return BundleUtils.loadImage(
+                    "icons/countries/" + countryCode + ".gif");
+        }
+        return null;
     }
 }
