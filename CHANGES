@@ -1,8 +1,12 @@
 Here is an overview of changes for each releases:
 
-Release 0.?.? (200?-??-??)
+Release 0.4.0 (200?-??-??)
 --------------------------
-º New: Now displaying country flags, when speficied in properties file locale.
+º New: Added several configuration/formating options, available from the plugin
+  preference page, added to "Window/Preferences".  Mainly, how to group
+  keys and line wrapping options.
+º New: Now displaying country flags, when speficied in properties file name
+  (in the Locale extension).
 
 Release 0.3.1 (2004-12-05)
 --------------------------
