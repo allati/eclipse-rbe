@@ -2,6 +2,13 @@
 - New wizard for creating bundles for all supported locales.
 - Update Manager support.
 - Table-view of resource bundles
+- Import/Export feature
+- Reporting of duplicate values (with an ignore list?)
+- Display internationalized tooltips for most components
+- Have preference page at project level (keeping defaults in Window/Preferences)
+- Improve key navigation
+- Support for comments
+- More... (see SourceForge feature requests)
 
 To fix/enhance:
 - Bundle name should not stop after first underscore if that's not a valid one.
