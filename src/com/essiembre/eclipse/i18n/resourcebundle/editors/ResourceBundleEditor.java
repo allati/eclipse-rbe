@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -42,6 +43,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+
+import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
 
 /**
  * Multi-page editor for editing resource bundles.
@@ -61,6 +64,14 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
     private String bundlePath;
     /** File name, excluding language, country and extension */
     private String bundleName;
+
+    /** Bundle image. */
+    private static Image bundleImage = 
+            BundleUtils.loadImage("icons/resourcebundle.gif");
+    /** Property image. */
+    private static Image propertyImage = 
+            BundleUtils.loadImage("icons/propertiesfile.gif");
+
     
     /**
      * Creates a multi-page editor example.
@@ -77,7 +88,9 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
         i18nPage = new I18NPage(
                 getContainer(), SWT.H_SCROLL | SWT.V_SCROLL, bundles);
         int index = addPage(i18nPage);
-        setPageText(index, "Properties");
+        setPageText(index, ResourceBundlePlugin.getResourceString(
+                "editor.properties"));
+        setPageImage(index, bundleImage);
         
         // Create text editor pages for each locales
         try {
@@ -86,6 +99,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
                 TextEditor editor = bundle.getEditor();
                 index = addPage(editor, editor.getEditorInput());
                 setPageText(index, bundle.getTitle());
+                setPageImage(index, propertyImage);
             }
         } catch (PartInitException e) {
             ErrorDialog.openError(
@@ -130,9 +144,10 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
         if (editorInput instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput) editorInput).getFile();
             initBundlePathAndName(file);
-            setPartName(bundleName);
-            setContentDescription(
-                    "Editor for '" + bundleName + "' resource bundle."); 
+            setPartName(bundleName + "[...]." + file.getFileExtension());
+            setContentDescription(ResourceBundlePlugin.getResourceString(
+                    "editor.content.desc") + bundleName + "."); 
+            setTitleImage(bundleImage);
             closeIfAreadyOpen(site);
             // Create editors
             bundles = new Bundles();
@@ -163,7 +178,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
                     Locale locale = null;
                     switch (localeSections.size()) {
                     case 0:
-                        title = "Default";
+                        title = ResourceBundlePlugin.getResourceString(
+                                "editor.default");
                         break;
                     case 1:
                         locale = new Locale((String) localeSections.get(0));
