@@ -125,7 +125,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
      * Saves the multi-page editor's document.
      */
     public void doSave(IProgressMonitor monitor) {
-        //getEditor(0).doSave(monitor);
+        i18nPage.refreshEditorOnChanges();
         for (int i = 0; i <  bundles.count(); i++) {
             Bundle bundle = bundles.getBundle(i);
             TextEditor editor = bundle.getEditor();
