@@ -159,6 +159,7 @@ public class I18NPage extends ScrolledComposite {
                 public void focusGained(FocusEvent event) {
                     Text textBox = (Text) event.widget;
                     textBeforeUpdate = textBox.getText();
+                    textBox.setData("selectedKey", keyTree.getSelectedKey());
                 }
                 public void focusLost(FocusEvent event) {
                     Text textBox = (Text) event.widget;
@@ -166,9 +167,15 @@ public class I18NPage extends ScrolledComposite {
                     if (!text.equals(textBeforeUpdate)) {
                         Bundle bundle = bundles.getBundle(textBox);                        
                         Map data = bundle.getData();
-                        data.put(keyTree.getSelectedKey(),
-                                 textBox.getText());
+                        String selectedKey = 
+                                (String) textBox.getData("selectedKey");
+                        data.put(selectedKey, textBox.getText());
                         bundle.refreshEditor();
+                        if (text == null || text.trim().length() == 0
+                                || textBeforeUpdate == null 
+                                || textBeforeUpdate.trim().length() == 0) {
+                            keyTree.refreshBranchIcons(selectedKey);
+                        }
                     }
                 }
             });
