@@ -108,8 +108,12 @@ public final class BundleUtils {
             String value = (String) data.get(key);
             
             // handle new lines in value (replace with spaces)
-            value = value.replaceAll("\r", "");
-            value = value.replaceAll("\n", " ");
+			if (value != null){
+	            value = value.replaceAll("\r", "");
+	            value = value.replaceAll("\n", " ");
+			} else {
+				value = "";
+		    }
             
             // handle group equal align and line break options
             if (RBPreferences.getGroupKeys()) {
