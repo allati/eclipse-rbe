@@ -1,6 +1,7 @@
 - View for showing resource bundles only.
 - New wizard for creating bundles for all supported locales.
 - Update Manager support.
+- Table-view of resource bundles
 
 To fix/enhance:
 - Bundle name should not stop after first underscore if that's not a valid one.
