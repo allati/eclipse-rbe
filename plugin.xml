@@ -3,7 +3,7 @@
 <plugin
    id="com.essiembre.eclipse.i18n.resourcebundle"
    name="%plugin.name"
-   version="0.5.2"
+   version="0.5.3"
    provider-name="%plugin.provider"
    class="com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin">
 
