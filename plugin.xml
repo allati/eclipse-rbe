@@ -69,5 +69,13 @@
          </view>
       </perspectiveExtension>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+<!--
+      <scope name="foo" class="com.example.FooPrefs" />
+-->
+      <initializer class="com.essiembre.eclipse.i18n.resourcebundle.preferences.ResourceBundlePreferenceInitializer"/>
+   </extension>
+   
 
 </plugin>
