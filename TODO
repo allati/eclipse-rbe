@@ -1,5 +1,6 @@
+- Translate New Bundle Wizard.
+- Support for NL I18N system.
 - View for showing resource bundles only.
-- New wizard for creating bundles for all supported locales.
 - Update Manager support.
 - Table-view of resource bundles
 - Import/Export feature
