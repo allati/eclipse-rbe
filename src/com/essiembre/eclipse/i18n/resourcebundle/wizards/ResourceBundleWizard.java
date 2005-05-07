@@ -35,6 +35,9 @@ import java.io.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.IDE;
 
+import com.essiembre.eclipse.i18n.resourcebundle.editors.BundleUtils;
+import com.essiembre.eclipse.i18n.resourcebundle.preferences.RBPreferences;
+
 /**
  * This is a sample new wizard. Its role is to create a new file 
  * resource in the provided container. If the container resource
@@ -74,11 +77,16 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
 	 */
 	public boolean performFinish() {
 		final String containerName = page.getContainerName();
-		final String fileName = page.getFileName();
+		final String baseName = page.getFileName();
+        final String[] locales = page.getLocaleStrings();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(containerName, fileName, monitor);
+                    for (int i = 0; i <  locales.length; i++) {
+                        String fileName = 
+                                baseName + "_" + locales[i] + ".properties";
+                        doFinish(containerName, fileName, monitor);
+                    }
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -149,7 +157,10 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
 	 */
 
 	private InputStream openContentStream() {
-		String contents = "# This resource bundle is empty.";
+        String contents = "";
+        if (RBPreferences.getShowGenerator()) {
+            contents = BundleUtils.GENERATED_BY;
+        }
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 
