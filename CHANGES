@@ -2,7 +2,8 @@ Here is an overview of changes for each releases:
 
 Release 0.?.? (2005-??-??)
 --------------------------
-º New: Interface text now supports Spanish.
+º New: Spanish plugin translation added.
+º New: Wizard for creating new resource bundle.
 
 Release 0.5.4 (2005-03-08)
 --------------------------
