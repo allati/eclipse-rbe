@@ -159,7 +159,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
 	private InputStream openContentStream() {
         String contents = "";
         if (RBPreferences.getShowGenerator()) {
-            contents = BundleUtils.GENERATED_BY;
+            contents = "# " + BundleUtils.GENERATED_BY;
         }
 		return new ByteArrayInputStream(contents.getBytes());
 	}
