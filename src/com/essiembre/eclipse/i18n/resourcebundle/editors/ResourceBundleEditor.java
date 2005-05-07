@@ -166,8 +166,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
             for (int i = 0; i < resources.length; i++) {
                 IResource resource = resources[i];
                 String regex = "^(" + bundleName + ")"
-                        + "((_[a-z]{2})|(_[a-z]{2}_[A-Z]{2})"
-                        + "|(_[a-z]{2}_[A-Z]{2}_\\w*))?(\\."
+                        + "((_[a-z]{2,3})|(_[a-z]{2,3}_[A-Z]{2})"
+                        + "|(_[a-z]{2,3}_[A-Z]{2}_\\w*))?(\\."
                         + file.getFileExtension() + ")$";
                 String resourceName = resource.getName();
                 if (resource instanceof IFile && resourceName.matches(regex)) {
