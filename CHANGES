@@ -4,6 +4,7 @@ Release 0.?.? (2005-??-??)
 --------------------------
 º New: Spanish plugin translation added.
 º New: Wizard for creating new resource bundle.
+º Now supports three-letter ISO languages in properties file locales.
 
 Release 0.5.4 (2005-03-08)
 --------------------------
