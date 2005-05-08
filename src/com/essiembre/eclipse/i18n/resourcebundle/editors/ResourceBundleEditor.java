@@ -258,15 +258,12 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
      */
     private void initBundlePathAndName(IFile file) {
         // Bundle name
-        StringBuffer name = new StringBuffer(file.getName());
-        if (name.indexOf("_") != -1) {
-            name.delete(name.indexOf("_"), name.length());
-        } else {
-            name.delete(
-                    name.indexOf(file.getFileExtension()) - 1,
-                    name.length());
-        }
-        this.bundleName = name.toString();
+        String name = file.getName();
+        String regex = "^(\\w*?)"
+                + "((_[a-z]{2,3})|(_[a-z]{2,3}_[A-Z]{2})"
+                + "|(_[a-z]{2,3}_[A-Z]{2}_\\w*))?(\\."
+                + file.getFileExtension() + ")$";
+        this.bundleName = name.replaceFirst(regex, "$1");
 
         // Bundle path
         this.bundlePath = file.getFullPath().removeLastSegments(1).append(
