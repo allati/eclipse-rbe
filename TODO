@@ -1,5 +1,5 @@
 - Translate New Bundle Wizard.
-- Support for NL I18N system.
+- Make NL bundle loading optional (in preferences; true by default)
 - View for showing resource bundles only.
 - Update Manager support.
 - Table-view of resource bundles
