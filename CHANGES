@@ -5,6 +5,8 @@ Release 0.?.? (2005-??-??)
 º New: Spanish plugin translation added.
 º New: Wizard for creating new resource bundle.
 º Now supports three-letter ISO languages in properties file locales.
+º Fix (bug #1195518): Files with the same start names no longer cause the wrong
+  set of files to be open (e.g. "file.properties" and "file_ohter.properties").
 
 Release 0.5.4 (2005-03-08)
 --------------------------
