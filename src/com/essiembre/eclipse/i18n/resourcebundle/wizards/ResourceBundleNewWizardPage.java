@@ -20,6 +20,9 @@
  */
 package com.essiembre.eclipse.i18n.resourcebundle.wizards;
 
+import java.text.Collator;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IContainer;
@@ -48,6 +51,8 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
+import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
+
 /**
  * The "New" wizard page allows setting the container for
  * the new file as well as the file name. The page
@@ -56,6 +61,10 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
  */
 
 public class ResourceBundleNewWizardPage extends WizardPage {
+
+    private static final String DEFAULT_LOCALE = 
+           "[" + ResourceBundlePlugin.getResourceString("editor.default") + "]";
+    
     private Text containerText;
     private Text fileText;
     private ISelection selection;
@@ -96,8 +105,14 @@ public class ResourceBundleNewWizardPage extends WizardPage {
      */
     public void createControl(Composite parent) {
         // Set available locales
-        // TODO sort values (implement a comparator)
         availableLocales = Locale.getAvailableLocales();
+        Arrays.sort(availableLocales, new Comparator() {
+            public int compare(Object locale1, Object locale2) {
+                return Collator.getInstance().compare(
+                        ((Locale) locale1).getDisplayName(),
+                        ((Locale) locale2).getDisplayName());
+            }
+        });
         availableLanguages = Locale.getISOLanguages();
         availableCountries = Locale.getISOCountries();
         
@@ -192,7 +207,6 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         gd = new GridData(GridData.FILL_HORIZONTAL);
         addButton.setLayoutData(gd);
         addButton.setText("Add   -->");
-        addButton.setEnabled(false);
         addButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
                 bundleLocalesList.add(getComboLocaleString());
@@ -239,15 +253,21 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 3;
         availCombo.setLayoutData(gd);
+        availCombo.add(DEFAULT_LOCALE);
         for (int i = 0; i < availableLocales.length; i++) {
             availCombo.add(availableLocales[i].getDisplayName());
         }
         availCombo.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                Locale locale = 
-                        availableLocales[availCombo.getSelectionIndex()];
-                availLangCombo.setText(locale.getLanguage());
-                availCountryCombo.setText(locale.getCountry());
+                int index = availCombo.getSelectionIndex();
+                if (index == 0) { // default
+                    availLangCombo.setText("");
+                    availCountryCombo.setText("");
+                } else {
+                    Locale locale = availableLocales[index -1];
+                    availLangCombo.setText(locale.getLanguage());
+                    availCountryCombo.setText(locale.getCountry());
+                }
                 availVariantText.setText("");
             }
         });
@@ -336,10 +356,10 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         for (int i = 0; i < availableLocales.length; i++) {
             Locale availLocale = availableLocales[i];
             if (availLocale.equals(locale)) {
-                index = i;
+                index = i + 1;
             }
         }
-        if (index >= 0) {
+        if (index >= 1) {
             availCombo.select(index);
         } else {
             availCombo.clearSelection();
@@ -489,12 +509,19 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         if (availVariantText.getText().length() > 0) {
             localeText += "_" + availVariantText.getText();
         }
-        return localeText;
+        if (localeText.length() != 0) {
+            return localeText;
+        } else {
+            return DEFAULT_LOCALE;
+        }
     }
     
     private void setAddButtonState() {
+        boolean allEmpty = availLangCombo.getText().length() == 0
+                && availCountryCombo.getText().length() == 0
+                && availVariantText.getText().length() == 0;
         addButton.setEnabled(
-                availLangCombo.getText().length() > 0
+                (allEmpty || availLangCombo.getText().length() > 0)
              && bundleLocalesList.indexOf(getComboLocaleString()) == -1);
     }
     
