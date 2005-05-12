@@ -20,9 +20,6 @@
  */
 package com.essiembre.eclipse.i18n.resourcebundle.wizards;
 
-import java.text.Collator;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IContainer;
@@ -34,8 +31,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -43,7 +38,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -52,6 +46,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
+import com.essiembre.eclipse.i18n.resourcebundle.composites.LocaleSelectorComposite;
 
 /**
  * The "New" wizard page allows setting the container for
@@ -62,30 +57,19 @@ import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
 
 public class ResourceBundleNewWizardPage extends WizardPage {
 
-    private static final String DEFAULT_LOCALE = 
+    static final String DEFAULT_LOCALE = 
            "[" + ResourceBundlePlugin.getResourceString("editor.default") + "]";
     
     private Text containerText;
     private Text fileText;
     private ISelection selection;
     
-    
-    private Locale[] availableLocales;
-    private String[] availableLanguages;
-    private String[] availableCountries;
-    
-    
-    private Combo availCombo;
-    private Combo availLangCombo;
-    private Combo availCountryCombo;
-    private Text availVariantText;
-    
     private Button addButton;
     private Button removeButton;
     
     private List bundleLocalesList;
     
-    
+    private LocaleSelectorComposite localeSelector;
 
     /**
      * Constructor for SampleNewWizardPage.
@@ -104,19 +88,6 @@ public class ResourceBundleNewWizardPage extends WizardPage {
      * @see IDialogPage#createControl(Composite)
      */
     public void createControl(Composite parent) {
-        // Set available locales
-        availableLocales = Locale.getAvailableLocales();
-        Arrays.sort(availableLocales, new Comparator() {
-            public int compare(Object locale1, Object locale2) {
-                return Collator.getInstance().compare(
-                        ((Locale) locale1).getDisplayName(),
-                        ((Locale) locale2).getDisplayName());
-            }
-        });
-        availableLanguages = Locale.getISOLanguages();
-        availableCountries = Locale.getISOCountries();
-        
-        // Move on...
         Composite container = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout();
         container.setLayout(layout);
@@ -209,7 +180,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         addButton.setText("Add   -->");
         addButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
-                bundleLocalesList.add(getComboLocaleString());
+                bundleLocalesList.add(getSelectedLocaleAsString());
                 setAddButtonState();
             }
         });
@@ -236,134 +207,13 @@ public class ResourceBundleNewWizardPage extends WizardPage {
      */
     private void createBottomAvailableLocalesComposite(Composite parent) {
 
-        // Available locales Group
-        Group availGroup = new Group(parent, SWT.NULL);
-        GridLayout layout = new GridLayout();
-        layout = new GridLayout();
-        layout.numColumns = 3;
-        availGroup.setLayout(layout);
-        availGroup.setText("Choose or type a Locale to add");
-    
-        availCombo = new Combo(availGroup, SWT.READ_ONLY);
-        availLangCombo = new Combo(availGroup, SWT.NULL);
-        availCountryCombo = new Combo(availGroup, SWT.NULL);
-        availVariantText = new Text(availGroup, SWT.BORDER);
-
-        // Text representations of locales
-        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 3;
-        availCombo.setLayoutData(gd);
-        availCombo.add(DEFAULT_LOCALE);
-        for (int i = 0; i < availableLocales.length; i++) {
-            availCombo.add(availableLocales[i].getDisplayName());
-        }
-        availCombo.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                int index = availCombo.getSelectionIndex();
-                if (index == 0) { // default
-                    availLangCombo.setText("");
-                    availCountryCombo.setText("");
-                } else {
-                    Locale locale = availableLocales[index -1];
-                    availLangCombo.setText(locale.getLanguage());
-                    availCountryCombo.setText(locale.getCountry());
-                }
-                availVariantText.setText("");
-            }
-        });
-
-        // Languages
-        gd = new GridData();
-        availLangCombo.setLayoutData(gd);
-        for (int i = 0; i < availableLanguages.length; i++) {
-            availLangCombo.add(availableLanguages[i]);
-        }
-        availLangCombo.addFocusListener(new FocusAdapter() {
-            public void focusLost(FocusEvent e) {
-                availLangCombo.setText(availLangCombo.getText().toLowerCase());
-                setLocaleOnAvailCombo();
-            }
-        });
-        availLangCombo.addModifyListener(new ModifyListener(){
+        localeSelector = 
+                new LocaleSelectorComposite(parent);
+        localeSelector.addModifyListener(new ModifyListener(){
             public void modifyText(ModifyEvent e) {
                 setAddButtonState();
             }
         });
-
-        // Countries
-        gd = new GridData();
-        availCountryCombo.setLayoutData(gd);
-        for (int i = 0; i < availableCountries.length; i++) {
-            availCountryCombo.add(availableCountries[i]);
-        }
-        availCountryCombo.addFocusListener(new FocusAdapter() {
-            public void focusLost(FocusEvent e) {
-                availCountryCombo.setText(
-                        availCountryCombo.getText().toUpperCase());
-                setLocaleOnAvailCombo();
-            }
-        });
-        availCountryCombo.addModifyListener(new ModifyListener(){
-            public void modifyText(ModifyEvent e) {
-                setAddButtonState();
-            }
-        });
-
-        // Variant
-        gd = new GridData();
-        availVariantText.setLayoutData(gd);
-        availVariantText.addFocusListener(new FocusAdapter() {
-            public void focusLost(FocusEvent e) {
-                setLocaleOnAvailCombo();
-            }
-        });
-        availVariantText.addModifyListener(new ModifyListener(){
-            public void modifyText(ModifyEvent e) {
-                setAddButtonState();
-            }
-        });
-
-        
-        // Labels
-        gd = new GridData();
-        gd.horizontalAlignment = GridData.CENTER;
-        Label lblLang = new Label(availGroup, SWT.NULL);
-        lblLang.setText("Lang.");
-        lblLang.setLayoutData(gd);
-
-        gd = new GridData();
-        gd.horizontalAlignment = GridData.CENTER;
-        Label lblCountry = new Label(availGroup, SWT.NULL);
-        lblCountry.setText("Country");
-        lblCountry.setLayoutData(gd);
-
-        gd = new GridData();
-        gd.horizontalAlignment = GridData.CENTER;
-        Label lblVariant = new Label(availGroup, SWT.NULL);
-        lblVariant.setText("Variant");
-        lblVariant.setLayoutData(gd);
-    }
-    
-    /**
-     * Sets an available locale on the available locales combo box.
-     */
-    private void setLocaleOnAvailCombo() {
-        Locale locale = new Locale(
-                availLangCombo.getText(),
-                availCountryCombo.getText(),
-                availVariantText.getText());
-        int index = -1;
-        for (int i = 0; i < availableLocales.length; i++) {
-            Locale availLocale = availableLocales[i];
-            if (availLocale.equals(locale)) {
-                index = i + 1;
-            }
-        }
-        if (index >= 1) {
-            availCombo.select(index);
-        } else {
-            availCombo.clearSelection();
-        }
     }
     
     /**
@@ -498,31 +348,11 @@ public class ResourceBundleNewWizardPage extends WizardPage {
     }
     
     /**
-     * Gets string representation of locale based on combo boxes.
-     * @return string representation of locale
+     * Sets the "add" button state. 
      */
-    private String getComboLocaleString() {
-        String localeText = availLangCombo.getText();
-        if (availCountryCombo.getText().length() > 0) {
-            localeText += "_" + availCountryCombo.getText();
-        }
-        if (availVariantText.getText().length() > 0) {
-            localeText += "_" + availVariantText.getText();
-        }
-        if (localeText.length() != 0) {
-            return localeText;
-        } else {
-            return DEFAULT_LOCALE;
-        }
-    }
-    
     private void setAddButtonState() {
-        boolean allEmpty = availLangCombo.getText().length() == 0
-                && availCountryCombo.getText().length() == 0
-                && availVariantText.getText().length() == 0;
-        addButton.setEnabled(
-                (allEmpty || availLangCombo.getText().length() > 0)
-             && bundleLocalesList.indexOf(getComboLocaleString()) == -1);
+        addButton.setEnabled(bundleLocalesList.indexOf(
+                getSelectedLocaleAsString()) == -1);
     }
     
     /**
@@ -531,5 +361,18 @@ public class ResourceBundleNewWizardPage extends WizardPage {
      */
     String[] getLocaleStrings() {
         return bundleLocalesList.getItems();
+    }
+    
+    /**
+     * Gets a string representation of selected locale.
+     * @return string representation of selected locale
+     */
+    private String getSelectedLocaleAsString() {
+        Locale selectedLocale = localeSelector.getSelectedLocale();
+        if (selectedLocale != null) {
+            return selectedLocale.toString();
+        } else {
+            return DEFAULT_LOCALE;
+        }
     }
 }
