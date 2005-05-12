@@ -62,6 +62,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
 
     /** Internationalization data-capture page. */
     private I18NPage i18nPage;
+    /** New locale page. */
+    private NewLocalePage newLocalePage;
     
     /** File path, up to file name, excluding language, country and extension */
     private String bundlePath;
@@ -109,6 +111,14 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
                 setPageText(index, bundle.getTitle());
                 setPageImage(index, propertyImage);
             }
+            
+            // Add "new locale" page
+            newLocalePage = new NewLocalePage(
+                    getContainer(), bundlePath, bundleName);
+            index = addPage(newLocalePage);
+            setPageText(index, "New...");
+            setPageImage(index, BundleUtils.loadImage(
+                    "icons/newpropertiesfile.gif"));
         } catch (PartInitException e) {
             ErrorDialog.openError(
                     getSite().getShell(), "Error creating nested text editor",
@@ -375,7 +385,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
     private void initBundlePathAndName(IFile file) {
         // Bundle name
         String name = file.getName();
-        String regex = "^(\\w*?)"
+        String regex = "^(.*?)"
                 + "((_[a-z]{2,3})|(_[a-z]{2,3}_[A-Z]{2})"
                 + "|(_[a-z]{2,3}_[A-Z]{2}_\\w*))?(\\."
                 + file.getFileExtension() + ")$";
