@@ -30,8 +30,6 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -44,6 +42,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
+import com.essiembre.eclipse.i18n.resourcebundle.utils.UIUtils;
 
 /**
  * Plugin preference page.
@@ -400,13 +399,7 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
     
     private void setWidthInChars(Control field, int widthInChars) {
         GridData gd = new GridData();
-        GC gc = new GC(field);
-        try {
-            Point extent = gc.textExtent("X");//$NON-NLS-1$
-            gd.widthHint = widthInChars * extent.x;
-        } finally {
-            gc.dispose();
-        }
+        gd.widthHint = UIUtils.getWidthInChars(field, widthInChars);
         field.setLayoutData(gd);
     }
     
