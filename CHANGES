@@ -3,6 +3,7 @@ Here is an overview of changes for each releases:
 Release 0.?.? (2005-??-??)
 --------------------------
 º New: Wizard for creating new resource bundle.
+º New: Can now add a locale (properties file) from an open RB editor.
 º New: Support for Eclipse "nl" structure for I18N of plugin development.
 º New: Spanish plugin translation added.
 º Now supports three-letter ISO languages in properties file locales.
