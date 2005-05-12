@@ -31,7 +31,6 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -39,6 +38,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.editors.text.TextEditor;
+
+import com.essiembre.eclipse.i18n.resourcebundle.utils.UIUtils;
 
 /**
  * Internationalization page where one can edit all resource bundle entries 
@@ -77,12 +78,7 @@ public class I18NPage extends ScrolledComposite {
         super(parent, style);
         this.bundles = bundles; 
 
-        // Compute fonts
-        FontData[] fontData = getFont().getFontData();
-        for (int i = 0; i < fontData.length; i++) {
-            fontData[i].setStyle(SWT.BOLD);
-        }
-        boldFont = new Font(getDisplay(), fontData);
+        boldFont = UIUtils.createFont(this, SWT.BOLD, 0);
 
         // Create screen        
         SashForm sashForm = new SashForm(this, SWT.NONE);
