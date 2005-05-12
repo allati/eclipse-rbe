@@ -120,7 +120,7 @@ public class NewLocalePage extends Composite {
                 try {
                     String contents = "";
                     if (RBPreferences.getShowGenerator()) {
-                        contents = "# " + BundleUtils.GENERATED_BY;
+                        contents = "#" + BundleUtils.GENERATED_BY;
                     }
                     InputStream stream = 
                         new ByteArrayInputStream(contents.getBytes());
