@@ -48,6 +48,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
+import com.essiembre.eclipse.i18n.resourcebundle.preferences.RBPreferences;
 
 /**
  * Multi-page editor for editing resource bundles.
@@ -118,7 +119,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
             newLocalePage = new NewLocalePage(
                     getContainer(), bundlePath, bundleName, nlDirPath);
             index = addPage(newLocalePage);
-            setPageText(index, "New...");
+            setPageText(index, ResourceBundlePlugin.getResourceString(
+                    "editor.new.tab"));
             setPageImage(index, BundleUtils.loadImage(
                     "icons/newpropertiesfile.gif"));
         } catch (PartInitException e) {
@@ -171,13 +173,17 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
             closeIfAreadyOpen(site);
             // Create editors
             bundles = new Bundles();
-            try {
-                loadNLBundles(site, file);
-            } catch (CoreException e) {
-                e.printStackTrace();
-                throw new PartInitException("Can't initialize editor.", e);
-            }
-            if (bundles.count() == 0) {
+            if (RBPreferences.getSupportNL()) {
+                try {
+                    loadNLBundles(site, file);
+                } catch (CoreException e) {
+                    e.printStackTrace();
+                    throw new PartInitException("Can't initialize editor.", e);
+                }
+                if (bundles.count() == 0) {
+                    loadStandardBundles(site, file);
+                }
+            } else {
                 loadStandardBundles(site, file);
             }
             bundles.refreshData();

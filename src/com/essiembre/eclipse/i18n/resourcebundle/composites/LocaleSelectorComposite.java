@@ -89,7 +89,8 @@ public class LocaleSelectorComposite extends Composite {
         Group selectionGroup = new Group(this, SWT.NULL);
         layout = new GridLayout(3, false);
         selectionGroup.setLayout(layout);
-        selectionGroup.setText("Choose or type a Locale");
+        selectionGroup.setText(ResourceBundlePlugin.getResourceString(
+                "selector.title"));
         
         // Set locales drop-down
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -156,40 +157,24 @@ public class LocaleSelectorComposite extends Composite {
         gd = new GridData();
         gd.horizontalAlignment = GridData.CENTER;
         Label lblLang = new Label(selectionGroup, SWT.NULL);
-        lblLang.setText("Lang.");
+        lblLang.setText(ResourceBundlePlugin.getResourceString(
+                "selector.language"));
         lblLang.setLayoutData(gd);
 
         gd = new GridData();
         gd.horizontalAlignment = GridData.CENTER;
         Label lblCountry = new Label(selectionGroup, SWT.NULL);
-        lblCountry.setText("Country");
+        lblCountry.setText(ResourceBundlePlugin.getResourceString(
+                "selector.country"));
         lblCountry.setLayoutData(gd);
 
         gd = new GridData();
         gd.horizontalAlignment = GridData.CENTER;
         Label lblVariant = new Label(selectionGroup, SWT.NULL);
-        lblVariant.setText("Variant");
+        lblVariant.setText(ResourceBundlePlugin.getResourceString(
+                "selector.variant"));
         lblVariant.setLayoutData(gd);
     }
-
-//    /**
-//     * Gets string representation of locale based on combo boxes.
-//     * @return string representation of locale
-//     */
-//    public String getLocaleString() {
-//        String localeText = langText.getText();
-//        if (countryText.getText().length() > 0) {
-//            localeText += "_" + countryText.getText();
-//        }
-//        if (variantText.getText().length() > 0) {
-//            localeText += "_" + variantText.getText();
-//        }
-//        if (localeText.length() != 0) {
-//            return localeText;
-//        } else {
-//            return DEFAULT_LOCALE;
-//        }
-//    }
 
     /**
      * Gets the selected locale.  Default locale is represented by a 

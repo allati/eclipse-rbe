@@ -46,6 +46,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
+import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
 import com.essiembre.eclipse.i18n.resourcebundle.composites.LocaleSelectorComposite;
 import com.essiembre.eclipse.i18n.resourcebundle.preferences.RBPreferences;
 import com.essiembre.eclipse.i18n.resourcebundle.utils.UIUtils;
@@ -85,7 +86,8 @@ public class NewLocalePage extends Composite {
         
         // Title label
         Label label = new Label(block, SWT.NONE);
-        label.setText("New properties file:");
+        label.setText(ResourceBundlePlugin.getResourceString(
+                "editor.new.title"));
         label.setFont(UIUtils.createFont(this, SWT.BOLD, 5));
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.CENTER;
@@ -100,7 +102,8 @@ public class NewLocalePage extends Composite {
         
         // Create button
         Button createButton = new Button(block, SWT.NULL);
-        createButton.setText("Create");
+        createButton.setText(ResourceBundlePlugin.getResourceString(
+                "editor.new.create"));
         createButton.setFont(UIUtils.createFont(this, SWT.BOLD, 1));
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.CENTER;
