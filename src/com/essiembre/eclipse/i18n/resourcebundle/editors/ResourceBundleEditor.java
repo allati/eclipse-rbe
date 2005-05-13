@@ -82,6 +82,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
             "org.eclipse.jdt.internal.ui.propertiesfileeditor."
           + "PropertiesFileEditor";
     
+    /** "nl" directory in case the properties are under an "nl" structure. */
+    private String nlDirPath;
     
     /**
      * Creates a multi-page editor example.
@@ -114,7 +116,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
             
             // Add "new locale" page
             newLocalePage = new NewLocalePage(
-                    getContainer(), bundlePath, bundleName);
+                    getContainer(), bundlePath, bundleName, nlDirPath);
             index = addPage(newLocalePage);
             setPageText(index, "New...");
             setPageImage(index, BundleUtils.loadImage(
@@ -261,6 +263,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
                 }
             }
         }
+        nlDirPath = null;
     }
     
     /**
@@ -286,6 +289,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
         
         // Load properties files in "nl" structure.
         if (nlDir != null && nlDir instanceof Folder) {
+            nlDirPath = nlDir.getFullPath().toString();
+            
             // Load root file, if exists.
             IResource resource = nlDir.getParent().findMember(filename);
             loadBundle(site, resource, null, null, null);
@@ -403,11 +408,13 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
             IEditorReference[] editors = page.getEditorReferences();
             for (int j = 0; j < editors.length; j++) {
                 IEditorPart editor = editors[j].getEditor(false);
-                if (editor instanceof ResourceBundleEditor
-                        && ((ResourceBundleEditor) editor)
-                                .getBundlePath().equals(bundlePath)) {
-                    page.closeEditor(editor, true);
-                    //page.activate(editor);
+                if (editor instanceof ResourceBundleEditor) {
+                    ResourceBundleEditor rbe = (ResourceBundleEditor) editor;
+                    if (rbe.getBundlePath().equals(bundlePath)
+                            || rbe.getNlDirPath() != null
+                            && bundlePath.startsWith(rbe.getNlDirPath())) {
+                        page.closeEditor(editor, true);
+                    }
                 }
             }
         }
@@ -426,5 +433,21 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
      */
     public String getBundlePath() {
         return bundlePath;
+    }
+    
+    
+    /**
+     * Gets the "nlDirPath" attribute.
+     * @return Returns the nlDirPath.
+     */
+    public String getNlDirPath() {
+        return nlDirPath;
+    }
+    /**
+     * Sets the "nlDirPath" attribute.
+     * @param nlDirPath The nlDirPath to set.
+     */
+    public void setNlDirPath(String nlDirPath) {
+        this.nlDirPath = nlDirPath;
     }
 }
