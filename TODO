@@ -1,3 +1,5 @@
+- Create a BundleTree to represent a parsed properties file, with objects
+  for each keys (having value, comment, hasChildWithEmptyKey(), etc)
 - Translate New Bundle Wizard.
 - Make NL bundle loading optional (in preferences; true by default)
 - View for showing resource bundles only.
