@@ -27,6 +27,7 @@ import java.util.Locale;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -59,12 +60,15 @@ public class NewLocalePage extends Composite {
     /**
      * Constructor.
      * @param parent parent component.
-     * @param style  style to apply to this component
+     * @param basePathAddFileName base path and file name.
+     * @param baseFileName base file name.
+     * @param nlDir path to "nl" directory. <code>null</code> if regular bundle. 
      */
     public NewLocalePage(
             final Composite parent, 
             final String basePathAddFileName,
-            final String baseFileName) {
+            final String baseFileName,
+            final String nlDir) {
         super(parent, SWT.NONE);
         
         setLayout(new GridLayout());
@@ -105,14 +109,70 @@ public class NewLocalePage extends Composite {
             public void widgetSelected(SelectionEvent event) {
                 // Create the new file
                 Locale locale = localeSelector.getSelectedLocale();
-                String localeSuffix = "";
-                if (locale != null) {
-                    localeSuffix = "_" + locale.toString();
+                String folderPath = null;
+                String fileName = null;
+
+                if (nlDir != null) {
+                    folderPath = "";
+                    IWorkspaceRoot root = 
+                            ResourcesPlugin.getWorkspace().getRoot();
+                    IResource resource = root.findMember(nlDir);
+                    IContainer container = (IContainer) resource;
+
+                    if (locale != null) {
+                        if (!locale.getLanguage().equals("")) {
+                            folderPath += locale.getLanguage() + "/"; 
+                            IFolder folder = container.getFolder(
+                                    new Path(folderPath));
+                            if (!folder.exists()) {
+                                try {
+                                    folder.create(true, true, null);
+                                } catch (CoreException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        if (!locale.getCountry().equals("")) {
+                            folderPath += locale.getCountry() + "/"; 
+                            IFolder folder = container.getFolder(
+                                    new Path(folderPath));
+                            if (!folder.exists()) {
+                                try {
+                                    folder.create(true, true, null);
+                                } catch (CoreException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        if (!locale.getVariant().equals("")) {
+                            folderPath += locale.getVariant() + "/"; 
+                            IFolder folder = container.getFolder(
+                                    new Path(folderPath));
+                            if (!folder.exists()) {
+                                try {
+                                    folder.create(true, true, null);
+                                } catch (CoreException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        folderPath = nlDir + "/" + folderPath;
+                    } else {
+                        folderPath = nlDir.substring(
+                                0, nlDir.length() - "/nl".length())
+                              + "/" + folderPath;
+                    }
+                    fileName = baseFileName + ".properties";
+                } else {
+                    String localeSuffix = "";
+                    if (locale != null) {
+                        localeSuffix = "_" + locale.toString();
+                    }
+                    folderPath = basePathAddFileName.substring(0, 
+                            basePathAddFileName.length() - baseFileName.length());
+                    fileName = new Path(basePathAddFileName).lastSegment() 
+                            + localeSuffix + ".properties";
                 }
-                String folderPath = basePathAddFileName.substring(0, 
-                        basePathAddFileName.length() - baseFileName.length());
-                String fileName = new Path(basePathAddFileName).lastSegment() 
-                        + localeSuffix + ".properties";
                 IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
                 IResource resource = root.findMember(folderPath);
                 IContainer container = (IContainer) resource;
