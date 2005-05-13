@@ -63,6 +63,7 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
     private Button convertEncodedToUnicode;
 
     private Button showGeneratedBy;
+    private Button supportNL;
     
     private Button groupKeys;
     private Text groupLevelDeep;
@@ -126,6 +127,14 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
         new Label(field, SWT.NONE).setText(
                 ResourceBundlePlugin.getResourceString(
                         "prefs.showGeneratedBy"));
+
+        // Support "NL" localization structure
+        field = createFieldComposite(composite);
+        supportNL = new Button(field, SWT.CHECK);
+        supportNL.setSelection(prefs.getBoolean(RBPreferences.SUPPORT_NL));
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString(
+                        "prefs.supportNL"));
         
         // Format group
         Group formatGroup = new Group(composite, SWT.NONE);
@@ -273,6 +282,8 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 convertUnicodeToEncoded.getSelection());
         prefs.setValue(RBPreferences.SHOW_GENERATOR,
                 showGeneratedBy.getSelection());
+        prefs.setValue(RBPreferences.SUPPORT_NL,
+                supportNL.getSelection());
         prefs.setValue(RBPreferences.ALIGN_EQUAL_SIGNS,
                 alignEqualSigns.getSelection());
         prefs.setValue(RBPreferences.GROUP_KEYS,
@@ -309,6 +320,8 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 RBPreferences.CONVERT_UNICODE_TO_ENCODED));
         showGeneratedBy.setSelection(prefs.getDefaultBoolean(
                 RBPreferences.SHOW_GENERATOR));
+        supportNL.setSelection(prefs.getDefaultBoolean(
+                RBPreferences.SUPPORT_NL));
         alignEqualSigns.setSelection(
                 prefs.getDefaultBoolean(RBPreferences.ALIGN_EQUAL_SIGNS));
         groupKeys.setSelection(
