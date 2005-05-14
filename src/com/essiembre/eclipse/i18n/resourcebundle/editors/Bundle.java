@@ -143,7 +143,8 @@ public class Bundle {
             if (key == null) {
                 textBox.setEnabled(false);
             } else {
-                textBox.setEnabled(true);
+                // Disabled if associated file is read-only.
+                textBox.setEnabled(!editor.isEditorInputReadOnly());
             }
         } else {
             textBox.setText((String) data.get(key));
