@@ -1,6 +1,6 @@
 - Create a BundleTree to represent a parsed properties file, with objects
   for each keys (having value, comment, hasChildWithEmptyKey(), etc)
-- Translate New Bundle Wizard.
+- Translate (Spanish) New Bundle Wizard.
 - View for showing resource bundles only.
 - Update Manager support.
 - Table-view of resource bundles
