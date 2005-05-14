@@ -48,6 +48,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
+import com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin;
 import com.essiembre.eclipse.i18n.resourcebundle.editors.BundleUtils;
 import com.essiembre.eclipse.i18n.resourcebundle.preferences.RBPreferences;
 
@@ -136,12 +137,14 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
             String fileName,
             IProgressMonitor monitor)
             throws CoreException {
-
-        monitor.beginTask("Creating " + fileName, 2);
+        
+        monitor.beginTask(ResourceBundlePlugin.getResourceString(
+                "editor.wiz.creating") + fileName, 2);
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IResource resource = root.findMember(new Path(containerName));
         if (!resource.exists() || !(resource instanceof IContainer)) {
-            throwCoreException("Container \"" + containerName + "\" does not exist.");
+            throwCoreException("Container \"" + containerName 
+                    + "\" does not exist.");
         }
         IContainer container = (IContainer) resource;
         final IFile file = container.getFile(new Path(fileName));
@@ -156,11 +159,12 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
         } catch (IOException e) {
         }
         monitor.worked(1);
-        monitor.setTaskName("Opening file for editing...");
+        monitor.setTaskName(
+                ResourceBundlePlugin.getResourceString("editor.wiz.creating"));
         getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
-                IWorkbenchPage page =
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                IWorkbenchPage page = PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getActivePage();
                 try {
                     IDE.openEditor(page, file, true);
                 } catch (PartInitException e) {

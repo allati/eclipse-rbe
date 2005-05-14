@@ -77,10 +77,10 @@ public class ResourceBundleNewWizardPage extends WizardPage {
      */
     public ResourceBundleNewWizardPage(ISelection selection) {
         super("wizardPage");
-        setTitle("Resource Bundle (Properties Files)");
-        setDescription("This wizard creates a set of new files with "
-                + "*.properties extension that can be opened by a "
-                + "ResourceBundle editor.");
+        setTitle(ResourceBundlePlugin.getResourceString(
+                "editor.wiz.title"));
+        setDescription(ResourceBundlePlugin.getResourceString(
+                "editor.wiz.desc"));
         this.selection = selection;
     }
 
@@ -147,7 +147,8 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         selectedGroup.setLayout(layout);
         GridData gd = new GridData(GridData.FILL_BOTH);
         selectedGroup.setLayoutData(gd);
-        selectedGroup.setText("Bundle Locales");
+        selectedGroup.setText(ResourceBundlePlugin.getResourceString(
+                "editor.wiz.selected"));
         bundleLocalesList = 
                 new List(selectedGroup, SWT.READ_ONLY | SWT.MULTI | SWT.BORDER);
         gd = new GridData(GridData.FILL_BOTH);
@@ -177,7 +178,8 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         addButton = new Button(container, SWT.NULL);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         addButton.setLayoutData(gd);
-        addButton.setText("Add   -->");
+        addButton.setText(ResourceBundlePlugin.getResourceString(
+                "editor.wiz.add"));
         addButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
                 bundleLocalesList.add(getSelectedLocaleAsString());
@@ -188,7 +190,8 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         removeButton = new Button(container, SWT.NULL);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         removeButton.setLayoutData(gd);
-        removeButton.setText("<-- Remove");
+        removeButton.setText(ResourceBundlePlugin.getResourceString(
+                "editor.wiz.remove"));
         removeButton.setEnabled(false);
         removeButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
@@ -232,7 +235,8 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         
         // Folder
         Label label = new Label(container, SWT.NULL);
-        label.setText("&Folder:");
+        label.setText(ResourceBundlePlugin.getResourceString(
+                "editor.wiz.folder"));
 
         containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -243,7 +247,8 @@ public class ResourceBundleNewWizardPage extends WizardPage {
             }
         });
         Button button = new Button(container, SWT.PUSH);
-        button.setText("Browse...");
+        button.setText(ResourceBundlePlugin.getResourceString(
+                "editor.wiz.browse"));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 handleBrowse();
@@ -252,7 +257,8 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         
         // Bundle name
         label = new Label(container, SWT.NULL);
-        label.setText("&Bundle name:");
+        label.setText(ResourceBundlePlugin.getResourceString(
+                "editor.wiz.bundleName"));
 
         fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -299,7 +305,8 @@ public class ResourceBundleNewWizardPage extends WizardPage {
                 getShell(),
                 ResourcesPlugin.getWorkspace().getRoot(),
                 false,
-                "Select a new folder");
+                ResourceBundlePlugin.getResourceString(
+                        "editor.wiz.selectFolder"));
         if (dialog.open() == ContainerSelectionDialog.OK) {
             Object[] result = dialog.getResult();
             if (result.length == 1) {
@@ -317,20 +324,20 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         String fileName = getFileName();
 
         if (container.length() == 0) {
-            updateStatus("File container must be specified");
+            updateStatus(ResourceBundlePlugin.getResourceString(
+                    "editor.wiz.error.containerName"));
             return;
         }
         if (fileName.length() == 0) {
-            updateStatus("File name must be specified");
+            updateStatus(ResourceBundlePlugin.getResourceString(
+                    "editor.wiz.error.bundleName"));
             return;
         }
         int dotLoc = fileName.lastIndexOf('.');
         if (dotLoc != -1) {
-            String ext = fileName.substring(dotLoc + 1);
-            if (ext.equalsIgnoreCase("properties") == false) {
-                updateStatus("File extension must be \"properties\"");
-                return;
-            }
+            updateStatus(ResourceBundlePlugin.getResourceString(
+                    "editor.wiz.error.extension"));
+            return;
         }
         updateStatus(null);
     }
