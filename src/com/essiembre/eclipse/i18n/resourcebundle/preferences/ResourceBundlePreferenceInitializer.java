@@ -59,6 +59,9 @@ public class ResourceBundlePreferenceInitializer extends
 
         prefs.setDefault(RBPreferences.WRAP_CHAR_LIMIT, 80);
         prefs.setDefault(RBPreferences.WRAP_INDENT_SPACES, 8);
+
+        prefs.setDefault(RBPreferences.NEW_LINE_TYPE, 
+                RBPreferences.NEW_LINE_UNIX);
     }
 
 }
