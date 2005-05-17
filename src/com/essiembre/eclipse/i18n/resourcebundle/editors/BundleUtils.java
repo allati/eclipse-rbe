@@ -46,8 +46,15 @@ public final class BundleUtils {
           + "(http://eclipse-rbe.sourceforge.net)";
 
     /** System line separator. */
-    private static final String LINE_SEPARATOR = 
+    private static final String SYSTEM_LINE_SEPARATOR = 
             System.getProperty("line.separator");
+    /** Forced line separators. */
+    private static final String[] FORCED_LINE_SEPARATORS = new String[3];
+    static {
+        FORCED_LINE_SEPARATORS[RBPreferences.NEW_LINE_UNIX] = "\\\\n";
+        FORCED_LINE_SEPARATORS[RBPreferences.NEW_LINE_WIN] = "\\\\r\\\\n";
+        FORCED_LINE_SEPARATORS[RBPreferences.NEW_LINE_MAC] = "\\\\r";
+    }
 
     /** A table of hex digits */
     private static final char[] HEX_DIGITS = {
@@ -78,13 +85,13 @@ public final class BundleUtils {
                         comments.get(0)).startsWith(GENERATED_BY))) {
             text.append("#");
             text.append(GENERATED_BY);
-            text.append(LINE_SEPARATOR);
+            text.append(SYSTEM_LINE_SEPARATOR);
         }
         for (int i = 0; i < comments.size(); i++) {
             String comment = (String) comments.get(i);
             text.append("#");
             text.append(comment);
-            text.append(LINE_SEPARATOR);
+            text.append(SYSTEM_LINE_SEPARATOR);
         }
         return text.toString();
     }
@@ -96,7 +103,7 @@ public final class BundleUtils {
      * @return property file content
      */
     public static String generateContent(Map data) {
-        String lineBreak = LINE_SEPARATOR;
+        String lineBreak = SYSTEM_LINE_SEPARATOR;
         int numOfLineBreaks = RBPreferences.getGroupLineBreaks();
         
         // Format
@@ -107,10 +114,15 @@ public final class BundleUtils {
             String key = (String) iter.next();
             String value = (String) data.get(key);
             
-            // handle new lines in value (replace with spaces)
+            // handle new lines in value
 			if (value != null){
-	            value = value.replaceAll("\r", "\\\\r");
-	            value = value.replaceAll("\n", "\\\\n");
+                if (RBPreferences.getForceNewLineType()) {
+                    value = value.replaceAll("\\r\\n|[\\r\\n]", 
+                        FORCED_LINE_SEPARATORS[RBPreferences.getNewLineType()]);
+                } else {
+	                value = value.replaceAll("\r", "\\\\r");
+	                value = value.replaceAll("\n", "\\\\n");
+                }
 			} else {
 				value = "";
 		    }
@@ -175,7 +187,7 @@ public final class BundleUtils {
     }
     
     /**
-     * Appends a key to resource bundle content.
+     * Appends a value to resource bundle content.
      * @param text the resource bundle content so far
      * @param value the value to add
      * @param equalIndex the equal sign position
@@ -196,7 +208,7 @@ public final class BundleUtils {
                     }
                     text.append(valueBuf.substring(0, endPos));
                     text.append("\\");
-                    text.append(LINE_SEPARATOR);
+                    text.append(SYSTEM_LINE_SEPARATOR);
                     valueBuf.delete(0, endPos);
                     // Figure out starting position for next line
                     if (!RBPreferences.getWrapAlignEqualSigns()) {
@@ -214,9 +226,9 @@ public final class BundleUtils {
     }
 
     /**
-     * Appends a value to resource bundle content.
+     * Appends a key to resource bundle content.
      * @param text the resource bundle content so far
-     * @param value the value to add
+     * @param key the key to add
      * @param equalIndex the equal sign position
      */
     private static void appendKey(
