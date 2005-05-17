@@ -32,6 +32,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -74,6 +75,9 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
     private Text wrapCharLimit;
     private Button wrapAlignEqualSigns;
     private Text wrapIndentSpaces;
+    
+    private Button newLineTypeForce;
+    private Button[] newLineTypes = new Button[3];
 
     /** Controls with errors in them. */
     private final Map errors = new HashMap();
@@ -253,6 +257,33 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 ResourceBundlePlugin.getResourceString(
                         "prefs.wrapIndent.error")));
 
+        // How should new lines appear in properties file
+        field = createFieldComposite(formatGroup);
+        newLineTypeForce = new Button(field, SWT.CHECK);
+        newLineTypeForce.setSelection(
+                prefs.getBoolean(RBPreferences.FORCE_NEW_LINE_TYPE));
+        newLineTypeForce.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                refreshEnabledStatuses();
+            }
+        });
+        Composite newLineRadioGroup = new Composite(field, SWT.NONE); 
+        new Label(newLineRadioGroup, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString(
+                        "prefs.newline.force"));
+        newLineRadioGroup.setLayout(new RowLayout());
+        newLineTypes[RBPreferences.NEW_LINE_UNIX] = 
+                new Button(newLineRadioGroup, SWT.RADIO);
+        newLineTypes[RBPreferences.NEW_LINE_UNIX].setText("UNIX (\\n)");
+        newLineTypes[RBPreferences.NEW_LINE_WIN] = 
+                new Button(newLineRadioGroup, SWT.RADIO);
+        newLineTypes[RBPreferences.NEW_LINE_WIN].setText("Windows (\\r\\n)");
+        newLineTypes[RBPreferences.NEW_LINE_MAC] =
+                new Button(newLineRadioGroup, SWT.RADIO);
+        newLineTypes[RBPreferences.NEW_LINE_MAC].setText("Mac (\\r)");
+        newLineTypes[prefs.getInt(
+                RBPreferences.NEW_LINE_TYPE)].setSelection(true);
+        
         refreshEnabledStatuses();
         
         return composite;
@@ -302,6 +333,13 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 wrapAlignEqualSigns.getSelection());
         prefs.setValue(RBPreferences.WRAP_INDENT_SPACES,
                 wrapIndentSpaces.getText());
+        prefs.setValue(RBPreferences.FORCE_NEW_LINE_TYPE,
+                newLineTypeForce.getSelection());
+        for (int i = 0; i < newLineTypes.length; i++) {
+            if (newLineTypes[i].getSelection()) {
+                prefs.setValue(RBPreferences.NEW_LINE_TYPE, i);
+            }
+        }
         refreshEnabledStatuses();
         return super.performOk();
     }
@@ -340,6 +378,10 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 prefs.getDefaultBoolean(RBPreferences.WRAP_ALIGN_EQUAL_SIGNS));
         wrapIndentSpaces.setText(
                 prefs.getDefaultString(RBPreferences.WRAP_INDENT_SPACES));
+        newLineTypeForce.setSelection(
+                prefs.getDefaultBoolean(RBPreferences.FORCE_NEW_LINE_TYPE));
+        newLineTypes[prefs.getDefaultInt(
+                RBPreferences.NEW_LINE_TYPE)].setSelection(true);
         refreshEnabledStatuses();
         super.performDefaults();
     }
@@ -362,6 +404,7 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
         boolean isAlignEqualsEnabled = alignEqualSigns.getSelection();
         boolean isWrapEnabled = wrapLines.getSelection();
         boolean isWrapAlignEqualsEnabled = wrapAlignEqualSigns.getSelection();
+        boolean isNewLineStyleForced = newLineTypeForce.getSelection();
 
         groupLevelDeep.setEnabled(isGroupKeyEnabled);
         groupLineBreaks.setEnabled(isGroupKeyEnabled);
@@ -370,6 +413,9 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
         wrapCharLimit.setEnabled(isWrapEnabled);
         wrapAlignEqualSigns.setEnabled(isWrapEnabled);
         wrapIndentSpaces.setEnabled(isWrapEnabled && !isWrapAlignEqualsEnabled);
+        for (int i = 0; i < newLineTypes.length; i++) {
+            newLineTypes[i].setEnabled(isNewLineStyleForced);
+        }
     }
     
     private class IntTextValidatorKeyListener extends KeyAdapter {

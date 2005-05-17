@@ -71,7 +71,19 @@ public final class RBPreferences {
     public static final String CONVERT_ENCODED_TO_UNICODE = 
             "convertEncodedToUnicode";
     
+    /** Impose a given new line type. */
+    public static final String FORCE_NEW_LINE_TYPE = "forceNewLineType";
+    /** How new lines are represented in resource bundle. */
+    public static final String NEW_LINE_TYPE = "newLineType";
+    /** Should new lines character produce a line break in properties files. */
+    public static final String NEW_LINE_NICE = "newLineNice";
     
+    /** New Line Type: UNIX. */
+    public static final int NEW_LINE_UNIX = 0;
+    /** New Line Type: Windows. */
+    public static final int NEW_LINE_WIN = 1;
+    /** New Line Type: Mac. */
+    public static final int NEW_LINE_MAC = 2;
     
     /** RBPreferences. */
     private static final Preferences PREFS = 
@@ -148,5 +160,11 @@ public final class RBPreferences {
         return PREFS.getBoolean(CONVERT_UNICODE_TO_ENCODED);
     }
 
-    
+    public static boolean getForceNewLineType() {
+        return PREFS.getBoolean(FORCE_NEW_LINE_TYPE);
+    }
+
+    public static int getNewLineType() {
+        return PREFS.getInt(NEW_LINE_TYPE);
+    }
 }
