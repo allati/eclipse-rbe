@@ -117,7 +117,7 @@ public final class BundleUtils {
             // handle new lines in value
 			if (value != null){
                 if (RBPreferences.getForceNewLineType()) {
-                    value = value.replaceAll("\\r\\n|[\\r\\n]", 
+                    value = value.replaceAll("\\r\\n|\\r|\\n", 
                         FORCED_LINE_SEPARATORS[RBPreferences.getNewLineType()]);
                 } else {
 	                value = value.replaceAll("\r", "\\\\r");
@@ -197,18 +197,33 @@ public final class BundleUtils {
         if (value != null) {
             int lineLength = RBPreferences.getWrapCharLimit() - 1;
             int valueStartPos = equalIndex + 3;
+            // Break line after escaped new line
+            if (RBPreferences.getNewLineNice()) {
+                value = value.replaceAll(
+                        "(\\\\r\\\\n|\\\\r|\\\\n)",
+                        "$1\\\\" + SYSTEM_LINE_SEPARATOR);
+            }
+            // Wrap lines
             if (RBPreferences.getWrapLines() && valueStartPos < lineLength) {
                 StringBuffer valueBuf = new StringBuffer(value);
-                while (valueBuf.length() + valueStartPos > lineLength) {
-                    int endPos = lineLength - valueStartPos;
+                while (valueBuf.length() + valueStartPos > lineLength
+                        || valueBuf.indexOf("\n") != -1) {
+                    int endPos = Math.min(
+                            valueBuf.length(), lineLength - valueStartPos);
                     String line = valueBuf.substring(0, endPos);
-                    int lastSpacePost = line.lastIndexOf(' ');
-                    if (lastSpacePost != -1) {
-                        endPos = lastSpacePost + 1;
+                    int breakPos = line.indexOf(SYSTEM_LINE_SEPARATOR);
+                    if (breakPos != -1) {
+                        endPos = breakPos + SYSTEM_LINE_SEPARATOR.length();
+                        text.append(valueBuf.substring(0, endPos));
+                    } else {
+                        breakPos = line.lastIndexOf(' ');
+                        if (breakPos != -1) {
+                            endPos = breakPos + 1;
+                            text.append(valueBuf.substring(0, endPos));
+                            text.append("\\");
+                            text.append(SYSTEM_LINE_SEPARATOR);
+                        }
                     }
-                    text.append(valueBuf.substring(0, endPos));
-                    text.append("\\");
-                    text.append(SYSTEM_LINE_SEPARATOR);
                     valueBuf.delete(0, endPos);
                     // Figure out starting position for next line
                     if (!RBPreferences.getWrapAlignEqualSigns()) {
