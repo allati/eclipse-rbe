@@ -75,6 +75,7 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
     private Text wrapCharLimit;
     private Button wrapAlignEqualSigns;
     private Text wrapIndentSpaces;
+    private Button wrapNewLine;
     
     private Button newLineTypeForce;
     private Button[] newLineTypes = new Button[3];
@@ -257,6 +258,15 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 ResourceBundlePlugin.getResourceString(
                         "prefs.wrapIndent.error")));
 
+        // Should we wrap after new line characters
+        field = createFieldComposite(formatGroup);
+        wrapNewLine = new Button(field, SWT.CHECK);
+        wrapNewLine.setSelection(
+                prefs.getBoolean(RBPreferences.NEW_LINE_NICE));
+        new Label(field, SWT.NONE).setText(
+                ResourceBundlePlugin.getResourceString(
+                        "prefs.newline.nice"));
+
         // How should new lines appear in properties file
         field = createFieldComposite(formatGroup);
         newLineTypeForce = new Button(field, SWT.CHECK);
@@ -333,6 +343,8 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 wrapAlignEqualSigns.getSelection());
         prefs.setValue(RBPreferences.WRAP_INDENT_SPACES,
                 wrapIndentSpaces.getText());
+        prefs.setValue(RBPreferences.NEW_LINE_NICE,
+                wrapNewLine.getSelection());
         prefs.setValue(RBPreferences.FORCE_NEW_LINE_TYPE,
                 newLineTypeForce.getSelection());
         for (int i = 0; i < newLineTypes.length; i++) {
@@ -378,6 +390,8 @@ public class ResourceBundlePreferencePage extends PreferencePage implements
                 prefs.getDefaultBoolean(RBPreferences.WRAP_ALIGN_EQUAL_SIGNS));
         wrapIndentSpaces.setText(
                 prefs.getDefaultString(RBPreferences.WRAP_INDENT_SPACES));
+        wrapNewLine.setSelection(
+                prefs.getDefaultBoolean(RBPreferences.NEW_LINE_NICE));
         newLineTypeForce.setSelection(
                 prefs.getDefaultBoolean(RBPreferences.FORCE_NEW_LINE_TYPE));
         newLineTypes[prefs.getDefaultInt(

@@ -167,4 +167,9 @@ public final class RBPreferences {
     public static int getNewLineType() {
         return PREFS.getInt(NEW_LINE_TYPE);
     }
+    
+    public static boolean getNewLineNice() {
+        return PREFS.getBoolean(NEW_LINE_NICE);
+    }
+
 }
