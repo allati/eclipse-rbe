@@ -27,6 +27,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
+//TODO move this class or most of it to UI layer
+
 /**
  * Bundle-related utility methods. 
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
@@ -295,7 +297,11 @@ public final class BundleUtils {
      * @param nibble  the nibble to convert.
      */
     private static char toHex(int nibble) {
-        return HEX_DIGITS[(nibble & 0xF)];
+        char hexChar = HEX_DIGITS[(nibble & 0xF)];
+        if (!RBEPreferences.getConvertUnicodeToEncodedUpper()) {
+            return Character.toLowerCase(hexChar);
+        }
+        return hexChar;
     }
 
     /**
