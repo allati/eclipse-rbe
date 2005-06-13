@@ -45,10 +45,12 @@ public class RBEPreferenceInitializer extends
      *      #initializeDefaultPreferences()
      */
     public void initializeDefaultPreferences() {
-        Preferences prefs = 
-                RBEPlugin.getDefault().getPluginPreferences();
+        Preferences prefs = RBEPlugin.getDefault().getPluginPreferences();
+
         //General
-        
+        prefs.setDefault(RBEPreferences.FIELD_TAB_INSERTS, true);
+        prefs.setDefault(RBEPreferences.KEY_TREE_HIERARCHICAL, true);
+        prefs.setDefault(RBEPreferences.KEY_TREE_EXPANDED, true);
         
         //Formatting
         prefs.setDefault(RBEPreferences.CONVERT_UNICODE_TO_ENCODED_UPPER, true);
