@@ -20,34 +20,23 @@
  */
 package com.essiembre.eclipse.rbe.ui.preferences;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
-import com.essiembre.eclipse.rbe.ui.UIUtils;
 
 /**
  * Plugin generic preference page.
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class RBEGeneralPrefPage extends PreferencePage implements
-        IWorkbenchPreferencePage {
+public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
     
     /* Preference fields. */
     private Text keyGroupSeparator;
@@ -55,11 +44,11 @@ public class RBEGeneralPrefPage extends PreferencePage implements
     private Button convertEncodedToUnicode;
 
     private Button supportNL;
-
-    //TODO defaults to tree mode when opening editor
     
-    /** Controls with errors in them. */
-    private final Map errors = new HashMap();
+    private Button keyTreeHierarchical;
+    private Button keyTreeExpanded;
+
+    private Button fieldTabInserts;
     
     /**
      * Constructor.
@@ -99,22 +88,35 @@ public class RBEGeneralPrefPage extends PreferencePage implements
         supportNL = new Button(field, SWT.CHECK);
         supportNL.setSelection(prefs.getBoolean(RBEPreferences.SUPPORT_NL));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString(
-                        "prefs.supportNL"));
+                RBEPlugin.getString("prefs.supportNL"));
         
+        // Default key tree mode (tree vs flat)
+        field = createFieldComposite(composite);
+        keyTreeHierarchical = new Button(field, SWT.CHECK);
+        keyTreeHierarchical.setSelection(
+                prefs.getBoolean(RBEPreferences.KEY_TREE_HIERARCHICAL));
+        new Label(field, SWT.NONE).setText(
+                RBEPlugin.getString("prefs.keyTree.hierarchical"));
+
+        // Default key tree expand status (expanded vs collapsed)
+        field = createFieldComposite(composite);
+        keyTreeExpanded = new Button(field, SWT.CHECK);
+        keyTreeExpanded.setSelection(
+                prefs.getBoolean(RBEPreferences.KEY_TREE_EXPANDED));
+        new Label(field, SWT.NONE).setText(
+                RBEPlugin.getString("prefs.keyTree.expanded"));
+
+        // Default tab key behaviour in text field
+        field = createFieldComposite(composite);
+        fieldTabInserts = new Button(field, SWT.CHECK);
+        fieldTabInserts.setSelection(
+                prefs.getBoolean(RBEPreferences.FIELD_TAB_INSERTS));
+        new Label(field, SWT.NONE).setText(
+                RBEPlugin.getString("prefs.fieldTabInserts"));
+        
+        refreshEnabledStatuses();
         return composite;
     }
-
-    
-    /**
-     * @see org.eclipse.ui.IWorkbenchPreferencePage
-     *      #init(org.eclipse.ui.IWorkbench)
-     */
-    public void init(IWorkbench workbench) {
-        setPreferenceStore(
-                RBEPlugin.getDefault().getPreferenceStore());
-    }
-
 
     /**
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
@@ -125,8 +127,15 @@ public class RBEGeneralPrefPage extends PreferencePage implements
                 keyGroupSeparator.getText());
         prefs.setValue(RBEPreferences.CONVERT_ENCODED_TO_UNICODE,
                 convertEncodedToUnicode.getSelection());
-        prefs.setValue(RBEPreferences.SUPPORT_NL,
-                supportNL.getSelection());
+        prefs.setValue(RBEPreferences.SUPPORT_NL, supportNL.getSelection());
+        prefs.setValue(RBEPreferences.KEY_TREE_HIERARCHICAL,
+                keyTreeHierarchical.getSelection());
+        prefs.setValue(RBEPreferences.KEY_TREE_EXPANDED,
+                keyTreeExpanded.getSelection());
+        prefs.setValue(RBEPreferences.FIELD_TAB_INSERTS,
+                fieldTabInserts.getSelection());
+        
+        refreshEnabledStatuses();
         return super.performOk();
     }
     
@@ -142,64 +151,18 @@ public class RBEGeneralPrefPage extends PreferencePage implements
                 RBEPreferences.CONVERT_ENCODED_TO_UNICODE));
         supportNL.setSelection(prefs.getDefaultBoolean(
                 RBEPreferences.SUPPORT_NL));
+        keyTreeHierarchical.setSelection(prefs.getDefaultBoolean(
+                RBEPreferences.KEY_TREE_HIERARCHICAL));
+        keyTreeHierarchical.setSelection(prefs.getDefaultBoolean(
+                RBEPreferences.KEY_TREE_EXPANDED));
+        fieldTabInserts.setSelection(prefs.getDefaultBoolean(
+                RBEPreferences.FIELD_TAB_INSERTS));
+        
+        refreshEnabledStatuses();
         super.performDefaults();
     }
+    
+    private void refreshEnabledStatuses() {
+    }
 
-    private Composite createFieldComposite(Composite parent) {
-        return createFieldComposite(parent, 0);
-    }
-    private Composite createFieldComposite(Composite parent, int indent) {
-        Composite composite = new Composite(parent, SWT.NONE);
-        GridLayout gridLayout = new GridLayout(2, false);
-        gridLayout.marginWidth = indent;
-        gridLayout.marginHeight = 0;
-        gridLayout.verticalSpacing = 0;
-        composite.setLayout(gridLayout);
-        return composite;
-    }
-    
-    private class IntTextValidatorKeyListener extends KeyAdapter {
-        
-        private String errMsg = null;
-        
-        
-        /**
-         * Constructor.
-         * @param errMsg error message
-         */
-        public IntTextValidatorKeyListener(String errMsg) {
-            super();
-            this.errMsg = errMsg;
-        }
-        /**
-         * @see org.eclipse.swt.events.KeyAdapter#keyPressed(
-         *          org.eclipse.swt.events.KeyEvent)
-         */
-        public void keyReleased(KeyEvent event) {
-            Text text = (Text) event.widget;
-            String value = text.getText(); 
-            event.doit = value.matches("^\\d*$");
-            if (event.doit) {
-                errors.remove(text);
-                if (errors.isEmpty()) {
-                    setErrorMessage(null);
-                    setValid(true);
-                } else {
-                    setErrorMessage(
-                            (String) errors.values().iterator().next());
-                }
-            } else {
-                errors.put(text, errMsg);
-                setErrorMessage(errMsg);
-                setValid(false);
-            }
-        }
-    }
-    
-    private void setWidthInChars(Control field, int widthInChars) {
-        GridData gd = new GridData();
-        gd.widthHint = UIUtils.getWidthInChars(field, widthInChars);
-        field.setLayoutData(gd);
-    }
-    
 }
