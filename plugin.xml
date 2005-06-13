@@ -3,9 +3,9 @@
 <plugin
    id="com.essiembre.eclipse.i18n.resourcebundle"
    name="%plugin.name"
-   version="0.6.0"
+   version="0.7.0"
    provider-name="%plugin.provider"
-   class="com.essiembre.eclipse.i18n.resourcebundle.ResourceBundlePlugin">
+   class="com.essiembre.eclipse.rbe.ui.RBEPlugin">
 
    <runtime>
       <library name="resourcebundle.jar">
@@ -30,9 +30,9 @@
             name="%editor.rbe"
             icon="icons/propertiesfile.gif"
             extensions="properties"
-            class="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditor"
-            contributorClass="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditorContributor"
-            id="com.essiembre.eclipse.i18n.resourcebundle.editors.ResourceBundleEditor">
+            class="com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditor"
+            contributorClass="com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditorContributor"
+            id="com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditor">
       </editor>
    </extension>
    <extension
@@ -45,16 +45,16 @@
             name="ResourceBundle"
             icon="icons/resourcebundle.gif"
             category="com.essiembre.eclipse.i18n.resourcebundle"
-            class="com.essiembre.eclipse.i18n.resourcebundle.wizards.ResourceBundleWizard"
-            id="com.essiembre.eclipse.i18n.resourcebundle.wizards.ResourceBundleWizard">
+            class="com.essiembre.eclipse.rbe.ui.wizards.ResourceBundleWizard"
+            id="com.essiembre.eclipse.rbe.ui.wizards.ResourceBundleWizard">
       </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
             name="%editor.rbe"
-            class="com.essiembre.eclipse.i18n.resourcebundle.preferences.ResourceBundlePreferencePage"
-            id="com.essiembre.eclipse.i18n.resourcebundle.preferences.ResourceBundlePreferencePage">
+            class="com.essiembre.eclipse.rbe.ui.preferences.RBEPreferencePage"
+            id="com.essiembre.eclipse.rbe.ui.preferences.RBEPreferencePage">
       </page>
    </extension>
    <extension
@@ -72,7 +72,7 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="com.essiembre.eclipse.i18n.resourcebundle.preferences.ResourceBundlePreferenceInitializer">
+            class="com.essiembre.eclipse.rbe.ui.preferences.RBEPreferenceInitializer">
       </initializer>
    </extension>
 
