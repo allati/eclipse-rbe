@@ -170,8 +170,9 @@ public final class BundleUtils {
             // handle new lines in value
             if (value != null){
                 if (RBEPreferences.getForceNewLineType()) {
-                    value = value.replaceAll("\\r\\n|\\r|\\n", 
-                        FORCED_LINE_SEPARATORS[RBEPreferences.getNewLineType()]);
+                    value = value.replaceAll(
+                            "\\r\\n|\\r|\\n", FORCED_LINE_SEPARATORS[
+                                    RBEPreferences.getNewLineType()]);
                 } else {
                     value = value.replaceAll("\r", "\\\\r");
                     value = value.replaceAll("\n", "\\\\n");
@@ -314,7 +315,13 @@ public final class BundleUtils {
             StringBuffer text, String value, int equalIndex) {
         if (value != null) {
             int lineLength = RBEPreferences.getWrapCharLimit() - 1;
-            int valueStartPos = equalIndex + 3;
+            int valueStartPos = equalIndex;
+            if (RBEPreferences.getSpacesAroundEqualSigns()) {
+                valueStartPos += 3;
+            } else {
+                valueStartPos += 1;
+            }
+            
             // Break line after escaped new line
             if (RBEPreferences.getNewLineNice()) {
                 value = value.replaceAll(
@@ -370,7 +377,11 @@ public final class BundleUtils {
         for (int i = 0; i < equalIndex - key.length(); i++) {
             text.append(' ');
         }
-        text.append(" = ");
+        if (RBEPreferences.getSpacesAroundEqualSigns()) {
+            text.append(" = ");
+        } else {
+            text.append("=");
+        }
     }
     
     /**
