@@ -3,8 +3,9 @@ Here is an overview of changes for each releases:
 Release 0.7.0 (2005-??-??)
 --------------------------
 º Improved resource management (Fonts and Images are now disposed after usage).
-º Changes on key tree structure are now dynamic (the tree is no longer 
-  re-generated, which resulted in losing expanded/collapsed information.
+º New (feature #1219647): Changes on key tree structure are now dynamic 
+  (the tree is no longer re-generated, which resulted in losing 
+  expanded/collapsed information.
 º Double-clicking on a key tree group will now expand/collapse it instead of
   offering to rename.
 º Minimum text box size for key values is now a big bigger.
@@ -18,6 +19,16 @@ Release 0.7.0 (2005-??-??)
   as you type text in the text field below it.
 º Warning icons are now grey when a key has at least one child with a missing
   key but is not missing one itself.
+º A new preference page was added for formatting-related preferences. 
+º New: Default key tree display mode (hierarchical vs flat) is now configurable.
+º New: Default key tree expended state is now configurable.
+º New (feature #1218467): Localized text fields tab key behaviour is now 
+  configurable.
+º New (feature #1218322): You can now chose to have unicode encoded hexadecimal
+  letters uppercase or lowercase.
+º New (feature #1218320): You can now chose whether to have spaces around equals
+  signs in generated properties files.
+º New (feature #1115778): Existing comments are now preserved.
 
 Release 0.6.0 (2005-05-24)
 --------------------------
