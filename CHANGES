@@ -1,5 +1,24 @@
 Here is an overview of changes for each releases:
 
+Release 0.7.0 (2005-??-??)
+--------------------------
+º Improved resource management (Fonts and Images are now disposed after usage).
+º Changes on key tree structure are now dynamic (the tree is no longer 
+  re-generated, which resulted in losing expanded/collapsed information.
+º Double-clicking on a key tree group will now expand/collapse it instead of
+  offering to rename.
+º Minimum text box size for key values is now a big bigger.
+º Key tree now always expanded by default.
+º New: Added "Copy" feature to key tree contextual menu.   
+º New: Added "Comment" feature to key tree contextual menu.
+º New: Added "Expand All/Collapse All" features to key tree contextual menu.
+º The "Add" button for adding new keys is now disabled when the corresponding
+  text represents an existing key.
+º New (feature #1216393): Matching keys are now highlighted in navigation tree 
+  as you type text in the text field below it.
+º Warning icons are now grey when a key has at least one child with a missing
+  key but is not missing one itself.
+
 Release 0.6.0 (2005-05-24)
 --------------------------
 º New: Wizard for creating new resource bundle.
