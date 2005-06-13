@@ -53,9 +53,14 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="%editor.rbe"
-            class="com.essiembre.eclipse.rbe.ui.preferences.RBEPreferencePage"
-            id="com.essiembre.eclipse.rbe.ui.preferences.RBEPreferencePage">
+            class="com.essiembre.eclipse.rbe.ui.preferences.RBEGeneralPrefPage"
+            id="com.essiembre.eclipse.rbe.ui.preferences.RBEGeneralPrefPage">
       </page>
+      <page
+            class="com.essiembre.eclipse.rbe.ui.preferences.RBEFormattingPrefPage"
+            category="com.essiembre.eclipse.rbe.ui.preferences.RBEGeneralPrefPage"
+            name="%prefs.formatting"
+            id="com.essiembre.eclipse.i18n.resourcebundle.page1"/>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
