@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
  * Boston, MA  02111-1307  USA
  */
-package com.essiembre.eclipse.rbe.workbench;
+package com.essiembre.eclipse.rbe.model.workbench;
 
 import java.util.Locale;
 
@@ -48,7 +48,7 @@ public class StandardPropertiesFileCreator extends PropertiesFileCreator {
     }
 
     /**
-     * @see com.essiembre.eclipse.rbe.workbench.PropertiesFileCreator#buildFilePath(java.util.Locale)
+     * @see com.essiembre.eclipse.rbe.model.workbench.PropertiesFileCreator#buildFilePath(java.util.Locale)
      */
     protected IPath buildFilePath(Locale locale) {
         

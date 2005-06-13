@@ -32,8 +32,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorSite;
 
-import com.essiembre.eclipse.rbe.workbench.NLPropertiesFileCreator;
-import com.essiembre.eclipse.rbe.workbench.PropertiesFileCreator;
+import com.essiembre.eclipse.rbe.model.workbench.NLPropertiesFileCreator;
+import com.essiembre.eclipse.rbe.model.workbench.PropertiesFileCreator;
 
 /**
  * Responsible for creating resources related to an Eclipse "NL"

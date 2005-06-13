@@ -31,7 +31,7 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.essiembre.eclipse.rbe.workbench.PropertiesFileCreator;
+import com.essiembre.eclipse.rbe.model.workbench.PropertiesFileCreator;
 
 /**
  * Responsible for creating resources related to a given file structure.
