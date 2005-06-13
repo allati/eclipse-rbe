@@ -302,7 +302,9 @@ public class KeyTreeComposite extends Composite {
                             RBEPreferences.getKeyGroupSeparator()));
                     expandItem.setEnabled(true);
                     collapseItem.setEnabled(true);
-                    treeViewer.expandAll();
+                    if (RBEPreferences.getKeyTreeExpanded()) {
+                        treeViewer.expandAll();
+                    }
                     selectKeyTreeItem(addTextBox.getText());
                 }
             }
@@ -340,7 +342,9 @@ public class KeyTreeComposite extends Composite {
         treeViewer.setLabelProvider(labelProvider);
         treeViewer.setUseHashlookup(true);
         treeViewer.setInput(keyTree);
-        treeViewer.expandAll();
+        if (RBEPreferences.getKeyTreeExpanded()) {
+            treeViewer.expandAll();
+        }
         treeViewer.getTree().setLayoutData(gridData);      
         treeViewer.getTree().addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent event) {
