@@ -38,7 +38,9 @@ import com.essiembre.eclipse.rbe.model.bundle.Bundle;
 import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
 import com.essiembre.eclipse.rbe.model.bundle.BundleUtils;
 import com.essiembre.eclipse.rbe.model.tree.KeyTree;
+import com.essiembre.eclipse.rbe.model.tree.updater.FlatKeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.GroupedKeyTreeUpdater;
+import com.essiembre.eclipse.rbe.model.tree.updater.KeyTreeUpdater;
 import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
 /**
@@ -98,8 +100,14 @@ public class ResourceManager {
             }
         });
         
-        this.keyTree = new KeyTree(bundleGroup, new GroupedKeyTreeUpdater(
-                    RBEPreferences.getKeyGroupSeparator()));
+        KeyTreeUpdater treeUpdater = null;
+        if (RBEPreferences.getKeyTreeHierarchical()) {
+            treeUpdater = new GroupedKeyTreeUpdater(
+                    RBEPreferences.getKeyGroupSeparator());
+        } else {
+            treeUpdater = new FlatKeyTreeUpdater();
+        }
+        this.keyTree = new KeyTree(bundleGroup, treeUpdater);
     }
 
     public BundleGroup getBundleGroup() {
