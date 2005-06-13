@@ -48,7 +48,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
-import com.essiembre.eclipse.rbe.model.bundle.BundleUtils;
+import com.essiembre.eclipse.rbe.model.bundle.PropertiesGenerator;
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
@@ -179,7 +179,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
     private InputStream openContentStream() {
         String contents = "";
         if (RBEPreferences.getShowGenerator()) {
-            contents = BundleUtils.GENERATED_BY;
+            contents = PropertiesGenerator.GENERATED_BY;
         }
         return new ByteArrayInputStream(contents.getBytes());
     }

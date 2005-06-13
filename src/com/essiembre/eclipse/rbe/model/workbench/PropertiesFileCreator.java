@@ -31,7 +31,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
-import com.essiembre.eclipse.rbe.model.bundle.BundleUtils;
+import com.essiembre.eclipse.rbe.model.bundle.PropertiesGenerator;
 import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
 /**
@@ -48,7 +48,7 @@ public abstract class PropertiesFileCreator {
         IFile file = root.getFile(filePath);
         String contents = "";
         if (RBEPreferences.getShowGenerator()) {
-            contents = BundleUtils.GENERATED_BY;
+            contents = PropertiesGenerator.GENERATED_BY;
         }
         InputStream stream = 
             new ByteArrayInputStream(contents.getBytes());

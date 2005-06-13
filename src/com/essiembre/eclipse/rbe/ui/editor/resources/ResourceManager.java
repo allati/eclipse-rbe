@@ -36,7 +36,8 @@ import com.essiembre.eclipse.rbe.model.DeltaEvent;
 import com.essiembre.eclipse.rbe.model.IDeltaListener;
 import com.essiembre.eclipse.rbe.model.bundle.Bundle;
 import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
-import com.essiembre.eclipse.rbe.model.bundle.BundleUtils;
+import com.essiembre.eclipse.rbe.model.bundle.PropertiesGenerator;
+import com.essiembre.eclipse.rbe.model.bundle.PropertiesParser;
 import com.essiembre.eclipse.rbe.model.tree.KeyTree;
 import com.essiembre.eclipse.rbe.model.tree.updater.FlatKeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.GroupedKeyTreeUpdater;
@@ -81,8 +82,8 @@ public class ResourceManager {
             Locale locale = sourceEditor.getLocale();
             sourceEditors.put(locale, sourceEditor);
             locales.add(locale);
-            bundleGroup.addBundle(locale, BundleUtils.parseProperties(
-                    sourceEditor.getContent())); 
+            bundleGroup.addBundle(
+                    locale, PropertiesParser.parse(sourceEditor.getContent())); 
         }
         bundleGroup.addListener(new IDeltaListener() {
             public void add(DeltaEvent event) {}    // do nothing
@@ -93,8 +94,7 @@ public class ResourceManager {
                         (SourceEditor) sourceEditors.get(bundle.getLocale());
                 site.getShell().getDisplay().asyncExec(new Runnable() {
                     public void run() {
-                        editor.setContent(
-                                BundleUtils.generateProperties(bundle));
+                        editor.setContent(PropertiesGenerator.generate(bundle));
                     }
                 });
             }
@@ -161,7 +161,7 @@ public class ResourceManager {
             if (editor.isCacheDirty()) {
                 bundleGroup.addBundle(
                         editor.getLocale(),
-                        BundleUtils.parseProperties(editor.getContent()));
+                        PropertiesParser.parse(editor.getContent()));
                 editor.resetCache();
             }
         }
