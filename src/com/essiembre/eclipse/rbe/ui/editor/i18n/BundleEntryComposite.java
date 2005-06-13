@@ -27,6 +27,8 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -42,6 +44,7 @@ import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
 import com.essiembre.eclipse.rbe.ui.editor.resources.ResourceManager;
 import com.essiembre.eclipse.rbe.ui.editor.resources.SourceEditor;
+import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
 /**
  * Represents a data entry section for a bundle entry.
@@ -120,6 +123,15 @@ public class BundleEntryComposite extends Composite {
                 updateBundleOnChanges();
             }
         });
+        //TODO add a preference property listener and add/remove this listener
+        textBox.addTraverseListener(new TraverseListener() {
+            public void keyTraversed(TraverseEvent event) {
+                if (!RBEPreferences.getFieldTabInserts() 
+                        && event.character == SWT.TAB) {
+                    event.doit = true;
+                }
+            }
+        });
         textBox.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent event) {
                 Text textBox = (Text) event.widget;
@@ -146,8 +158,6 @@ public class BundleEntryComposite extends Composite {
                 }
             }
         });
-
-    
     }
 
     /**
