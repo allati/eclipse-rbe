@@ -1,5 +1,8 @@
-- Create a BundleTree to represent a parsed properties file, with objects
-  for each keys (having value, comment, hasChildWithEmptyKey(), etc)
+- Add error dialog when IllegalArgumentException when trying to unescape
+  malformed \uxxxx encoding (create an MalformedEncodingException?).
+- Display no icon when group is not a key.
+- Investigate why the plugin won't open an external file 
+  (using "Open External File" option).
 - View for showing resource bundles only.
 - Update Manager support.
 - Table-view of resource bundles
@@ -9,5 +12,11 @@
 - Have preference page at project level (keeping defaults in Window/Preferences)
 - Improve key navigation
 - Support for comments
+- Cut n pasting of key (group).
+- Have a way to go to proper resource/location from text field.
+- Add preference for default key tree mode (flat vs tree)
+- Add preference for synching text typed in add text box and key tree selection.
 - More... (see SourceForge feature requests)
+
+
 
