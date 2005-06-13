@@ -20,17 +20,10 @@
  */
 package com.essiembre.eclipse.rbe.ui.preferences;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -38,22 +31,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
-import com.essiembre.eclipse.rbe.ui.UIUtils;
 
 /**
  * Plugin preference page.
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class RBEFormattingPrefPage extends PreferencePage implements
-        IWorkbenchPreferencePage {
-
-    /** Number of pixels per field indentation  */
-    private final int indentPixels = 20;
+public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
     
     /* Preference fields. */
     private Button showGeneratedBy;
@@ -77,9 +63,6 @@ public class RBEFormattingPrefPage extends PreferencePage implements
     
     private Button newLineTypeForce;
     private Button[] newLineTypes = new Button[3];
-
-    /** Controls with errors in them. */
-    private final Map errors = new HashMap();
     
     /**
      * Constructor.
@@ -285,16 +268,6 @@ public class RBEFormattingPrefPage extends PreferencePage implements
         return composite;
     }
 
-    
-    /**
-     * @see org.eclipse.ui.IWorkbenchPreferencePage
-     *      #init(org.eclipse.ui.IWorkbench)
-     */
-    public void init(IWorkbench workbench) {
-        setPreferenceStore(
-                RBEPlugin.getDefault().getPreferenceStore());
-    }
-
 
     /**
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
@@ -382,19 +355,6 @@ public class RBEFormattingPrefPage extends PreferencePage implements
         super.performDefaults();
     }
 
-    private Composite createFieldComposite(Composite parent) {
-        return createFieldComposite(parent, 0);
-    }
-    private Composite createFieldComposite(Composite parent, int indent) {
-        Composite composite = new Composite(parent, SWT.NONE);
-        GridLayout gridLayout = new GridLayout(2, false);
-        gridLayout.marginWidth = indent;
-        gridLayout.marginHeight = 0;
-        gridLayout.verticalSpacing = 0;
-        composite.setLayout(gridLayout);
-        return composite;
-    }
-
     private void refreshEnabledStatuses() {
         boolean isEncodingUnicode = convertUnicodeToEncoded.getSelection();
         boolean isGroupKeyEnabled = groupKeys.getSelection();
@@ -416,47 +376,4 @@ public class RBEFormattingPrefPage extends PreferencePage implements
         }
     }
     
-    private class IntTextValidatorKeyListener extends KeyAdapter {
-        
-        private String errMsg = null;
-        
-        
-        /**
-         * Constructor.
-         * @param errMsg error message
-         */
-        public IntTextValidatorKeyListener(String errMsg) {
-            super();
-            this.errMsg = errMsg;
-        }
-        /**
-         * @see org.eclipse.swt.events.KeyAdapter#keyPressed(
-         *          org.eclipse.swt.events.KeyEvent)
-         */
-        public void keyReleased(KeyEvent event) {
-            Text text = (Text) event.widget;
-            String value = text.getText(); 
-            event.doit = value.matches("^\\d*$");
-            if (event.doit) {
-                errors.remove(text);
-                if (errors.isEmpty()) {
-                    setErrorMessage(null);
-                    setValid(true);
-                } else {
-                    setErrorMessage(
-                            (String) errors.values().iterator().next());
-                }
-            } else {
-                errors.put(text, errMsg);
-                setErrorMessage(errMsg);
-                setValid(false);
-            }
-        }
-    }
-    
-    private void setWidthInChars(Control field, int widthInChars) {
-        GridData gd = new GridData();
-        gd.widthHint = UIUtils.getWidthInChars(field, widthInChars);
-        field.setLayoutData(gd);
-    }
 }
