@@ -29,7 +29,7 @@ import com.essiembre.eclipse.rbe.model.Model;
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class BundleEntry implements IBundleVisitable {
+public final class BundleEntry implements IBundleVisitable {
 
     /** Entry Locale. */
     private Locale locale;
@@ -37,18 +37,21 @@ public class BundleEntry implements IBundleVisitable {
     private String key;
     /** Entry comment. */
     private String comment;
+    /** Whehter this entry is commented out or not. */
+    private boolean commented;
     /** Entry value. */
     private String value;
     /** Associated bundle (parent). */
     private Bundle bundle;
-    
+
     /**
      * Constructor.  Keys and value are <code>null</code> safe.
      * @param key unique identifier within bundle
      * @param value entry value
      * @param comment entry comment
      */
-    public BundleEntry(String key, String value, String comment) {
+    public BundleEntry(
+            String key, String value, String comment, boolean commented) {
         super();
         this.key = key;
         this.value = value;
@@ -59,6 +62,18 @@ public class BundleEntry implements IBundleVisitable {
         if (value == null) {
             this.value = "";
         }
+        this.commented = commented;
+    }
+
+    
+    /**
+     * Constructor.  Keys and value are <code>null</code> safe.
+     * @param key unique identifier within bundle
+     * @param value entry value
+     * @param comment entry comment
+     */
+    public BundleEntry(String key, String value, String comment) {
+        this(key, value, comment, false);
     }
 
     /**
@@ -95,7 +110,15 @@ public class BundleEntry implements IBundleVisitable {
     public String getValue() {
         return value;
     }
-    
+
+    /**
+     * Gets the "commented" attribute.
+     * @return <code>true</code> if this entry is commented out.
+     */
+    public boolean isCommented() {
+        return commented;
+    }
+
     /**
      * Gets associated bundle (parent).
      * @return parent bundle
