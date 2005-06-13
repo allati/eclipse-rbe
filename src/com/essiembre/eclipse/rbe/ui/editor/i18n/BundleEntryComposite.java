@@ -20,8 +20,12 @@
  */
 package com.essiembre.eclipse.rbe.ui.editor.i18n;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -33,6 +37,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -56,8 +61,10 @@ public class BundleEntryComposite extends Composite {
     private final ResourceManager resourceManager;
     private final Locale locale;
     private final Font boldFont;
-    private final Image countryImage;
-    private final Text textBox;
+
+    private Map imageCache = new HashMap(11);
+
+    private Text textBox;
     
     private String activeKey;
     private String textBeforeUpdate;
@@ -84,9 +91,77 @@ public class BundleEntryComposite extends Composite {
         setLayout(gridLayout);
         setLayoutData(new GridData(GridData.FILL_BOTH));
 
+        createLabelRow();
+        createTextRow();
+    }
+
+    /**
+     * Update bundles if the value of the active key changed.
+     */
+    public void updateBundleOnChanges(){
+        if (activeKey != null) {
+            BundleGroup bundleGroup = resourceManager.getBundleGroup();
+            BundleEntry entry = bundleGroup.getBundleEntry(locale, activeKey);
+            if (entry == null || !textBox.getText().equals(entry.getValue())) {
+                String comment = null;
+                if (entry != null) {
+                    comment = entry.getComment();
+                }
+                bundleGroup.addBundleEntry(locale, new BundleEntry(
+                        activeKey, textBox.getText(), comment));
+            }
+        }
+    }
+    
+    /**
+     * @see org.eclipse.swt.widgets.Widget#dispose()
+     */
+    public void dispose() {
+        super.dispose();
+        for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
+            ((Image) i.next()).dispose();
+        }
+        imageCache.clear();
+        boldFont.dispose();
+    }
+
+    /**
+     * Refreshes the text field value with value matching given key.
+     * @param key key used to grab value
+     */
+    public void refresh(String key) {
+        activeKey = key;
+        BundleGroup bundleGroup = resourceManager.getBundleGroup();
+        if (key != null && bundleGroup.isKey(key)) {
+            BundleEntry bundleEntry = bundleGroup.getBundleEntry(locale, key);
+            SourceEditor sourceEditor = resourceManager.getSourceEditor(locale);
+            if (bundleEntry == null) {
+                textBox.setText("");
+            } else {
+                textBox.setText(bundleEntry.getValue());
+            }
+            textBox.setEnabled(!sourceEditor.isReadOnly());
+        } else {
+            textBox.setText("");
+            textBox.setEnabled(false);
+        }
+    }
+    
+    /**
+     * Gets the active key.
+     * @return key
+     */
+    public String getActiveKey() {
+        return activeKey;
+    }
+    
+    /**
+     * Creates the text field label, icon, and commented check box.
+     */
+    private void createLabelRow() {
         Composite labelComposite = new Composite(this, SWT.NONE);
-        gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.numColumns = 4;
         gridLayout.horizontalSpacing = 0;
         gridLayout.verticalSpacing = 0;
         gridLayout.marginWidth = 0;
@@ -94,22 +169,47 @@ public class BundleEntryComposite extends Composite {
         labelComposite.setLayout(gridLayout);
         labelComposite.setLayoutData(
                 new GridData(GridData.FILL_HORIZONTAL));
+
+        Button gotoButton = new Button(
+                labelComposite, SWT.ARROW | SWT.RIGHT);
+        gotoButton.setToolTipText(
+                "Click to go to corresponding properties file");
+        
         Label txtLabel = new Label(labelComposite, SWT.NONE);
-        txtLabel.setText(UIUtils.getDisplayName(locale));
+        txtLabel.setText(" " + UIUtils.getDisplayName(locale) + " ");
         txtLabel.setFont(boldFont);
-        countryImage = loadCountryIcon(locale);
-        Label imgLabel = new Label(labelComposite, SWT.NONE);
+
         GridData gridData = new GridData();
         gridData.horizontalAlignment = GridData.END;
         gridData.grabExcessHorizontalSpace = true;
-        imgLabel.setLayoutData(gridData);
-        imgLabel.setImage(countryImage);
+        Button commentedButton = new Button(
+                labelComposite, SWT.CHECK);
+        commentedButton.setText("# commented" + " ");
+        //TODO cache font
+        commentedButton.setFont(UIUtils.createFont(0, -1));
+        commentedButton.setToolTipText("Check to comment this entry.");
+        //TODO uncheck to uncomment this entry
+        commentedButton.setLayoutData(gridData);
         
-        // Textbox row
+        
+        gridData = new GridData();
+        gridData.horizontalAlignment = GridData.END;
+        //gridData.grabExcessHorizontalSpace = true;
+
+        Label imgLabel = new Label(labelComposite, SWT.NONE);
+        imgLabel.setLayoutData(gridData);
+        imgLabel.setImage(loadCountryIcon(locale));
+
+    }
+    
+    /**
+     * Creates the text row.
+     */
+    private void createTextRow() {
         textBox = new Text(this, SWT.MULTI | SWT.WRAP | 
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         textBox.setEnabled(false);
-        gridData = new GridData();
+        GridData gridData = new GridData();
         gridData.verticalAlignment = GridData.FILL;
         gridData.grabExcessVerticalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
@@ -159,65 +259,7 @@ public class BundleEntryComposite extends Composite {
             }
         });
     }
-
-    /**
-     * Update bundles if the value of the active key changed.
-     */
-    public void updateBundleOnChanges(){
-        if (activeKey != null) {
-            BundleGroup bundleGroup = resourceManager.getBundleGroup();
-            BundleEntry entry = bundleGroup.getBundleEntry(locale, activeKey);
-            if (entry == null || !textBox.getText().equals(entry.getValue())) {
-                String comment = null;
-                if (entry != null) {
-                    comment = entry.getComment();
-                }
-                bundleGroup.addBundleEntry(locale, new BundleEntry(
-                        activeKey, textBox.getText(), comment));
-            }
-        }
-    }
     
-    /**
-     * @see org.eclipse.swt.widgets.Widget#dispose()
-     */
-    public void dispose() {
-        super.dispose();
-        boldFont.dispose();
-        if (countryImage != null) {
-            countryImage.dispose();
-        }
-    }
-
-    /**
-     * Refreshes the text field value with value matching given key.
-     * @param key key used to grab value
-     */
-    public void refresh(String key) {
-        activeKey = key;
-        BundleGroup bundleGroup = resourceManager.getBundleGroup();
-        if (key != null && bundleGroup.isKey(key)) {
-            BundleEntry bundleEntry = bundleGroup.getBundleEntry(locale, key);
-            SourceEditor sourceEditor = resourceManager.getSourceEditor(locale);
-            if (bundleEntry == null) {
-                textBox.setText("");
-            } else {
-                textBox.setText(bundleEntry.getValue());
-            }
-            textBox.setEnabled(!sourceEditor.isReadOnly());
-        } else {
-            textBox.setText("");
-            textBox.setEnabled(false);
-        }
-    }
-    
-    /**
-     * Gets the active key.
-     * @return key
-     */
-    public String getActiveKey() {
-        return activeKey;
-    }
     
     /**
      * Loads country icon based on locale country.
@@ -225,14 +267,23 @@ public class BundleEntryComposite extends Composite {
      * @return an image, or <code>null</code> if no match could be made
      */
     private Image loadCountryIcon(Locale locale) {
+        ImageDescriptor descriptor = null;
         String countryCode = null;
         if (locale != null && locale.getCountry() != null) {
             countryCode = locale.getCountry().toLowerCase();
         }
         if (countryCode != null && countryCode.length() > 0) {
-            return RBEPlugin.getImageDescriptor(
-                    "countries/" + countryCode + ".gif").createImage();
+            descriptor = RBEPlugin.getImageDescriptor(
+                    "countries/" + countryCode + ".gif");
         }
-        return null;
+        descriptor = RBEPlugin.getImageDescriptor(
+                "countries/blank.gif");
+        Image image = (Image) imageCache.get(descriptor);
+        if (image == null) {
+            image = descriptor.createImage();
+            imageCache.put(descriptor, image);
+        }
+        return image;
+
     }
 }
