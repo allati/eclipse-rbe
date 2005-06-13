@@ -46,6 +46,9 @@ public final class RBEPreferences {
     
     /** Should equal signs be aligned. */
     public static final String ALIGN_EQUAL_SIGNS = "alignEqualSigns";
+    /** Should spaces be put around equal signs. */
+    public static final String SPACES_AROUND_EQUAL_SIGNS = 
+            "spacesAroundEqualSigns";
 
     /** Should keys be grouped. */
     public static final String GROUP_KEYS = "groupKeys";
@@ -69,6 +72,9 @@ public final class RBEPreferences {
     /** Should unicode values be converted to their encoded equivalent. */
     public static final String CONVERT_UNICODE_TO_ENCODED = 
             "convertUnicodeToEncoded";
+    /** Should unicode values be converted to their encoded equivalent. */
+    public static final String CONVERT_UNICODE_TO_ENCODED_UPPER = 
+            "convertUnicodeToEncodedUppercase";
     /** Should encoded values be converted to their unicode equivalent. */
     public static final String CONVERT_ENCODED_TO_UNICODE = 
             "convertEncodedToUnicode";
@@ -108,6 +114,10 @@ public final class RBEPreferences {
 
     public static boolean getAlignEqualSigns() {
         return PREFS.getBoolean(ALIGN_EQUAL_SIGNS);
+    }
+
+    public static boolean getSpacesAroundEqualSigns() {
+        return PREFS.getBoolean(SPACES_AROUND_EQUAL_SIGNS);
     }
 
     public static boolean getGroupKeys() {
@@ -160,6 +170,9 @@ public final class RBEPreferences {
 
     public static boolean getConvertUnicodeToEncoded() {
         return PREFS.getBoolean(CONVERT_UNICODE_TO_ENCODED);
+    }
+    public static boolean getConvertUnicodeToEncodedUpper() {
+        return PREFS.getBoolean(CONVERT_UNICODE_TO_ENCODED_UPPER);
     }
 
     public static boolean getForceNewLineType() {

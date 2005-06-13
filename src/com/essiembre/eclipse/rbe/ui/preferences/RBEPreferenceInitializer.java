@@ -46,7 +46,15 @@ public class RBEPreferenceInitializer extends
      */
     public void initializeDefaultPreferences() {
         Preferences prefs = 
-                RBEPlugin.getDefault().getPluginPreferences();        
+                RBEPlugin.getDefault().getPluginPreferences();
+        //General
+        
+        
+        //Formatting
+        prefs.setDefault(RBEPreferences.CONVERT_UNICODE_TO_ENCODED_UPPER, true);
+        
+        prefs.setDefault(RBEPreferences.SPACES_AROUND_EQUAL_SIGNS, true);
+        
         prefs.setDefault(RBEPreferences.KEY_GROUP_SEPARATOR, ".");
         prefs.setDefault(RBEPreferences.ALIGN_EQUAL_SIGNS, true);
         prefs.setDefault(RBEPreferences.SHOW_GENERATOR, true);
