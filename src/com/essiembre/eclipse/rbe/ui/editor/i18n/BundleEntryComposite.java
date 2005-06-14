@@ -31,6 +31,8 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Font;
@@ -61,10 +63,12 @@ public class BundleEntryComposite extends Composite {
     private final ResourceManager resourceManager;
     private final Locale locale;
     private final Font boldFont;
+    private final Font smallFont;
 
     private Map imageCache = new HashMap(11);
 
     private Text textBox;
+    private Button commentedCheckbox;
     
     private String activeKey;
     private String textBeforeUpdate;
@@ -82,7 +86,8 @@ public class BundleEntryComposite extends Composite {
         this.resourceManager = resourceManager;
         this.locale = locale;
         this.boldFont = UIUtils.createFont(this, SWT.BOLD, 0);
-
+        this.smallFont = UIUtils.createFont(SWT.NONE, -1);
+        
         GridLayout gridLayout = new GridLayout(1, false);        
         gridLayout.horizontalSpacing = 0;
         gridLayout.verticalSpacing = 2;
@@ -123,6 +128,7 @@ public class BundleEntryComposite extends Composite {
         }
         imageCache.clear();
         boldFont.dispose();
+        smallFont.dispose();
     }
 
     /**
@@ -138,23 +144,18 @@ public class BundleEntryComposite extends Composite {
             if (bundleEntry == null) {
                 textBox.setText("");
             } else {
+                commentedCheckbox.setSelection(bundleEntry.isCommented());
                 textBox.setText(bundleEntry.getValue());
             }
             textBox.setEnabled(!sourceEditor.isReadOnly());
         } else {
+            commentedCheckbox.setSelection(false);
             textBox.setText("");
             textBox.setEnabled(false);
         }
+        resetCommented();
     }
-    
-    /**
-     * Gets the active key.
-     * @return key
-     */
-    public String getActiveKey() {
-        return activeKey;
-    }
-    
+        
     /**
      * Creates the text field label, icon, and commented check box.
      */
@@ -182,15 +183,18 @@ public class BundleEntryComposite extends Composite {
         GridData gridData = new GridData();
         gridData.horizontalAlignment = GridData.END;
         gridData.grabExcessHorizontalSpace = true;
-        Button commentedButton = new Button(
+        commentedCheckbox = new Button(
                 labelComposite, SWT.CHECK);
-        commentedButton.setText("# commented" + " ");
-        //TODO cache font
-        commentedButton.setFont(UIUtils.createFont(0, -1));
-        commentedButton.setToolTipText("Check to comment this entry.");
-        //TODO uncheck to uncomment this entry
-        commentedButton.setLayoutData(gridData);
-        
+        commentedCheckbox.setText("# commented" + " ");//TODO translate
+        commentedCheckbox.setFont(smallFont);
+        commentedCheckbox.setToolTipText("Check to comment this entry.");
+        commentedCheckbox.setLayoutData(gridData);
+        commentedCheckbox.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                resetCommented();
+                //TODO update bundle entry (on focus listener instead?)
+            }
+        });
         
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.END;
@@ -284,6 +288,18 @@ public class BundleEntryComposite extends Composite {
             imageCache.put(descriptor, image);
         }
         return image;
-
+    }
+    
+    private void resetCommented() {
+        if (commentedCheckbox.getSelection()) {
+            commentedCheckbox.setToolTipText(
+                    "Check to comment this entry.");
+            textBox.setForeground(
+                    getDisplay().getSystemColor(SWT.COLOR_GRAY));
+        } else {
+            commentedCheckbox.setToolTipText(
+                    "Uncheck to uncomment this entry.");
+            textBox.setForeground(null);
+        }
     }
 }

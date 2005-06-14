@@ -23,7 +23,6 @@ package com.essiembre.eclipse.rbe.model.bundle;
 import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
 //TODO move this class or most of it to UI layer, or have Preferences in model
-//TODO maybe: split in PropertiesParser and PropertiesGenerator
 
 /**
  * Bundle-related utility methods. 
@@ -52,47 +51,54 @@ public final class PropertiesParser {
      * @return a new bundle
      */
     public static Bundle parse(String properties) {
+
+        //TODO implement "commented" feature
+        
         Bundle bundle = new Bundle();
         String[] lines = properties.split("\r\n|\r|\n");
         
         boolean doneWithFileComment = false;
         StringBuffer fileComment = new StringBuffer();
         StringBuffer lineComment = new StringBuffer();
-        StringBuffer line = new StringBuffer();
+        StringBuffer lineBuf = new StringBuffer();
         for (int i = 0; i < lines.length; i++) {
-            line.setLength(0);
-            line.append(lines[i]);
+            String line = lines[i];
+            lineBuf.setLength(0);
+            lineBuf.append(line);
         
-            int equalPosition = line.indexOf("=");
-
-            // parse comment line
-            if (line.indexOf("#") == 0) {
-                if (!doneWithFileComment) {
-                    fileComment.append(line);
-                    fileComment.append(SYSTEM_LINE_SEPARATOR);
-                } else {
-                    lineComment.append(line);
-                    lineComment.append(SYSTEM_LINE_SEPARATOR);
-                }
-            // parse regular lines
-            } else if (equalPosition >= 1) {
+            int equalPosition = lineBuf.indexOf("=");
+            boolean isRegularLine = line.matches("^[^#].*");
+            boolean isCommentedLine = line.matches("^##[^#].*");
+            
+            // parse regular and commented lines
+            if (equalPosition >= 1 && (isRegularLine || isCommentedLine)) {
                 doneWithFileComment = true;
                 String comment = "";
                 if (lineComment.length() > 0) {
                     comment = lineComment.toString();
                     lineComment.setLength(0);
                 }
-                while (line.lastIndexOf("\\") == line.length() -1) {
-                    int lineBreakPosition = line.lastIndexOf("\\");
-                    line.replace(
+
+                if (isCommentedLine) {
+                    lineBuf.delete(0, 2); // remove ##
+                    equalPosition -= 2;
+                }
+                while (lineBuf.lastIndexOf("\\") == lineBuf.length() -1) {
+                    int lineBreakPosition = lineBuf.lastIndexOf("\\");
+                    lineBuf.replace(
                             lineBreakPosition,
                             lineBreakPosition + 1, "");
                     if (++i <= lines.length) {
-                        line.append(lines[i].trim());
+                        String wrappedLine = lines[i].trim();
+                        if (isCommentedLine) {
+                            lineBuf.append(wrappedLine.replaceFirst("^##", ""));
+                        } else {
+                            lineBuf.append(wrappedLine);
+                        }
                     }
                 }
-                String key = line.substring(0, equalPosition).trim();
-                String value = line.substring(equalPosition + 1).trim();
+                String key = lineBuf.substring(0, equalPosition).trim();
+                String value = lineBuf.substring(equalPosition + 1).trim();
                 if (RBEPreferences.getConvertEncodedToUnicode()) {
                     key = PropertiesParser.convertEncodedToUnicode(key);
                     value = PropertiesParser.convertEncodedToUnicode(value);
@@ -100,7 +106,17 @@ public final class PropertiesParser {
                     value = value.replaceAll("\\\\r", "\r");
                     value = value.replaceAll("\\\\n", "\n");
                 }
-                bundle.addEntry(new BundleEntry(key, value, comment));
+                bundle.addEntry(
+                        new BundleEntry(key, value, comment, isCommentedLine));
+            // parse comment line
+            } else if (lineBuf.indexOf("#") == 0) {
+                if (!doneWithFileComment) {
+                    fileComment.append(lineBuf);
+                    fileComment.append(SYSTEM_LINE_SEPARATOR);
+                } else {
+                    lineComment.append(lineBuf);
+                    lineComment.append(SYSTEM_LINE_SEPARATOR);
+                }
             // handle blank or unsupported line
             } else {
                 doneWithFileComment = true;
