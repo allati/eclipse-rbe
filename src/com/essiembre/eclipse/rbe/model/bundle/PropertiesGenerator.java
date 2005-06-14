@@ -28,7 +28,6 @@ import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
 //TODO move this class or most of it to UI layer, or have Preferences in model
-//TODO maybe: split in PropertiesParser and PropertiesGenerator
 
 /**
  * Bundle-related utility methods. 
