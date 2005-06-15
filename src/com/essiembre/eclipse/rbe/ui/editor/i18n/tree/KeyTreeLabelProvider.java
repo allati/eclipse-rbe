@@ -20,7 +20,6 @@
  */
 package com.essiembre.eclipse.rbe.ui.editor.i18n.tree;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +27,7 @@ import java.util.Map;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -35,7 +35,8 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
-import com.essiembre.eclipse.rbe.model.tree.visitors.MissingValueVisitor;
+import com.essiembre.eclipse.rbe.model.tree.visitors.IsCommentedVisitor;
+import com.essiembre.eclipse.rbe.model.tree.visitors.IsMissingValueVisitor;
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
 
@@ -50,7 +51,7 @@ public class KeyTreeLabelProvider
     /** Cache for all images used by this provider. */
     private Map imageCache = new HashMap(11);
 
-    //TODO use this color for commented lines
+    //TODO have dynamic caching of Color and Font (like images).
     private Color commentedColor = RBEPlugin.getDefault().getWorkbench()
             .getDisplay().getSystemColor(SWT.COLOR_GRAY);
 
@@ -73,7 +74,7 @@ public class KeyTreeLabelProvider
         // with this: if (!item.getKeyTree().getBundleGroup().isKey(item.getId())) {
 
         
-        MissingValueVisitor misValVisitor = new MissingValueVisitor();
+        IsMissingValueVisitor misValVisitor = new IsMissingValueVisitor();
         treeItem.accept(misValVisitor, null);
         if (misValVisitor.isMissingValue()) {
             descriptor = RBEPlugin.getImageDescriptor("keyWarn.gif");
@@ -137,12 +138,12 @@ public class KeyTreeLabelProvider
      * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
      */
     public Color getForeground(Object element) {
-        KeyTreeItem item = (KeyTreeItem) element; 
-        Collection bundleEntries = 
-                item.getKeyTree().getBundleGroup().getBundleEntries(
-                        item.getId());
-        //TODO check for comments
-//            return disabledColor;
+        KeyTreeItem treeItem = (KeyTreeItem) element; 
+        IsCommentedVisitor commentedVisitor = new IsCommentedVisitor();
+        treeItem.accept(commentedVisitor, null);
+        if (commentedVisitor.hasOneCommented()) {
+            return commentedColor;
+        }
         return null;
     }
 
