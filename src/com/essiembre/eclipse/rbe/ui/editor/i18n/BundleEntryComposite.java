@@ -107,13 +107,18 @@ public class BundleEntryComposite extends Composite {
         if (activeKey != null) {
             BundleGroup bundleGroup = resourceManager.getBundleGroup();
             BundleEntry entry = bundleGroup.getBundleEntry(locale, activeKey);
-            if (entry == null || !textBox.getText().equals(entry.getValue())) {
+            boolean commentedSelected = commentedCheckbox.getSelection();
+            if (entry == null || !textBox.getText().equals(entry.getValue())
+                   || entry.isCommented() != commentedSelected) {
                 String comment = null;
                 if (entry != null) {
                     comment = entry.getComment();
                 }
                 bundleGroup.addBundleEntry(locale, new BundleEntry(
-                        activeKey, textBox.getText(), comment));
+                        activeKey, 
+                        textBox.getText(), 
+                        comment, 
+                        commentedSelected));
             }
         }
     }
@@ -301,5 +306,6 @@ public class BundleEntryComposite extends Composite {
                     "Uncheck to uncomment this entry.");
             textBox.setForeground(null);
         }
+        updateBundleOnChanges();
     }
 }
