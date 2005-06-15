@@ -1,3 +1,4 @@
+- Add configurable options for most (or all) visitor-related operations.
 - Add error dialog when IllegalArgumentException when trying to unescape
   malformed \uxxxx encoding (create an MalformedEncodingException?).
 - Display no icon when group is not a key.
@@ -11,11 +12,9 @@
 - Display internationalized tooltips for most components
 - Have preference page at project level (keeping defaults in Window/Preferences)
 - Improve key navigation
-- Support for comments
-- Cut n pasting of key (group).
 - Have a way to go to proper resource/location from text field.
-- Add preference for default key tree mode (flat vs tree)
 - Add preference for synching text typed in add text box and key tree selection.
+- Optionally display comments in bundle entry composites.
 - More... (see SourceForge feature requests)
 
 
