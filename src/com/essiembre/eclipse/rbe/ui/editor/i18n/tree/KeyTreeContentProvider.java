@@ -21,6 +21,7 @@
 package com.essiembre.eclipse.rbe.ui.editor.i18n.tree;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -116,7 +117,10 @@ public class KeyTreeContentProvider implements ITreeContentProvider, IDeltaListe
      * @see IDeltaListener#modify(DeltaEvent)
      */
     public void modify(DeltaEvent event) {
-        Object keyTreeItem = ((KeyTreeItem) event.receiver()).getParent();
-        viewer.refresh(keyTreeItem, true);
+        KeyTreeItem treeItem = (KeyTreeItem) event.receiver();
+        Object parentTreeItem = treeItem.getParent();
+        viewer.refresh(parentTreeItem, true);
+        viewer.setSelection(new StructuredSelection(treeItem), true);
+
     }
 }
