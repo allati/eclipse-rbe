@@ -55,7 +55,7 @@ import com.essiembre.eclipse.rbe.model.tree.KeyTree;
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
 import com.essiembre.eclipse.rbe.model.tree.updater.FlatKeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.GroupedKeyTreeUpdater;
-import com.essiembre.eclipse.rbe.model.tree.visitors.KeyStartsWithVisitor;
+import com.essiembre.eclipse.rbe.model.tree.visitors.KeysStartingWithVisitor;
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
@@ -258,6 +258,37 @@ public class KeyTreeComposite extends Composite {
             }
         }
     }    
+
+    /**
+     * Comments a key or group of key.
+     */
+    protected void commentKey() {
+        KeyTreeItem selectedItem = getSelection();
+        BundleGroup bundleGroup = keyTree.getBundleGroup();
+        Collection items = new ArrayList();
+        items.add(selectedItem);
+        items.addAll(selectedItem.getNestedChildren());
+        for (Iterator iter = items.iterator(); iter.hasNext();) {
+            KeyTreeItem item = (KeyTreeItem) iter.next();
+            bundleGroup.commentKey(item.getId());
+        }
+        
+    }
+
+    /**
+     * Uncomments a key or group of key.
+     */
+    protected void uncommentKey() {
+        KeyTreeItem selectedItem = getSelection();
+        BundleGroup bundleGroup = keyTree.getBundleGroup();
+        Collection items = new ArrayList();
+        items.add(selectedItem);
+        items.addAll(selectedItem.getNestedChildren());
+        for (Iterator iter = items.iterator(); iter.hasNext();) {
+            KeyTreeItem item = (KeyTreeItem) iter.next();
+            bundleGroup.uncommentKey(item.getId());
+        }
+    }
     
     /**
      * Creates the top section (toggle buttons) of this composite.
@@ -402,8 +433,14 @@ public class KeyTreeComposite extends Composite {
         commentItem.setText("Co&mment"); //TODO translate
         commentItem.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                //TODO implement comment
-                System.out.println("Key commenting not implemented.");
+                commentKey();
+            }
+        });
+        MenuItem uncommentItem = new MenuItem (menu, SWT.PUSH);
+        uncommentItem.setText("&Uncomment"); //TODO translate
+        uncommentItem.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                uncommentKey();
             }
         });
 
@@ -468,7 +505,7 @@ public class KeyTreeComposite extends Composite {
                 if (event.character == SWT.CR) {
                     addKey();
                 } else if (!key.equals("")){
-                    KeyStartsWithVisitor visitor = new KeyStartsWithVisitor();
+                    KeysStartingWithVisitor visitor = new KeysStartingWithVisitor();
                     keyTree.accept(visitor, key);
                     KeyTreeItem item = visitor.getKeyTreeItem();
                     if (item != null) {
