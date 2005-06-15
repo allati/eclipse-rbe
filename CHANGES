@@ -29,6 +29,13 @@ Release 0.7.0 (2005-??-??)
 º New (feature #1218320): You can now chose whether to have spaces around equals
   signs in generated properties files.
 º New (feature #1115778): Existing comments are now preserved.
+º New (feature #1211728): Added "(Un)Comment" features to key tree contextual
+  menu.
+º Now loads commented properties (double ## key/value lines).
+º A tree key with at least one commented localized entry now shows as grey.
+º A checkbox was added to localized text fields to comment/uncomment keys.
+  Content shows as grey when commented.
+
 
 Release 0.6.0 (2005-05-24)
 --------------------------
