@@ -35,17 +35,17 @@ import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class MissingValueVisitor implements IKeyTreeVisitor {
+public class IsMissingValueVisitor implements IKeyTreeVisitor {
 
-    /** Whether corresponding bundle entry is missing value. */
+    /** Whether corresponding bundle entries are missing a value. */
     boolean isMissingValue = false;
-    /** Whether a corresponding bundle entry child is missing value. */
+    /** Whether a corresponding bundle entries children are missing a value. */
     boolean isMissingChildValueOnly = false;
     
     /**
      * Constructor.
      */
-    public MissingValueVisitor() {
+    public IsMissingValueVisitor() {
         super();
     }
 

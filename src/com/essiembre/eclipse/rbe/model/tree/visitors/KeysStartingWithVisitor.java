@@ -34,7 +34,7 @@ import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class KeyStartsWithVisitor implements IKeyTreeVisitor {
+public class KeysStartingWithVisitor implements IKeyTreeVisitor {
 
     /** Holder for matching keys. */
     List items = new ArrayList();
@@ -42,7 +42,7 @@ public class KeyStartsWithVisitor implements IKeyTreeVisitor {
     /**
      * Constructor.
      */
-    public KeyStartsWithVisitor() {
+    public KeysStartingWithVisitor() {
         super();
     }
 
