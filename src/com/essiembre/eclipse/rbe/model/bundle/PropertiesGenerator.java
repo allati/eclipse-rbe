@@ -136,8 +136,8 @@ public final class PropertiesGenerator {
             if (comment != null && comment.length() > 0) {
                 text.append(comment);
             }
-            appendKey(text, key, equalIndex);
-            appendValue(text, value, equalIndex);
+            appendKey(text, key, equalIndex, bundleEntry.isCommented());
+            appendValue(text, value, equalIndex, bundleEntry.isCommented());
             text.append(lineBreak);
         }
         return text.toString();
@@ -189,7 +189,8 @@ public final class PropertiesGenerator {
      * @param equalIndex the equal sign position
      */
     private static void appendValue(
-            StringBuffer text, String value, int equalIndex) {
+            StringBuffer text, String value, 
+            int equalIndex, boolean commented) {
         if (value != null) {
             int lineLength = RBEPreferences.getWrapCharLimit() - 1;
             int valueStartPos = equalIndex;
@@ -231,6 +232,11 @@ public final class PropertiesGenerator {
                     if (!RBEPreferences.getWrapAlignEqualSigns()) {
                         valueStartPos = RBEPreferences.getWrapIndentSpaces();
                     }
+
+                    if (commented && valueStartPos > 0) {
+                        text.append("##");
+                    }
+
                     for (int i = 0; i < valueStartPos; i++) {
                         text.append(' ');
                     }
@@ -249,7 +255,11 @@ public final class PropertiesGenerator {
      * @param equalIndex the equal sign position
      */
     private static void appendKey(
-            StringBuffer text, String key, int equalIndex) {
+            StringBuffer text, String key, int equalIndex, boolean commented) {
+
+        if (commented) {
+            text.append("##");
+        }
         text.append(key);
         for (int i = 0; i < equalIndex - key.length(); i++) {
             text.append(' ');
