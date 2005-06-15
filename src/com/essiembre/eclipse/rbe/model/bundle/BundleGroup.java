@@ -155,6 +155,39 @@ public class BundleGroup extends Model implements IBundleVisitable {
         }
     }
 
+    
+    /**
+     * Comment bundle entries matching the <code>key</code>.
+     * @param key key to comment
+     */
+    public void commentKey(String key) {
+        for (Iterator iter = bundles.keySet().iterator(); iter.hasNext();) {
+            Locale locale = (Locale) iter.next();
+            Bundle bundle = getBundle(locale);
+            BundleEntry entry = getBundleEntry(locale, key);
+            if (entry != null) {
+                bundle.commentKey(key);
+                fireModify(bundle);
+            }
+        }
+    }
+
+    /**
+     * Uncomment bundle entries matching the <code>key</code>.
+     * @param key key to comment
+     */
+    public void uncommentKey(String key) {
+        for (Iterator iter = bundles.keySet().iterator(); iter.hasNext();) {
+            Locale locale = (Locale) iter.next();
+            Bundle bundle = getBundle(locale);
+            BundleEntry entry = getBundleEntry(locale, key);
+            if (entry != null) {
+                bundle.uncommentKey(key);
+                fireModify(bundle);
+            }
+        }
+    }
+    
     /**
      * Copies each bundle entries matching the <code>origKey</code> under
      * the <code>newKey</code>.

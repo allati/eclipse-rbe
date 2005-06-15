@@ -152,6 +152,31 @@ public class Bundle extends Model implements IBundleVisitable {
             addEntry(newEntry);
         }
     }
+
+    /**
+     * Comments a bundle entry.
+     * @param key key of bundle entry to be commented
+     */
+    protected void commentKey(String key) {
+        BundleEntry entry = (BundleEntry) entries.get(key);
+        if (entry != null) {
+            BundleEntry newEntry = new BundleEntry(
+                    key, entry.getValue(), entry.getComment(), true);
+            addEntry(newEntry);
+        }
+    }
+    /**
+     * Uncomments a bundle entry.
+     * @param key key of bundle entry to be uncommented
+     */
+    protected void uncommentKey(String key) {
+        BundleEntry entry = (BundleEntry) entries.get(key);
+        if (entry != null) {
+            BundleEntry newEntry = new BundleEntry(
+                    key, entry.getValue(), entry.getComment(), false);
+            addEntry(newEntry);
+        }
+    }
     
     /**
      * Copies a bundle entry under a different key.
