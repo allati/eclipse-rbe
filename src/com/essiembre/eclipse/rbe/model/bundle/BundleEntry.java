@@ -158,6 +158,7 @@ public final class BundleEntry implements IBundleVisitable {
         }
         BundleEntry entry = (BundleEntry) obj;
         return key.equals(entry.getKey())
+                && commented == entry.isCommented()
                 && value.equals(entry.getValue())
                 && (comment == null && entry.getComment() == null
                         || comment != null && comment.equals(
