@@ -36,9 +36,9 @@ import org.eclipse.swt.graphics.Image;
 
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
 import com.essiembre.eclipse.rbe.model.tree.visitors.IsCommentedVisitor;
-import com.essiembre.eclipse.rbe.model.tree.visitors.IsMissingValueVisitor;
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
+import com.essiembre.eclipse.rbe.ui.editor.i18n.tree.decorators.MissingValueDecorator;
 
 /**
  * Label provider for key tree viewer.
@@ -47,6 +47,11 @@ import com.essiembre.eclipse.rbe.ui.UIUtils;
  */
 public class KeyTreeLabelProvider 
         extends LabelProvider implements IFontProvider, IColorProvider {	
+    
+
+    MissingValueDecorator missingValueDecorator = new MissingValueDecorator();
+    
+    
     
     /** Cache for all images used by this provider. */
     private Map imageCache = new HashMap(11);
@@ -63,45 +68,20 @@ public class KeyTreeLabelProvider
 	 */
 	public Image getImage(Object element) {
         KeyTreeItem treeItem = ((KeyTreeItem) element);
-        
         ImageDescriptor descriptor = null;
-        
-        
-        //TODO refactor to be more dynamic by using DecoratingLabelProvider
-        // this will allow for small icons to be used 
-        
-        //TODO consider not having key icon when group is not a key.
-        // with this: if (!item.getKeyTree().getBundleGroup().isKey(item.getId())) {
-
-        
-        IsMissingValueVisitor misValVisitor = new IsMissingValueVisitor();
-        treeItem.accept(misValVisitor, null);
-        if (misValVisitor.isMissingValue()) {
-            descriptor = RBEPlugin.getImageDescriptor("keyWarn.gif");
-        } else if (misValVisitor.isMissingChildValueOnly()) {
-            descriptor = RBEPlugin.getImageDescriptor("keyWarnGrey.gif");
+        if (treeItem.getKeyTree().getBundleGroup().isKey(treeItem.getId())) {
+            descriptor = RBEPlugin.getImageDescriptor("key.gif");
         } else {
             descriptor = RBEPlugin.getImageDescriptor("key.gif");
+//TODO use no key at all?
+//            descriptor = RBEPlugin.getImageDescriptor("keyNone.gif");
         }
+        Image image = UIUtils.getCacheImage(imageCache, descriptor);
         
-
+        image = missingValueDecorator.decorateImage(image, treeItem);
         
-//		if (element instanceof MovingBox) {
-//			descriptor = TreeViewerPlugin.getImageDescriptor("movingBox.gif");
-//		} else if (element instanceof Book) {
-//			descriptor = TreeViewerPlugin.getImageDescriptor("book.gif");
-//		} else if (element instanceof BoardGame) {
-//			descriptor = TreeViewerPlugin.getImageDescriptor("gameboard.gif");
-//		} else {
-//			throw unknownElement(element);
-//		}
-
-		//obtain the cached image corresponding to the descriptor
-		Image image = (Image)imageCache.get(descriptor);
-		if (image == null) {
-			image = descriptor.createImage();
-			imageCache.put(descriptor, image);
-		}
+        
+        
 		return image;
 	}
 
