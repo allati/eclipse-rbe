@@ -69,6 +69,7 @@ public class BundleEntryComposite extends Composite {
 
     private Text textBox;
     private Button commentedCheckbox;
+    private Button gotoButton;
     
     private String activeKey;
     private String textBeforeUpdate;
@@ -152,11 +153,15 @@ public class BundleEntryComposite extends Composite {
                 commentedCheckbox.setSelection(bundleEntry.isCommented());
                 textBox.setText(bundleEntry.getValue());
             }
+            commentedCheckbox.setEnabled(!sourceEditor.isReadOnly());
             textBox.setEnabled(!sourceEditor.isReadOnly());
+            gotoButton.setEnabled(true);
         } else {
             commentedCheckbox.setSelection(false);
+            commentedCheckbox.setEnabled(false);
             textBox.setText("");
             textBox.setEnabled(false);
+            gotoButton.setEnabled(false);
         }
         resetCommented();
     }
@@ -176,7 +181,7 @@ public class BundleEntryComposite extends Composite {
         labelComposite.setLayoutData(
                 new GridData(GridData.FILL_HORIZONTAL));
 
-        Button gotoButton = new Button(
+        gotoButton = new Button(
                 labelComposite, SWT.ARROW | SWT.RIGHT);
         gotoButton.setToolTipText(
                 "Click to go to corresponding properties file");
@@ -192,11 +197,12 @@ public class BundleEntryComposite extends Composite {
                 labelComposite, SWT.CHECK);
         commentedCheckbox.setText("# commented" + " ");//TODO translate
         commentedCheckbox.setFont(smallFont);
-        commentedCheckbox.setToolTipText("Check to comment this entry.");
+//        commentedCheckbox.setToolTipText("Check to comment this entry.");
         commentedCheckbox.setLayoutData(gridData);
         commentedCheckbox.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
                 resetCommented();
+                updateBundleOnChanges();
                 //TODO update bundle entry (on focus listener instead?)
             }
         });
@@ -298,14 +304,13 @@ public class BundleEntryComposite extends Composite {
     private void resetCommented() {
         if (commentedCheckbox.getSelection()) {
             commentedCheckbox.setToolTipText(
-                    "Check to comment this entry.");
+                    "Uncheck to uncomment this entry.");
             textBox.setForeground(
                     getDisplay().getSystemColor(SWT.COLOR_GRAY));
         } else {
             commentedCheckbox.setToolTipText(
-                    "Uncheck to uncomment this entry.");
+                    "Check to comment this entry.");
             textBox.setForeground(null);
         }
-        updateBundleOnChanges();
     }
 }
