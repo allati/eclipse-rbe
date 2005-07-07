@@ -1,6 +1,11 @@
 - Add configurable options for most (or all) visitor-related operations.
-- Add error dialog when IllegalArgumentException when trying to unescape
+- Consider using common registr for resources (image). May use eclipse one.
+- Consider merging the 2 tree providers and caching some visitor results
+  for performance.
+- Better handling of malformed encoding. Option add error dialog when 
+  IllegalArgumentException when trying to unescape
   malformed \uxxxx encoding (create an MalformedEncodingException?).
+  Then parse normally?
 - Display no icon when group is not a key.
 - Investigate why the plugin won't open an external file 
   (using "Open External File" option).
