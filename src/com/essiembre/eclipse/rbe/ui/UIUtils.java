@@ -20,15 +20,19 @@
  */
 package com.essiembre.eclipse.rbe.ui;
 
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -168,4 +172,22 @@ public final class UIUtils {
         }
         return locale.getDisplayName();
     }
+    
+    
+    public static Image getCacheImage(Map cache, ImageDescriptor imgDesc) {
+        Image image = (Image) cache.get(imgDesc);
+        if (image == null) {
+            image = imgDesc.createImage();
+            cache.put(imgDesc, image);
+        }
+        return image;
+    }
+    
+    public static void disposeCacheImages(Map cache) {
+        for (Iterator i = cache.values().iterator(); i.hasNext();) {
+            ((Image) i.next()).dispose();
+        }
+        cache.clear();
+    }
+    
 }
