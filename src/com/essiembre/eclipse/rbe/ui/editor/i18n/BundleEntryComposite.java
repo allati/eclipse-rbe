@@ -185,6 +185,7 @@ public class BundleEntryComposite extends Composite {
                 labelComposite, SWT.ARROW | SWT.RIGHT);
         gotoButton.setToolTipText(
                 "Click to go to corresponding properties file");
+        gotoButton.setEnabled(false);
         
         Label txtLabel = new Label(labelComposite, SWT.NONE);
         txtLabel.setText(" " + UIUtils.getDisplayName(locale) + " ");
@@ -206,6 +207,7 @@ public class BundleEntryComposite extends Composite {
                 //TODO update bundle entry (on focus listener instead?)
             }
         });
+        commentedCheckbox.setEnabled(false);
         
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.END;
