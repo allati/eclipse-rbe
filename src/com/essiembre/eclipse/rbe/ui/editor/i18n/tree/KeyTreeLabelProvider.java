@@ -61,23 +61,33 @@ public class KeyTreeLabelProvider
             .getDisplay().getSystemColor(SWT.COLOR_GRAY);
 
     /** Group font. */
-    private Font groupFont = UIUtils.createFont(SWT.BOLD);
+    private Font groupFontKey = UIUtils.createFont(SWT.BOLD);
+    private Font groupFontNoKey = UIUtils.createFont(SWT.BOLD | SWT.ITALIC);
 
+    
 	/**
 	 * @see ILabelProvider#getImage(Object)
 	 */
 	public Image getImage(Object element) {
         KeyTreeItem treeItem = ((KeyTreeItem) element);
         ImageDescriptor descriptor = null;
+        
+        // Base image
         if (treeItem.getKeyTree().getBundleGroup().isKey(treeItem.getId())) {
-            descriptor = RBEPlugin.getImageDescriptor("key.gif");
+            IsCommentedVisitor commentedVisitor = new IsCommentedVisitor();
+            treeItem.accept(commentedVisitor, null);
+            if (commentedVisitor.hasOneCommented()) {
+                descriptor = RBEPlugin.getImageDescriptor("keyCommented.gif");
+            } else {
+                descriptor = RBEPlugin.getImageDescriptor("key.gif");
+            }
         } else {
+            //TODO use none, or different key?
             descriptor = RBEPlugin.getImageDescriptor("key.gif");
-//TODO use no key at all?
-//            descriptor = RBEPlugin.getImageDescriptor("keyNone.gif");
         }
         Image image = UIUtils.getCacheImage(imageCache, descriptor);
         
+        // Decorators
         image = missingValueDecorator.decorateImage(image, treeItem);
         
         
@@ -100,7 +110,8 @@ public class KeyTreeLabelProvider
 			((Image) i.next()).dispose();
 		}
 		imageCache.clear();
-        groupFont.dispose();
+        groupFontKey.dispose();
+        groupFontNoKey.dispose();
 	}
 
     /**
@@ -109,7 +120,11 @@ public class KeyTreeLabelProvider
     public Font getFont(Object element) {
         KeyTreeItem item = (KeyTreeItem) element; 
         if (item.getChildren().size() > 0) {
-            return groupFont;
+            if (item.getKeyTree().getBundleGroup().isKey(item.getId())) {
+                return groupFontKey;
+            } else {
+                return groupFontNoKey;
+            }
         }
         return null;
     }
