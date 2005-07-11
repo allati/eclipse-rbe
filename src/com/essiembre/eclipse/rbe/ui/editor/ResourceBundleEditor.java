@@ -21,6 +21,8 @@
 package com.essiembre.eclipse.rbe.ui.editor;
 
 
+import java.util.Locale;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -174,6 +176,27 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
     }
 
     /**
+     * Change current page based on locale.  If there is no editors associated
+     * with current locale, do nothing.
+     */
+    public void setActivePage(Locale locale) {
+        SourceEditor[] editors = resourceMediator.getSourceEditors();
+        int index = -1;
+        for (int i = 0; i < editors.length; i++) {
+            SourceEditor editor = editors[i];
+            Locale editorLocale = editor.getLocale();
+            if (editorLocale != null && editorLocale.equals(locale)
+                    || editorLocale == null && locale == null) {
+                index = i;
+                break;
+            }
+        }
+        if (index > -1) {
+            setActivePage(index + 1);
+        }
+    }
+    
+    /**
      * Calculates the contents of page GUI page when it is activated.
      */
     protected void pageChange(int newPageIndex) {
@@ -184,6 +207,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
         }
     }
 
+    
+    
     protected boolean isBundleMember(IFile file) {
         return resourceMediator.isResource(file);
     }
