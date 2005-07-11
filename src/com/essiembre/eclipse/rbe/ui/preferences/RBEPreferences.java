@@ -98,6 +98,22 @@ public final class RBEPreferences {
     public static final int NEW_LINE_WIN = 1;
     /** New Line Type: Mac. */
     public static final int NEW_LINE_MAC = 2;
+
+    /** Report missing values. */
+    public static final String REPORT_MISSING_VALUES = "detectMissingValues";
+    /** Report duplicate values. */
+    public static final String REPORT_DUPL_VALUES = 
+            "reportDuplicateValues";
+    /** Report similar values. */
+    public static final String REPORT_SIM_VALUES = 
+            "reportSimilarValues";
+    /** Report similar values: word compare. */
+    public static final String REPORT_SIM_VALUES_WORD_COMPARE = 
+            "reportSimilarValuesWordCompare";
+    /** Report similar values. */
+    public static final String REPORT_SIM_VALUES_LEVENSTHEIN = 
+            "reportSimilarValuesLevensthein";
+    
     
     /** RBEPreferences. */
     private static final Preferences PREFS = 
@@ -200,4 +216,24 @@ public final class RBEPreferences {
         return PREFS.getBoolean(NEW_LINE_NICE);
     }
 
+    public static boolean getReportMissingValues() {
+        return PREFS.getBoolean(REPORT_MISSING_VALUES);
+    }
+    
+    public static boolean getReportDuplicateValues() {
+        return PREFS.getBoolean(REPORT_DUPL_VALUES);
+    }
+    
+    public static boolean getReportSimilarValues() {
+        return PREFS.getBoolean(REPORT_SIM_VALUES);
+    }
+
+    public static boolean getReportSimilarValuesWordCompare() {
+        return PREFS.getBoolean(REPORT_SIM_VALUES_WORD_COMPARE);
+    }
+
+    public static boolean getReportSimilarValuesLevensthein() {
+        return PREFS.getBoolean(REPORT_SIM_VALUES_LEVENSTHEIN);
+    }
+    
 }

@@ -72,6 +72,10 @@ public class RBEPreferenceInitializer extends
 
         prefs.setDefault(RBEPreferences.NEW_LINE_TYPE, 
                 RBEPreferences.NEW_LINE_UNIX);
+
+        // Reporting/Performance
+        prefs.setDefault(RBEPreferences.REPORT_MISSING_VALUES, true);
+        prefs.setDefault(RBEPreferences.REPORT_SIM_VALUES_WORD_COMPARE, true);
     }
 
 }
