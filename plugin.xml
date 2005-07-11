@@ -60,7 +60,12 @@
             class="com.essiembre.eclipse.rbe.ui.preferences.RBEFormattingPrefPage"
             category="com.essiembre.eclipse.rbe.ui.preferences.RBEGeneralPrefPage"
             name="%prefs.formatting"
-            id="com.essiembre.eclipse.i18n.resourcebundle.page1"/>
+            id="com.essiembre.eclipse.rbe.ui.preferences.RBEFormattingPrefPage"/>
+      <page
+            class="com.essiembre.eclipse.rbe.ui.preferences.RBEReportingPrefPage"
+            category="com.essiembre.eclipse.rbe.ui.preferences.RBEGeneralPrefPage"
+            name="%prefs.performance"
+            id="com.essiembre.eclipse.rbe.ui.preferences.RBEReportingPrefPage"/>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
