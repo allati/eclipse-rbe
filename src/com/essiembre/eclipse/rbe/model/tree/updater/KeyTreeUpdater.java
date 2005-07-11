@@ -61,7 +61,7 @@ public abstract class KeyTreeUpdater {
             } else {
                 ((KeyTreeItem) parent).removeChildren(item);
             }
-            keyCache.remove(item);
+            keyCache.remove(key);
 
             // remove parents with no children having invalid keys. 
             if (parent instanceof KeyTreeItem) {
