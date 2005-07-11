@@ -49,6 +49,7 @@ import com.essiembre.eclipse.rbe.model.bundle.BundleEntry;
 import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
+import com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditor;
 import com.essiembre.eclipse.rbe.ui.editor.resources.ResourceManager;
 import com.essiembre.eclipse.rbe.ui.editor.resources.SourceEditor;
 import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
@@ -186,7 +187,17 @@ public class BundleEntryComposite extends Composite {
         gotoButton.setToolTipText(
                 "Click to go to corresponding properties file");
         gotoButton.setEnabled(false);
-        
+        gotoButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                ITextEditor editor = resourceManager.getSourceEditor(
+                        locale).getEditor();
+                Object activeEditor = 
+                        editor.getSite().getPage().getActiveEditor();
+                if (activeEditor instanceof ResourceBundleEditor) {
+                    ((ResourceBundleEditor) activeEditor).setActivePage(locale);
+                }
+            }
+        });
         Label txtLabel = new Label(labelComposite, SWT.NONE);
         txtLabel.setText(" " + UIUtils.getDisplayName(locale) + " ");
         txtLabel.setFont(boldFont);
@@ -198,13 +209,11 @@ public class BundleEntryComposite extends Composite {
                 labelComposite, SWT.CHECK);
         commentedCheckbox.setText("# commented" + " ");//TODO translate
         commentedCheckbox.setFont(smallFont);
-//        commentedCheckbox.setToolTipText("Check to comment this entry.");
         commentedCheckbox.setLayoutData(gridData);
         commentedCheckbox.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
                 resetCommented();
                 updateBundleOnChanges();
-                //TODO update bundle entry (on focus listener instead?)
             }
         });
         commentedCheckbox.setEnabled(false);
