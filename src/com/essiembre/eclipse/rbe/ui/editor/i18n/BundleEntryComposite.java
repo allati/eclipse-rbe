@@ -270,7 +270,9 @@ public class BundleEntryComposite extends Composite {
                     // we wait until field focus lost (or save) to 
                     // update it completely.
                     if (!editor.isDirty()) {
+                        int caretPosition = textBox.getCaretPosition();
                         updateBundleOnChanges();
+                        textBox.setSelection(caretPosition);
                     }
                 // Text field is the same as original (make non-dirty)
                 } else {
