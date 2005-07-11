@@ -29,12 +29,18 @@ Release 0.7.0 (2005-??-??)
 º New (feature #1218320): You can now chose whether to have spaces around equals
   signs in generated properties files.
 º New (feature #1115778): Existing comments are now preserved.
-º New (feature #1211728): Added "(Un)Comment" features to key tree contextual
-  menu.
+º New (feature #1211728): Added "Comment/Uncomment" features to key tree 
+  contextual menu.
+º New: Added button for each localized text boxed to go to corresponding
+  "source" editor.
 º Now loads commented properties (double ## key/value lines).
 º A tree key with at least one commented localized entry now shows as grey.
 º A checkbox was added to localized text fields to comment/uncomment keys.
   Content shows as grey when commented.
+º Key groups not representing existing keys are now shown as italic.
+º Commented entries are now shown with grey text and grey keys.
+º Fix (bug #1233610): No longer throws NullPointerException in some cases
+  when preference "Support Eclipse "nl" structure..." is selected.
 
 
 Release 0.6.0 (2005-05-24)
