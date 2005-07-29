@@ -20,12 +20,9 @@
  */
 package com.essiembre.eclipse.rbe.ui.editor.i18n;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -66,7 +63,7 @@ public class BundleEntryComposite extends Composite {
     private final Font boldFont;
     private final Font smallFont;
 
-    private Map imageCache = new HashMap(11);
+    private ImageRegistry imageRegistry = new ImageRegistry();
 
     private Text textBox;
     private Button commentedCheckbox;
@@ -130,10 +127,6 @@ public class BundleEntryComposite extends Composite {
      */
     public void dispose() {
         super.dispose();
-        for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
-            ((Image) i.next()).dispose();
-        }
-        imageCache.clear();
         boldFont.dispose();
         smallFont.dispose();
     }
@@ -150,6 +143,7 @@ public class BundleEntryComposite extends Composite {
             SourceEditor sourceEditor = resourceManager.getSourceEditor(locale);
             if (bundleEntry == null) {
                 textBox.setText("");
+                commentedCheckbox.setSelection(false);
             } else {
                 commentedCheckbox.setSelection(bundleEntry.isCommented());
                 textBox.setText(bundleEntry.getValue());
@@ -295,21 +289,27 @@ public class BundleEntryComposite extends Composite {
      * @return an image, or <code>null</code> if no match could be made
      */
     private Image loadCountryIcon(Locale locale) {
-        ImageDescriptor descriptor = null;
+        Image image = null;
         String countryCode = null;
         if (locale != null && locale.getCountry() != null) {
             countryCode = locale.getCountry().toLowerCase();
         }
         if (countryCode != null && countryCode.length() > 0) {
-            descriptor = RBEPlugin.getImageDescriptor(
-                    "countries/" + countryCode + ".gif");
+            String imageName = 
+                    "countries/" + countryCode.toLowerCase() + ".gif";
+            image = imageRegistry.get(imageName);
+            if (image == null) {
+                image = RBEPlugin.getImageDescriptor(imageName).createImage();
+                imageRegistry.put(imageName, image);
+            }
         }
-        descriptor = RBEPlugin.getImageDescriptor(
-                "countries/blank.gif");
-        Image image = (Image) imageCache.get(descriptor);
         if (image == null) {
-            image = descriptor.createImage();
-            imageCache.put(descriptor, image);
+            image = imageRegistry.get("countries/blank.gif");
+            if (image == null) {
+                String imageName = "countries/blank.gif"; 
+                image = RBEPlugin.getImageDescriptor(imageName).createImage();
+                imageRegistry.put(imageName, image);
+            }
         }
         return image;
     }
