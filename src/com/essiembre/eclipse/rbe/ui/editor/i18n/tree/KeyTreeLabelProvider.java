@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (C) 2003, 2004  Pascal Essiembre, Essiembre Consultant Inc.
  * 
  * This file is part of Essiembre ResourceBundle Editor.
@@ -20,11 +20,7 @@
  */
 package com.essiembre.eclipse.rbe.ui.editor.i18n.tree;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -36,9 +32,11 @@ import org.eclipse.swt.graphics.Image;
 
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
 import com.essiembre.eclipse.rbe.model.tree.visitors.IsCommentedVisitor;
+import com.essiembre.eclipse.rbe.model.tree.visitors.IsMissingValueVisitor;
+import com.essiembre.eclipse.rbe.ui.OverlayImageIcon;
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
-import com.essiembre.eclipse.rbe.ui.editor.i18n.tree.decorators.MissingValueDecorator;
+import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
 /**
  * Label provider for key tree viewer.
@@ -48,15 +46,14 @@ import com.essiembre.eclipse.rbe.ui.editor.i18n.tree.decorators.MissingValueDeco
 public class KeyTreeLabelProvider 
         extends LabelProvider implements IFontProvider, IColorProvider {	
     
+    public static final int KEY_DEFAULT = 1 << 1;
+    public static final int KEY_COMMENTED = 1 << 2;
+    public static final int KEY_NOT = 1 << 3;
+    public static final int WARNING = 1 << 4;
+    public static final int WARNING_GREY = 1 << 5;
 
-    MissingValueDecorator missingValueDecorator = new MissingValueDecorator();
+    private ImageRegistry imageRegistry = new ImageRegistry();
     
-    
-    
-    /** Cache for all images used by this provider. */
-    private Map imageCache = new HashMap(11);
-
-    //TODO have dynamic caching of Color and Font (like images).
     private Color commentedColor = RBEPlugin.getDefault().getWorkbench()
             .getDisplay().getSystemColor(SWT.COLOR_GRAY);
 
@@ -70,29 +67,34 @@ public class KeyTreeLabelProvider
 	 */
 	public Image getImage(Object element) {
         KeyTreeItem treeItem = ((KeyTreeItem) element);
-        ImageDescriptor descriptor = null;
         
-        // Base image
+        int iconFlags = 0;
+
+        // Figure out background icon
         if (treeItem.getKeyTree().getBundleGroup().isKey(treeItem.getId())) {
             IsCommentedVisitor commentedVisitor = new IsCommentedVisitor();
             treeItem.accept(commentedVisitor, null);
             if (commentedVisitor.hasOneCommented()) {
-                descriptor = RBEPlugin.getImageDescriptor("keyCommented.gif");
+                iconFlags += KEY_COMMENTED;
             } else {
-                descriptor = RBEPlugin.getImageDescriptor("key.gif");
+                iconFlags += KEY_DEFAULT;
             }
         } else {
-            //TODO use none, or different key?
-            descriptor = RBEPlugin.getImageDescriptor("key.gif");
+            iconFlags += KEY_NOT;
         }
-        Image image = UIUtils.getCacheImage(imageCache, descriptor);
         
-        // Decorators
-        image = missingValueDecorator.decorateImage(image, treeItem);
-        
-        
-        
-		return image;
+        // Maybe add warning icon        
+        if (RBEPreferences.getReportMissingValues()) {
+            IsMissingValueVisitor misValVisitor = new IsMissingValueVisitor();
+            treeItem.accept(misValVisitor, null);
+            if (misValVisitor.isMissingValue()) {
+                iconFlags += WARNING;
+            } else if (misValVisitor.isMissingChildValueOnly()) {
+                iconFlags += WARNING_GREY;
+            }
+        }
+
+        return generateImage(iconFlags);
 	}
 
 	/**
@@ -106,10 +108,6 @@ public class KeyTreeLabelProvider
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
      */
 	public void dispose() {
-		for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
-			((Image) i.next()).dispose();
-		}
-		imageCache.clear();
         groupFontKey.dispose();
         groupFontNoKey.dispose();
 	}
@@ -148,5 +146,47 @@ public class KeyTreeLabelProvider
     public Color getBackground(Object element) {
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    /**
+     * Generates an image based on icon flags. 
+     * @param iconFlags
+     * @return generated image
+     */
+    private Image generateImage(int iconFlags) {
+        Image image = imageRegistry.get("" + iconFlags);
+        if (image == null) {
+            // Figure background image
+            if ((iconFlags & KEY_COMMENTED) != 0) {
+                image = getRegistryImage("keyCommented.gif");
+            } else if ((iconFlags & KEY_NOT) != 0) {
+                image = getRegistryImage("key.gif");
+            } else {
+                image = getRegistryImage("key.gif");
+            }
+            
+            // Add warning icon
+            if ((iconFlags & WARNING) != 0) {
+                image = overlayImage(
+                        image, "warning.gif", OverlayImageIcon.BOTTOM_RIGHT);
+            } else if ((iconFlags & WARNING_GREY) != 0) {
+                image = overlayImage(image, 
+                        "warningGrey.gif", OverlayImageIcon.BOTTOM_RIGHT);
+            }
+        }
+        return image;
+    }
+    private Image overlayImage(
+            Image baseImage, String imageName, int location) {
+        return new OverlayImageIcon(
+                baseImage, getRegistryImage(imageName), location).createImage();
+    }
+    private Image getRegistryImage(String imageName) {
+        Image image = imageRegistry.get(imageName);
+        if (image == null) {
+            image = RBEPlugin.getImageDescriptor(imageName).createImage();
+            imageRegistry.put(imageName, image);
+        }
+        return image;
     }
 }
