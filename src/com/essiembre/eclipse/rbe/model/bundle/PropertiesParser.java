@@ -52,8 +52,6 @@ public final class PropertiesParser {
      */
     public static Bundle parse(String properties) {
 
-        //TODO implement "commented" feature
-        
         Bundle bundle = new Bundle();
         String[] lines = properties.split("\r\n|\r|\n");
         
@@ -161,8 +159,9 @@ public final class PropertiesParser {
                             value = (value << 4) + 10 + aChar - 'A';
                             break;
                         default:
-                            throw new IllegalArgumentException(
-                                    "Malformed \\uxxxx encoding.");
+                            System.err.println(
+                                    "Malformed \\uxxxx encoding found in this "
+                                  + "string: " + theString);
                         }
                     }
                     outBuffer.append((char) value);
