@@ -20,15 +20,13 @@
  */
 package com.essiembre.eclipse.rbe.ui;
 
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -47,6 +45,9 @@ import org.eclipse.swt.widgets.Shell;
  */
 public final class UIUtils {
 
+    /** Image registry. */
+    private static final ImageRegistry imageRegistry = new ImageRegistry();
+    
     /**
      * Constructor.
      */
@@ -184,20 +185,12 @@ public final class UIUtils {
     }
     
     
-    public static Image getCacheImage(Map cache, ImageDescriptor imgDesc) {
-        Image image = (Image) cache.get(imgDesc);
+    public static Image getImage(String imageName) {
+        Image image = imageRegistry.get(imageName);
         if (image == null) {
-            image = imgDesc.createImage();
-            cache.put(imgDesc, image);
+            image = RBEPlugin.getImageDescriptor(imageName).createImage();
+            imageRegistry.put(imageName, image);
         }
         return image;
     }
-    
-    public static void disposeCacheImages(Map cache) {
-        for (Iterator i = cache.values().iterator(); i.hasNext();) {
-            ((Image) i.next()).dispose();
-        }
-        cache.clear();
-    }
-    
 }
