@@ -164,4 +164,17 @@ public final class BundleEntry implements IBundleVisitable {
                         || comment != null && comment.equals(
                                 entry.getComment()));
     }
+    
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return super.toString() 
+                + "[[key=" + key 
+                + "][value=" + value
+                + "][comment=" + comment
+                + "][commented=" + commented
+                + "][locale=" + locale + "]]";
+    }
 }
