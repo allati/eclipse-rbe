@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
@@ -110,7 +111,16 @@ public final class UIUtils {
         }
         return new Font(display, fontData);
     }
-    
+
+    /**
+     * Gets a system color.
+     * @param colorId SWT constant
+     * @return system color
+     */
+    public static Color getSystemColor(int colorId) {
+        return RBEPlugin.getDefault().getWorkbench()
+                .getDisplay().getSystemColor(colorId);
+    }
     
     /**
      * Gets the approximate width required to display a given number of
