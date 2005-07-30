@@ -42,6 +42,7 @@ Release 0.7.0 (2005-??-??)
 º Fix (bug #1233610): No longer throws NullPointerException in some cases
   when preference "Support Eclipse "nl" structure..." is selected.
 º New: Duplicate keys can now be reported.
+º Better detection of NL vs Standard structure when opening files.
 
 Release 0.6.0 (2005-05-24)
 --------------------------
