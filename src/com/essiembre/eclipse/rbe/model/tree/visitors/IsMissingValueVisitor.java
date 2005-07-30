@@ -118,7 +118,7 @@ public class IsMissingValueVisitor extends KeyTreeVisitorAdapter {
             }
             for (Iterator iter = entries.iterator(); iter.hasNext();) {
                 BundleEntry entry = (BundleEntry) iter.next();
-                if (entry == null || entry.getValue().equals("")) {
+                if (entry == null || entry.getValue().length() == 0) {
                     return true;
                 }
             }

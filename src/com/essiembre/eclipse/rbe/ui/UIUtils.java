@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import com.essiembre.eclipse.rbe.RBEPlugin;
+
 
 /**
  * Utility methods related to application UI.

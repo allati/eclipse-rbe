@@ -27,7 +27,7 @@ import com.essiembre.eclipse.rbe.model.bundle.BundleEntry;
 import com.essiembre.eclipse.rbe.model.bundle.BundleVisitorAdapter;
 import com.essiembre.eclipse.rbe.model.utils.ProximityAnalyzer;
 import com.essiembre.eclipse.rbe.model.utils.WordCountAnalyzer;
-import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
+import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 
 /**
  * Finds bundle entries having values similar (case insensitive) to the bundle 
@@ -63,7 +63,9 @@ public class SimilarValuesVisitor extends BundleVisitorAdapter {
         if (entry != entryToMatch
                 && entry != null && entryToMatch != null
                 && entry.getValue().length() > 0
-                && analyzer.analyse(entry.getValue(), entryToMatch.getValue())
+                && analyzer.analyse(
+                        entry.getValue().toLowerCase(), 
+                        entryToMatch.getValue().toLowerCase())
                         >= RBEPreferences.getReportSimilarValuesPrecision()) {
             similars.add(entry);
         }

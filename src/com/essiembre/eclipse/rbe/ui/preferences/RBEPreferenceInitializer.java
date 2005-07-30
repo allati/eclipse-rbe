@@ -23,7 +23,8 @@ package com.essiembre.eclipse.rbe.ui.preferences;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 
-import com.essiembre.eclipse.rbe.ui.RBEPlugin;
+import com.essiembre.eclipse.rbe.RBEPlugin;
+import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 
 /**
  * Initializes default preferences.

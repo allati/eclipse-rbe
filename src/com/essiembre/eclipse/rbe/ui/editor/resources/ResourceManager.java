@@ -42,7 +42,7 @@ import com.essiembre.eclipse.rbe.model.tree.KeyTree;
 import com.essiembre.eclipse.rbe.model.tree.updater.FlatKeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.GroupedKeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.KeyTreeUpdater;
-import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
+import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 
 /**
  * Mediator holding instances of commonly used items, dealing with 

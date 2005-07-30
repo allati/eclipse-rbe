@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
  * Boston, MA  02111-1307  USA
  */
-package com.essiembre.eclipse.rbe.ui;
+package com.essiembre.eclipse.rbe;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;

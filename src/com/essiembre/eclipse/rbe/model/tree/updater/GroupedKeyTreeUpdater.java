@@ -56,7 +56,7 @@ public class GroupedKeyTreeUpdater extends KeyTreeUpdater {
             Object parent = keyTree;
             for (StringTokenizer tokens = new StringTokenizer(key, separator);
                     tokens.hasMoreTokens();) {
-                String name = (String) tokens.nextToken();
+                String name = tokens.nextToken();
                 if (!(parent instanceof KeyTree)) {
                     idBuf.append(separator);
                 }

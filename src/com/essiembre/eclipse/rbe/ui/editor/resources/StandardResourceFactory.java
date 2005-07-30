@@ -32,8 +32,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
-import com.essiembre.eclipse.rbe.model.workbench.PropertiesFileCreator;
-import com.essiembre.eclipse.rbe.model.workbench.StandardPropertiesFileCreator;
+import com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator;
+import com.essiembre.eclipse.rbe.model.workbench.files.StandardPropertiesFileCreator;
 
 /**
  * Responsible for creating resources related to a standard

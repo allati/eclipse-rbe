@@ -22,8 +22,6 @@ package com.essiembre.eclipse.rbe.model.bundle;
 
 import java.util.Locale;
 
-import com.essiembre.eclipse.rbe.model.Model;
-
 /**
  * Represents an entry in a properties file.
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
@@ -49,6 +47,7 @@ public final class BundleEntry implements IBundleVisitable {
      * @param key unique identifier within bundle
      * @param value entry value
      * @param comment entry comment
+     * @param commented if this whole entry is considered commented out
      */
     public BundleEntry(
             String key, String value, String comment, boolean commented) {
@@ -57,10 +56,10 @@ public final class BundleEntry implements IBundleVisitable {
         this.value = value;
         this.comment = comment;
         if (key == null) {
-            this.key = "";
+            this.key = ""; //$NON-NLS-1$
         }
         if (value == null) {
-            this.value = "";
+            this.value = ""; //$NON-NLS-1$
         }
         this.commented = commented;
     }
@@ -77,7 +76,7 @@ public final class BundleEntry implements IBundleVisitable {
     }
 
     /**
-     * @see Model#accept(ModelVisitorI, Object)
+     * @see IBundleVisitable#accept(IBundleVisitor, Object)
      */
     public void accept(IBundleVisitor visitor, Object passAlongArgument) {
         visitor.visitBundleEntry(this, passAlongArgument);
@@ -171,10 +170,10 @@ public final class BundleEntry implements IBundleVisitable {
      */
     public String toString() {
         return super.toString() 
-                + "[[key=" + key 
-                + "][value=" + value
-                + "][comment=" + comment
-                + "][commented=" + commented
-                + "][locale=" + locale + "]]";
+                + "[[key=" + key  //$NON-NLS-1$
+                + "][value=" + value //$NON-NLS-1$
+                + "][comment=" + comment //$NON-NLS-1$
+                + "][commented=" + commented //$NON-NLS-1$
+                + "][locale=" + locale + "]]";  //$NON-NLS-1$//$NON-NLS-2$
     }
 }

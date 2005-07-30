@@ -83,7 +83,7 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
      * Initializes the given bundle by adding propser listeners on it.
      * @param bundle the bundle to initialize
      */
-    private void initBundle(Bundle bundle) {
+    protected void initBundle(Bundle bundle) {
         bundle.addListener(new IDeltaListener() {
             public void add(DeltaEvent event) {
                 addKey(((BundleEntry) event.receiver()).getKey());
@@ -158,7 +158,7 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
     /**
      * Sets the key tree updater. Doing so will automatically refresh the tree,
      * which means, recreating it entirely.
-     * @return key tree updater
+     * @param updater key tree updater
      */
     public void setUpdater(KeyTreeUpdater updater) {
         this.updater = updater;

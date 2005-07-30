@@ -57,7 +57,7 @@ public class Bundle extends Model implements IBundleVisitable {
     }
     
     /**
-     * @see Model#accept(ModelVisitorI, Object)
+     * @see IBundleVisitable#accept(IBundleVisitor, Object)
      */
     public void accept(IBundleVisitor visitor, Object passAlongArgument) {
         for (Iterator iter = entries.values().iterator(); iter.hasNext();) {
@@ -120,7 +120,7 @@ public class Bundle extends Model implements IBundleVisitable {
                 entry.setLocale(locale);
                 fireModify(oldEntry);
             }
-        } else if (!entry.getKey().trim().equals("")) {
+        } else if (entry.getKey().trim().length() > 0) {
             entries.put(entry.getKey(), entry);
             entry.setBundle(this);
             entry.setLocale(locale);
@@ -209,7 +209,7 @@ public class Bundle extends Model implements IBundleVisitable {
     }
     /**
      * Sets the bundle group (parent) associated with this bundle.
-     * @bundleGroup a bundle group
+     * @param bundleGroup a bundle group
      */
     protected void setBundleGroup(BundleGroup bundleGroup) {
         this.bundleGroup = bundleGroup;
@@ -217,7 +217,7 @@ public class Bundle extends Model implements IBundleVisitable {
     
     /**
      * Gets sorted resource bundle keys for this bundle.
-     * @param resource bundle keys
+     * @return resource bundle keys
      */
     public Set getKeys() {
         Set keys = new TreeSet();

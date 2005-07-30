@@ -51,11 +51,11 @@ import com.essiembre.eclipse.rbe.model.bundle.visitors.SimilarValuesVisitor;
 import com.essiembre.eclipse.rbe.model.utils.LevenshteinDistanceAnalyzer;
 import com.essiembre.eclipse.rbe.model.utils.ProximityAnalyzer;
 import com.essiembre.eclipse.rbe.model.utils.WordCountAnalyzer;
+import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
 import com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditor;
 import com.essiembre.eclipse.rbe.ui.editor.resources.ResourceManager;
 import com.essiembre.eclipse.rbe.ui.editor.resources.SourceEditor;
-import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
 /**
  * Represents a data entry section for a bundle entry.

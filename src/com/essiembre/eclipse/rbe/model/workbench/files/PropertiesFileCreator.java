@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
  * Boston, MA  02111-1307  USA
  */
-package com.essiembre.eclipse.rbe.model.workbench;
+package com.essiembre.eclipse.rbe.model.workbench.files;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
 import com.essiembre.eclipse.rbe.model.bundle.PropertiesGenerator;
-import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
+import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 
 /**
  * Creates a properties file.
@@ -41,12 +41,19 @@ import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
  */
 public abstract class PropertiesFileCreator {
 
+    /**
+     * Creates a propertiles file.
+     * @param locale locale representing properties file
+     * @return the properties file
+     * @throws CoreException problem creating file
+     * @throws IOException problem creating file
+     */
     public IFile createPropertiesFile(Locale locale)
             throws CoreException, IOException {
         IPath filePath = buildFilePath(locale);
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IFile file = root.getFile(filePath);
-        String contents = "";
+        String contents = ""; //$NON-NLS-1$
         if (RBEPreferences.getShowGenerator()) {
             contents = PropertiesGenerator.GENERATED_BY;
         }

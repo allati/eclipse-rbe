@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2003, 2004  Pascal Essiembre, Essiembre Consultant Inc.
+ * 
+ * This file is part of Essiembre ResourceBundle Editor.
+ * 
+ * Essiembre ResourceBundle Editor is free software; you can redistribute it 
+ * and/or modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * Essiembre ResourceBundle Editor is distributed in the hope that it will be 
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Essiembre ResourceBundle Editor; if not, write to the 
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+ * Boston, MA  02111-1307  USA
+ */
 package com.essiembre.eclipse.rbe.model.utils;
 
 
@@ -5,9 +25,8 @@ package com.essiembre.eclipse.rbe.model.utils;
  * Compares two strings (case insensitive) and returns a proximity level based
  * on the number of character transformation required to have identical strings.
  * Non-string objects are converted to strings using the <code>toString()</code>
- * method. The exact algorithm was taken from Micheal Gilleland.
- * 
- * @link http://www.merriampark.com/ld.htm
+ * method. The exact algorithm was taken from Micheal Gilleland
+ * (<a href="http://merriampark.com/ld.htm">http://merriampark.com/ld.htm</a>).
  * @author Pascal Essiembre
  * @version $Author$ $Revision$ $Date$
  */
@@ -75,7 +94,7 @@ public class LevenshteinDistanceAnalyzer implements ProximityAnalyzer {
      * Compute the distance
      * @param s source string
      * @param t target string
-     * @int distance
+     * @return distance
      */
     public int distance(String s, String t) {
         int d[][]; // matrix

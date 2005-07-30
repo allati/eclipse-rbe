@@ -30,13 +30,13 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
+import com.essiembre.eclipse.rbe.RBEPlugin;
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
 import com.essiembre.eclipse.rbe.model.tree.visitors.IsCommentedVisitor;
 import com.essiembre.eclipse.rbe.model.tree.visitors.IsMissingValueVisitor;
+import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 import com.essiembre.eclipse.rbe.ui.OverlayImageIcon;
-import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
-import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
 /**
  * Label provider for key tree viewer.

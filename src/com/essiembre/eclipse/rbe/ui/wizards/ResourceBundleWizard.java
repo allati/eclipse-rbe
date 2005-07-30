@@ -48,9 +48,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
+import com.essiembre.eclipse.rbe.RBEPlugin;
 import com.essiembre.eclipse.rbe.model.bundle.PropertiesGenerator;
-import com.essiembre.eclipse.rbe.ui.RBEPlugin;
-import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
+import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 
 /**
  * This is a sample new wizard. Its role is to create a new file 

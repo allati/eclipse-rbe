@@ -20,9 +20,8 @@
  */
 package com.essiembre.eclipse.rbe.model.bundle;
 
-import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
-
-//TODO move this class or most of it to UI layer, or have Preferences in model
+import com.essiembre.eclipse.rbe.RBEPlugin;
+import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 
 /**
  * Bundle-related utility methods. 
@@ -33,9 +32,10 @@ public final class PropertiesParser {
 
     /** System line separator. */
     private static final String SYSTEM_LINE_SEPARATOR = 
-            System.getProperty("line.separator");
+            System.getProperty("line.separator"); //$NON-NLS-1$
     
-    private static final String KEY_VALUE_SEPARATORS = "=:";
+    /** Characters accepted as key value separators. */
+    private static final String KEY_VALUE_SEPARATORS = "=:"; //$NON-NLS-1$
 
     
     /**
@@ -56,7 +56,7 @@ public final class PropertiesParser {
     public static Bundle parse(String properties) {
 
         Bundle bundle = new Bundle();
-        String[] lines = properties.split("\r\n|\r|\n");
+        String[] lines = properties.split("\r\n|\r|\n"); //$NON-NLS-1$
         
         boolean doneWithFileComment = false;
         StringBuffer fileComment = new StringBuffer();
@@ -68,13 +68,13 @@ public final class PropertiesParser {
             lineBuf.append(line);
         
             int equalPosition = findKeyValueSeparator(line);// lineBuf.indexOf("=");
-            boolean isRegularLine = line.matches("^[^#].*");
-            boolean isCommentedLine = line.matches("^##[^#].*");
+            boolean isRegularLine = line.matches("^[^#].*"); //$NON-NLS-1$
+            boolean isCommentedLine = line.matches("^##[^#].*"); //$NON-NLS-1$
             
             // parse regular and commented lines
             if (equalPosition >= 1 && (isRegularLine || isCommentedLine)) {
                 doneWithFileComment = true;
-                String comment = "";
+                String comment = ""; //$NON-NLS-1$
                 if (lineComment.length() > 0) {
                     comment = lineComment.toString();
                     lineComment.setLength(0);
@@ -84,15 +84,17 @@ public final class PropertiesParser {
                     lineBuf.delete(0, 2); // remove ##
                     equalPosition -= 2;
                 }
-                while (lineBuf.lastIndexOf("\\") == lineBuf.length() -1) {
-                    int lineBreakPosition = lineBuf.lastIndexOf("\\");
+                String backslash = "\\"; //$NON-NLS-1$
+                while (lineBuf.lastIndexOf(backslash) == lineBuf.length() -1) {
+                    int lineBreakPosition = lineBuf.lastIndexOf(backslash);
                     lineBuf.replace(
                             lineBreakPosition,
-                            lineBreakPosition + 1, "");
+                            lineBreakPosition + 1, ""); //$NON-NLS-1$
                     if (++i <= lines.length) {
                         String wrappedLine = lines[i].trim();
                         if (isCommentedLine) {
-                            lineBuf.append(wrappedLine.replaceFirst("^##", ""));
+                            lineBuf.append(wrappedLine.replaceFirst(
+                                    "^##", "")); //$NON-NLS-1$ //$NON-NLS-2$
                         } else {
                             lineBuf.append(wrappedLine);
                         }
@@ -104,13 +106,15 @@ public final class PropertiesParser {
                     key = PropertiesParser.convertEncodedToUnicode(key);
                     value = PropertiesParser.convertEncodedToUnicode(value);
                 } else {
-                    value = value.replaceAll("\\\\r", "\r");
-                    value = value.replaceAll("\\\\n", "\n");
+                    value = value.replaceAll(
+                            "\\\\r", "\r"); //$NON-NLS-1$ //$NON-NLS-2$
+                    value = value.replaceAll(
+                            "\\\\n", "\n");  //$NON-NLS-1$//$NON-NLS-2$
                 }
                 bundle.addEntry(
                         new BundleEntry(key, value, comment, isCommentedLine));
             // parse comment line
-            } else if (lineBuf.indexOf("#") == 0) {
+            } else if (lineBuf.indexOf("#") == 0) { //$NON-NLS-1$
                 if (!doneWithFileComment) {
                     fileComment.append(lineBuf);
                     fileComment.append(SYSTEM_LINE_SEPARATOR);
@@ -131,23 +135,24 @@ public final class PropertiesParser {
     /**
      * Converts encoded &#92;uxxxx to unicode chars
      * and changes special saved chars to their original forms
-     * This method was copied from <code>Properties.loadConvert(String)</code>.
-     * @see java.util.Properties#loadConvert(java.lang.String)
+     * @param str the string to convert
+     * @return converted string
+     * @see java.util.Properties
      */
-    public static String convertEncodedToUnicode(String theString) {
+    public static String convertEncodedToUnicode(String str) {
         char aChar;
-        int len = theString.length();
+        int len = str.length();
         StringBuffer outBuffer = new StringBuffer(len);
 
         for (int x = 0; x < len;) {
-            aChar = theString.charAt(x++);
+            aChar = str.charAt(x++);
             if (aChar == '\\' && x + 5 <= len) {
-                aChar = theString.charAt(x++);
+                aChar = str.charAt(x++);
                 if (aChar == 'u') {
                     // Read the xxxx
                     int value = 0;
                     for (int i = 0; i < 4; i++) {
-                        aChar = theString.charAt(x++);
+                        aChar = str.charAt(x++);
                         switch (aChar) {
                         case '0': case '1': case '2': case '3': case '4':
                         case '5': case '6': case '7': case '8': case '9':
@@ -163,9 +168,8 @@ public final class PropertiesParser {
                             break;
                         default:
                             value = aChar;
-                            System.err.println(
-                                    "Malformed \\uxxxx encoding found in this "
-                                  + "string: " + theString);
+                            System.err.println(RBEPlugin.getString(
+                                 "error.init.badencoding") + str); //$NON-NLS-1$
                         }
                     }
                     outBuffer.append((char) value);

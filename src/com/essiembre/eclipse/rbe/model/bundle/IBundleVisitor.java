@@ -41,7 +41,7 @@ public interface IBundleVisitor {
 	public void visitBundle(Bundle bundle, Object passAlongArgument);
     /**
      * Visits a bundle entry.
-     * @param group bundle entry
+     * @param entry bundle entry
      * @param passAlongArgument an optional argument
      */
 	public void visitBundleEntry(BundleEntry entry, Object passAlongArgument);

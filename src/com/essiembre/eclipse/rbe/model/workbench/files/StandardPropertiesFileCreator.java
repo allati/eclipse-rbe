@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
  * Boston, MA  02111-1307  USA
  */
-package com.essiembre.eclipse.rbe.model.workbench;
+package com.essiembre.eclipse.rbe.model.workbench.files;
 
 import java.util.Locale;
 
@@ -38,6 +38,9 @@ public class StandardPropertiesFileCreator extends PropertiesFileCreator {
     
     /**
      * Constructor.
+     * @param dir directory in wich to create the file
+     * @param baseFileName base name of file to create
+     * @param extension file extension
      */
     public StandardPropertiesFileCreator(
             String dir, String baseFileName, String extension) {
@@ -48,14 +51,15 @@ public class StandardPropertiesFileCreator extends PropertiesFileCreator {
     }
 
     /**
-     * @see com.essiembre.eclipse.rbe.model.workbench.PropertiesFileCreator#buildFilePath(java.util.Locale)
+     * @see com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator#buildFilePath(java.util.Locale)
      */
     protected IPath buildFilePath(Locale locale) {
         
         IPath path = new Path(dir);
         path = path.append(baseFileName);
         if (locale != null) {
-            path = new Path(path.toString() + "_" + locale.toString());
+            path = new Path(
+                    path.toString() + "_" + locale.toString()); //$NON-NLS-1$
         }
         return path.addFileExtension(extension);
     }
