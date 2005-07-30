@@ -24,9 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.essiembre.eclipse.rbe.model.tree.IKeyTreeVisitor;
-import com.essiembre.eclipse.rbe.model.tree.KeyTree;
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
+import com.essiembre.eclipse.rbe.model.tree.KeyTreeVisitorAdapter;
 
 /**
  * Visitor for finding keys starting with the <code>passAlongArgument</code>,
@@ -34,7 +33,7 @@ import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class KeysStartingWithVisitor implements IKeyTreeVisitor {
+public class KeysStartingWithVisitor extends KeyTreeVisitorAdapter {
 
     /** Holder for matching keys. */
     List items = new ArrayList();
@@ -44,14 +43,6 @@ public class KeysStartingWithVisitor implements IKeyTreeVisitor {
      */
     public KeysStartingWithVisitor() {
         super();
-    }
-
-    /**
-     * @see com.essiembre.eclipse.rbe.model.tree.IKeyTreeVisitor#visitKeyTree(
-     *         com.essiembre.eclipse.rbe.model.tree.KeyTree, java.lang.Object)
-     */
-    public void visitKeyTree(KeyTree keyTree, Object passAlongArgument) {
-        // TODO implement me?
     }
 
     /**

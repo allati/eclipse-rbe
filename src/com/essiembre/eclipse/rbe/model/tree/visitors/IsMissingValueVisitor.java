@@ -25,9 +25,8 @@ import java.util.Iterator;
 
 import com.essiembre.eclipse.rbe.model.bundle.BundleEntry;
 import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
-import com.essiembre.eclipse.rbe.model.tree.IKeyTreeVisitor;
-import com.essiembre.eclipse.rbe.model.tree.KeyTree;
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
+import com.essiembre.eclipse.rbe.model.tree.KeyTreeVisitorAdapter;
 
 /**
  * Visitor for finding if a key has at least one corresponding bundle entry
@@ -35,7 +34,7 @@ import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class IsMissingValueVisitor implements IKeyTreeVisitor {
+public class IsMissingValueVisitor extends KeyTreeVisitorAdapter {
 
     /** Whether corresponding bundle entries are missing a value. */
     boolean isMissingValue = false;
@@ -47,14 +46,6 @@ public class IsMissingValueVisitor implements IKeyTreeVisitor {
      */
     public IsMissingValueVisitor() {
         super();
-    }
-
-    /**
-     * @see com.essiembre.eclipse.rbe.model.tree.IKeyTreeVisitor#visitKeyTree(
-     *         com.essiembre.eclipse.rbe.model.tree.KeyTree, java.lang.Object)
-     */
-    public void visitKeyTree(KeyTree keyTree, Object passAlongArgument) {
-        // TODO implement me?
     }
 
     /**
