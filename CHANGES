@@ -43,6 +43,10 @@ Release 0.7.0 (2005-??-??)
   when preference "Support Eclipse "nl" structure..." is selected.
 º New: Duplicate keys can now be reported.
 º Better detection of NL vs Standard structure when opening files.
+º Fix (bug #1240858): Malformed \uxxxx encoding in properties files no longer
+  triggers an exception when opening files. 
+º New (feature #1200455): Similar entries can now be reported.
+
 
 Release 0.6.0 (2005-05-24)
 --------------------------
