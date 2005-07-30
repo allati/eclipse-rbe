@@ -41,7 +41,7 @@ import com.essiembre.eclipse.rbe.model.workbench.PropertiesFileCreator;
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class NLResourceFactory extends StructuredResourceFactory {
+public class NLResourceFactory extends ResourceFactory {
 
     private final SourceEditor[] sourceEditors;
     private final PropertiesFileCreator fileCreator;
@@ -51,7 +51,7 @@ public class NLResourceFactory extends StructuredResourceFactory {
      * Constructor.
      * @throws CoreException
      */
-    public NLResourceFactory(IEditorSite site, IFile file) 
+    protected NLResourceFactory(IEditorSite site, IFile file) 
             throws CoreException {
         super();
         List editors = new ArrayList();
@@ -142,7 +142,7 @@ public class NLResourceFactory extends StructuredResourceFactory {
 
     /**
      * @see com.essiembre.eclipse.rbe.ui.editor.resources
-     *         .StructuredResourceFactory#getEditorDisplayName()
+     *         .ResourceFactory#getEditorDisplayName()
      */
     public String getEditorDisplayName() {
         return displayName;
@@ -150,7 +150,7 @@ public class NLResourceFactory extends StructuredResourceFactory {
 
     /**
      * @see com.essiembre.eclipse.rbe.ui.editor.resources
-     *         .StructuredResourceFactory#getSourceEditors()
+     *         .ResourceFactory#getSourceEditors()
      */
     public SourceEditor[] getSourceEditors() {
         return sourceEditors;
@@ -158,7 +158,7 @@ public class NLResourceFactory extends StructuredResourceFactory {
 
     /**
      * @see com.essiembre.eclipse.rbe.ui.editor.resources
-     *         .StructuredResourceFactory#getPropertiesFileCreator()
+     *         .ResourceFactory#getPropertiesFileCreator()
      */
     public PropertiesFileCreator getPropertiesFileCreator() {
         return fileCreator;

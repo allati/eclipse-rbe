@@ -52,7 +52,7 @@ import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
  */
 public class ResourceManager {
 
-    private StructuredResourceFactory resourcesFactory;
+    private ResourceFactory resourcesFactory;
     private final BundleGroup bundleGroup;
     private final KeyTree keyTree;
     private final Map sourceEditors = new HashMap(); //key=Locale;value=SourceE.
@@ -65,16 +65,7 @@ public class ResourceManager {
     public ResourceManager(final IEditorSite site, final IFile file)
             throws CoreException {
         super();
-        if (RBEPreferences.getSupportNL()) {
-            StructuredResourceFactory nlFactory = new NLResourceFactory(site, file);
-            if (nlFactory.getSourceEditors().length > 0) {
-                resourcesFactory = nlFactory;
-            }
-        }
-        if (resourcesFactory == null) {
-            resourcesFactory = new StandardResourceFactory(site, file);
-        }
-        
+        resourcesFactory = ResourceFactory.createFactory(site, file);
         bundleGroup = new BundleGroup();
         SourceEditor[] editors = resourcesFactory.getSourceEditors();
         for (int i = 0; i < editors.length; i++) {

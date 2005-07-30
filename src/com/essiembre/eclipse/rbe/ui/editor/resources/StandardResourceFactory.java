@@ -21,6 +21,7 @@
 package com.essiembre.eclipse.rbe.ui.editor.resources;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
@@ -40,7 +41,7 @@ import com.essiembre.eclipse.rbe.model.workbench.StandardPropertiesFileCreator;
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class StandardResourceFactory extends StructuredResourceFactory {
+public class StandardResourceFactory extends ResourceFactory {
 
     private final SourceEditor[] sourceEditors;
     private final PropertiesFileCreator fileCreator;
@@ -50,59 +51,48 @@ public class StandardResourceFactory extends StructuredResourceFactory {
      * Constructor.
      * 
      */
-    public StandardResourceFactory(IEditorSite site, IFile file) 
+    protected StandardResourceFactory(IEditorSite site, IFile file) 
              throws CoreException {
         super();
         List editors = new ArrayList();
         String bundleName = getBundleName(file);
-        IResource[] resources = null;
-        try {
-            resources = file.getParent().members();
-        } catch (CoreException e) {
-            throw new PartInitException(
-                    "Can't initialize resource bundle editor.", e);
-        }
+        String regex = ResourceFactory.getPropertiesFileRegEx(file);
+        IResource[] resources = StandardResourceFactory.getResources(file);
+
         for (int i = 0; i < resources.length; i++) {
             IResource resource = resources[i];
-            String regex = "^(" + bundleName + ")"
-                    + "((_[a-z]{2,3})|(_[a-z]{2,3}_[A-Z]{2})"
-                    + "|(_[a-z]{2,3}_[A-Z]{2}_\\w*))?(\\."
-                    + file.getFileExtension() + ")$";
             String resourceName = resource.getName();
-            if (resource instanceof IFile && resourceName.matches(regex)) {
-                
-                // Build local title
-                String localeText = resourceName.replaceFirst(regex, "$2");
-                StringTokenizer tokens = 
-                    new StringTokenizer(localeText, "_");
-                List localeSections = new ArrayList();
-                while (tokens.hasMoreTokens()) {
-                    localeSections.add(tokens.nextToken());
-                }
-                Locale locale = null;
-                switch (localeSections.size()) {
-                case 1:
-                    locale = new Locale((String) localeSections.get(0));
-                    break;
-                case 2:
-                    locale = new Locale(
-                            (String) localeSections.get(0),
-                            (String) localeSections.get(1));
-                    break;
-                case 3:
-                    locale = new Locale(
-                            (String) localeSections.get(0),
-                            (String) localeSections.get(1),
-                            (String) localeSections.get(2));
-                    break;
-                default:
-                    break;
-                }
-                SourceEditor sourceEditor = 
-                        createEditor(site, resource, locale);
-                if (sourceEditor != null) {
-                    editors.add(sourceEditor);
-                }
+            // Build local title
+            String localeText = resourceName.replaceFirst(regex, "$2");
+            StringTokenizer tokens = 
+                new StringTokenizer(localeText, "_");
+            List localeSections = new ArrayList();
+            while (tokens.hasMoreTokens()) {
+                localeSections.add(tokens.nextToken());
+            }
+            Locale locale = null;
+            switch (localeSections.size()) {
+            case 1:
+                locale = new Locale((String) localeSections.get(0));
+                break;
+            case 2:
+                locale = new Locale(
+                        (String) localeSections.get(0),
+                        (String) localeSections.get(1));
+                break;
+            case 3:
+                locale = new Locale(
+                        (String) localeSections.get(0),
+                        (String) localeSections.get(1),
+                        (String) localeSections.get(2));
+                break;
+            default:
+                break;
+            }
+            SourceEditor sourceEditor = 
+                    createEditor(site, resource, locale);
+            if (sourceEditor != null) {
+                editors.add(sourceEditor);
             }
         }
         
@@ -115,33 +105,45 @@ public class StandardResourceFactory extends StructuredResourceFactory {
     }
     
     /**
-     * @see com.essiembre.eclipse.rbe.ui.editor.resources.StructuredResourceFactory#getEditorDisplayName()
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory#getEditorDisplayName()
      */
     public String getEditorDisplayName() {
         return displayName;
     }
 
     /**
-     * @see com.essiembre.eclipse.rbe.ui.editor.resources.StructuredResourceFactory#getSourceEditors()
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory#getSourceEditors()
      */
     public SourceEditor[] getSourceEditors() {
         return sourceEditors;
     }
 
     /**
-     * @see com.essiembre.eclipse.rbe.ui.editor.resources.StructuredResourceFactory#getPropertiesFileCreator()
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory#getPropertiesFileCreator()
      */
     public PropertiesFileCreator getPropertiesFileCreator() {
         return fileCreator;
     }
 
-    private String getBundleName(IFile file) {
-        String name = file.getName();
-        String regex = "^(.*?)"
-                + "((_[a-z]{2,3})|(_[a-z]{2,3}_[A-Z]{2})"
-                + "|(_[a-z]{2,3}_[A-Z]{2}_\\w*))?(\\."
-                + file.getFileExtension() + ")$";
-        return name.replaceFirst(regex, "$1");
+    protected static IResource[] getResources(IFile file)
+        throws PartInitException {
+        
+        String regex = ResourceFactory.getPropertiesFileRegEx(file);
+        IResource[] resources = null;
+        try {
+            resources = file.getParent().members();
+        } catch (CoreException e) {
+            throw new PartInitException(
+                    "Can't initialize resource bundle editor.", e);
+        }
+        Collection validResources = new ArrayList();
+        for (int i = 0; i < resources.length; i++) {
+            IResource resource = resources[i];
+            String resourceName = resource.getName();
+            if (resource instanceof IFile && resourceName.matches(regex)) {
+                validResources.add(resource);
+            }
+        }
+        return (IResource[]) validResources.toArray(new IResource[]{});
     }
-
 }
