@@ -48,6 +48,10 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.essiembre.eclipse.rbe.model.bundle.BundleEntry;
 import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
 import com.essiembre.eclipse.rbe.model.bundle.visitors.DuplicateValuesVisitor;
+import com.essiembre.eclipse.rbe.model.bundle.visitors.SimilarValuesVisitor;
+import com.essiembre.eclipse.rbe.model.utils.LevenshteinDistanceAnalyzer;
+import com.essiembre.eclipse.rbe.model.utils.ProximityAnalyzer;
+import com.essiembre.eclipse.rbe.model.utils.WordCountAnalyzer;
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
 import com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditor;
@@ -80,6 +84,7 @@ public class BundleEntryComposite extends Composite {
     private String textBeforeUpdate;
 
     private DuplicateValuesVisitor duplVisitor;
+    private SimilarValuesVisitor similarVisitor;
     
     
     /**
@@ -162,15 +167,14 @@ public class BundleEntryComposite extends Composite {
             gotoButton.setEnabled(true);
             if (RBEPreferences.getReportDuplicateValues()) {
                 findDuplicates(bundleEntry);
+            } else {
+                duplVisitor = null;
             }
             if (RBEPreferences.getReportSimilarValues()) {
-                if (RBEPreferences.getReportSimilarValuesLevensthein()) {
-                    
-                } else {
-                    
-                }
+                findSimilar(bundleEntry);
+            } else {
+                similarVisitor = null;
             }
-            
         } else {
             commentedCheckbox.setSelection(false);
             commentedCheckbox.setEnabled(false);
@@ -183,6 +187,26 @@ public class BundleEntryComposite extends Composite {
         resetCommented();
     }
         
+    private void findSimilar(BundleEntry bundleEntry) {
+        ProximityAnalyzer analyzer;
+        if (RBEPreferences.getReportSimilarValuesLevensthein()) {
+            analyzer = LevenshteinDistanceAnalyzer.getInstance();
+        } else {
+            analyzer = WordCountAnalyzer.getInstance();
+        }
+        BundleGroup bundleGroup = resourceManager.getBundleGroup();
+        if (similarVisitor == null) {
+            similarVisitor = new SimilarValuesVisitor();
+        }
+        similarVisitor.setProximityAnalyzer(analyzer);
+        similarVisitor.clear();
+        bundleGroup.getBundle(locale).accept(similarVisitor, bundleEntry);
+        if (duplVisitor != null) {
+            similarVisitor.getSimilars().removeAll(duplVisitor.getDuplicates());
+        }
+        simButton.setVisible(similarVisitor.getSimilars().size() > 0);
+    }
+    
     private void findDuplicates(BundleEntry bundleEntry) {
         BundleGroup bundleGroup = resourceManager.getBundleGroup();
         if (duplVisitor == null) {
@@ -219,27 +243,42 @@ public class BundleEntryComposite extends Composite {
         // Similar button
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.END;
+        gridData.grabExcessHorizontalSpace = true;
         simButton = new Button(labelComposite, SWT.PUSH | SWT.FLAT);
-        simButton.setImage(RBEPlugin.getImageDescriptor("similar.gif").createImage());
+        simButton.setImage(UIUtils.getImage("similar.gif"));
         simButton.setLayoutData(gridData);
         simButton.setVisible(false);
         simButton.setToolTipText(
                 "Similar value(s) found. Click for details");
+        simButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                String msg = "Below are keys having similar value as key \""
+                        + activeKey + "\" within the locale \""
+                        + UIUtils.getDisplayName(locale) + "\":\n\n";
+                for (Iterator iter = similarVisitor.getSimilars().iterator();
+                        iter.hasNext();) {
+                    msg += "        " + ((BundleEntry) iter.next()).getKey()
+                        + "\n";
+                }
+                MessageDialog.openInformation(
+                        getShell(), "Similar value(s) found.", msg); 
+            }
+        });
 
         // Duplicate button
+        gridData = new GridData();
         gridData.horizontalAlignment = GridData.END;
-        gridData.grabExcessHorizontalSpace = true;
         duplButton = new Button(labelComposite, SWT.PUSH | SWT.FLAT);
-        duplButton.setImage(RBEPlugin.getImageDescriptor("duplicate.gif").createImage());
+        duplButton.setImage(UIUtils.getImage("duplicate.gif"));
         duplButton.setLayoutData(gridData);
         duplButton.setVisible(false);
         duplButton.setToolTipText(
                 "Duplicate value(s) found. Click for details");
         duplButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
-                String msg = "Below are keys having the same value has key \""
+                String msg = "Below are keys having the same value as key \""
                         + activeKey + "\" within the locale \""
-                        + locale.getDisplayName() + "\":\n\n";
+                        + UIUtils.getDisplayName(locale) + "\":\n\n";
                 for (Iterator iter = duplVisitor.getDuplicates().iterator();
                         iter.hasNext();) {
                     msg += "        " + ((BundleEntry) iter.next()).getKey()
