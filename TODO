@@ -1,23 +1,15 @@
-- Add configurable options for most (or all) visitor-related operations.
-- Consider using common registr for resources (image). May use eclipse one.
+- Display internationalized tooltips for most components
 - Consider merging the 2 tree providers and caching some visitor results
   for performance.
-- Better handling of malformed encoding. Option add error dialog when 
-  IllegalArgumentException when trying to unescape
-  malformed \uxxxx encoding (create an MalformedEncodingException?).
-  Then parse normally?
-- Display no icon when group is not a key.
 - Investigate why the plugin won't open an external file 
   (using "Open External File" option).
 - View for showing resource bundles only.
 - Update Manager support.
 - Table-view of resource bundles
 - Import/Export feature
-- Reporting of duplicate values (with an ignore list?)
-- Display internationalized tooltips for most components
+- Reporting of similar/duplicate values accros multiple locales???
 - Have preference page at project level (keeping defaults in Window/Preferences)
 - Improve key navigation
-- Have a way to go to proper resource/location from text field.
 - Add preference for synching text typed in add text box and key tree selection.
 - Optionally display comments in bundle entry composites.
 - More... (see SourceForge feature requests)
