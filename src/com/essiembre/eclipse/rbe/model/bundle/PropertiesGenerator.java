@@ -47,7 +47,7 @@ public final class PropertiesGenerator {
     };
 
     /** Special resouce bundle characters. */
-    private static final String specialSaveChars = "=: \t\r\n\f#!";
+    private static final String SPECIAL_SAVE_CHARS = "=: \t\f#!";
     
     /** System line separator. */
     private static final String SYSTEM_LINE_SEPARATOR = 
@@ -144,9 +144,7 @@ public final class PropertiesGenerator {
     }
         
     /**
-     * Converts unicodes to encoded &#92;uxxxx
-     * and writes out any of the characters in specialSaveChars
-     * with a preceding slash
+     * Converts unicodes to encoded &#92;uxxxx.
      * @see java.util.Properties#saveConvert(java.lang.String, boolean)
      */
     public static String convertUnicodeToEncoded(
@@ -217,12 +215,14 @@ public final class PropertiesGenerator {
                     int breakPos = line.indexOf(SYSTEM_LINE_SEPARATOR);
                     if (breakPos != -1) {
                         endPos = breakPos + SYSTEM_LINE_SEPARATOR.length();
-                        text.append(valueBuf.substring(0, endPos));
+                        saveText(text, valueBuf.substring(0, endPos));
+                        //text.append(valueBuf.substring(0, endPos));
                     } else {
                         breakPos = line.lastIndexOf(' ');
                         if (breakPos != -1) {
                             endPos = breakPos + 1;
-                            text.append(valueBuf.substring(0, endPos));
+                            saveText(text, valueBuf.substring(0, endPos));
+                            //text.append(valueBuf.substring(0, endPos));
                             text.append("\\");
                             text.append(SYSTEM_LINE_SEPARATOR);
                         }
@@ -243,7 +243,8 @@ public final class PropertiesGenerator {
                 }
                 text.append(valueBuf);
             } else {
-                text.append(value);
+                saveText(text, value);
+                //text.append(value);
             }
         }
     }
@@ -260,7 +261,8 @@ public final class PropertiesGenerator {
         if (commented) {
             text.append("##");
         }
-        text.append(key);
+        saveText(text, key);
+//        text.append(key);
         for (int i = 0; i < equalIndex - key.length(); i++) {
             text.append(' ');
         }
@@ -268,6 +270,22 @@ public final class PropertiesGenerator {
             text.append(" = ");
         } else {
             text.append("=");
+        }
+    }
+    
+    /**
+     * Saves some text in a given buffer after converting special characters.
+     * @param buf the buffer to store the text into
+     * @param str the value to save
+     */
+    private static void saveText(StringBuffer buf, String str) {
+        int len = str.length();
+        for(int x = 0; x < len; x++) {
+            char aChar = str.charAt(x);
+            if (SPECIAL_SAVE_CHARS.indexOf(aChar) != -1) {
+                buf.append('\\');
+            }
+            buf.append(aChar);
         }
     }
     

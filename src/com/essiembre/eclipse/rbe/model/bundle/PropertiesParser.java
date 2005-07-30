@@ -35,6 +35,9 @@ public final class PropertiesParser {
     private static final String SYSTEM_LINE_SEPARATOR = 
             System.getProperty("line.separator");
     
+    private static final String KEY_VALUE_SEPARATORS = "=:";
+
+    
     /**
      * Constructor.
      */
@@ -64,7 +67,7 @@ public final class PropertiesParser {
             lineBuf.setLength(0);
             lineBuf.append(line);
         
-            int equalPosition = lineBuf.indexOf("=");
+            int equalPosition = findKeyValueSeparator(line);// lineBuf.indexOf("=");
             boolean isRegularLine = line.matches("^[^#].*");
             boolean isCommentedLine = line.matches("^##[^#].*");
             
@@ -138,7 +141,7 @@ public final class PropertiesParser {
 
         for (int x = 0; x < len;) {
             aChar = theString.charAt(x++);
-            if (aChar == '\\') {
+            if (aChar == '\\' && x + 5 <= len) {
                 aChar = theString.charAt(x++);
                 if (aChar == 'u') {
                     // Read the xxxx
@@ -159,6 +162,7 @@ public final class PropertiesParser {
                             value = (value << 4) + 10 + aChar - 'A';
                             break;
                         default:
+                            value = aChar;
                             System.err.println(
                                     "Malformed \\uxxxx encoding found in this "
                                   + "string: " + theString);
@@ -176,10 +180,28 @@ public final class PropertiesParser {
                         aChar = '\f';
                     outBuffer.append(aChar);
                 }
-            } else
+            } else {
                 outBuffer.append(aChar);
+            }
         }
         return outBuffer.toString();
     }
     
+    /**
+     * Finds the separator symbol that separates keys and values.
+     * @param str the string on which to find seperator
+     * @return the separator index or -1 if no separator was found
+     */
+    private static int findKeyValueSeparator(String str) {
+        int index;
+        int length = str.length();
+        for (index = 0; index < length; index++) {
+            char currentChar = str.charAt(index);
+            if (currentChar == '\\')
+                index++;
+            else if (KEY_VALUE_SEPARATORS.indexOf(currentChar) != -1)
+                break;
+        }
+        return index;
+    }
 }
