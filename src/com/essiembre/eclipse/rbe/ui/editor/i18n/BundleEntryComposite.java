@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -52,7 +51,6 @@ import com.essiembre.eclipse.rbe.model.bundle.visitors.SimilarValuesVisitor;
 import com.essiembre.eclipse.rbe.model.utils.LevenshteinDistanceAnalyzer;
 import com.essiembre.eclipse.rbe.model.utils.ProximityAnalyzer;
 import com.essiembre.eclipse.rbe.model.utils.WordCountAnalyzer;
-import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
 import com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditor;
 import com.essiembre.eclipse.rbe.ui.editor.resources.ResourceManager;
@@ -72,8 +70,6 @@ public class BundleEntryComposite extends Composite {
     private final Font smallFont;
     private final Color yellowColor = UIUtils.getSystemColor(SWT.COLOR_YELLOW);
     
-    private ImageRegistry imageRegistry = new ImageRegistry();
-
     private Text textBox;
     private Button commentedCheckbox;
     private Button gotoButton;
@@ -410,19 +406,10 @@ public class BundleEntryComposite extends Composite {
         if (countryCode != null && countryCode.length() > 0) {
             String imageName = 
                     "countries/" + countryCode.toLowerCase() + ".gif";
-            image = imageRegistry.get(imageName);
-            if (image == null) {
-                image = RBEPlugin.getImageDescriptor(imageName).createImage();
-                imageRegistry.put(imageName, image);
-            }
+            image = UIUtils.getImage(imageName);
         }
         if (image == null) {
-            image = imageRegistry.get("countries/blank.gif");
-            if (image == null) {
-                String imageName = "countries/blank.gif"; 
-                image = RBEPlugin.getImageDescriptor(imageName).createImage();
-                imageRegistry.put(imageName, image);
-            }
+            image = UIUtils.getImage("countries/blank.gif");
         }
         return image;
     }

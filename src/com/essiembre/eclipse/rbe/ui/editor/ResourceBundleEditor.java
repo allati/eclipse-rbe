@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -54,12 +53,6 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
     private I18nPage i18nPage;
     /** New locale page. */
     private NewLocalePage newLocalePage;
-    /** Bundle image. */
-    private Image bundleImage;
-    /** Property image. */
-    private Image propertyImage;
-    /** New Property image. */
-    private Image newPropertyImage;
     
     /**
      * Creates a multi-page editor example.
@@ -82,20 +75,12 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
                 UIUtils.showErrorDialog(
                         getSite().getShell(), e, "error.init.ui");
             }
-            
-            // Load images
-            bundleImage = RBEPlugin.getImageDescriptor(
-                    "resourcebundle.gif").createImage();
-            propertyImage = RBEPlugin.getImageDescriptor(
-                    "propertiesfile.gif").createImage();
-            newPropertyImage = RBEPlugin.getImageDescriptor(
-                    "newpropertiesfile.gif").createImage();
-            
+                        
             setPartName(resourceMediator.getEditorDisplayName());
             setContentDescription(
                     RBEPlugin.getString("editor.content.desc")
                   + resourceMediator.getEditorDisplayName() + "."); 
-            setTitleImage(bundleImage);
+            setTitleImage(UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
             closeIfAreadyOpen(site, file);
             super.init(site, editorInput);
         } else {
@@ -112,9 +97,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
         i18nPage = new I18nPage(
                 getContainer(), SWT.H_SCROLL | SWT.V_SCROLL, resourceMediator);
         int index = addPage(i18nPage);
-        setPageText(index, RBEPlugin.getString(
-                "editor.properties"));
-        setPageImage(index, bundleImage);
+        setPageText(index, RBEPlugin.getString("editor.properties"));
+        setPageImage(index, UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
         
         // Create text editor pages for each locales
         try {
@@ -126,7 +110,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
                         sourceEditor.getEditor().getEditorInput());
                 setPageText(index, UIUtils.getDisplayName(
                         sourceEditor.getLocale()));
-                setPageImage(index, propertyImage);
+                setPageImage(index, 
+                        UIUtils.getImage(UIUtils.IMAGE_PROPERTIES_FILE));
             }
         } catch (PartInitException e) {
             ErrorDialog.openError(
@@ -139,20 +124,10 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
         index = addPage(newLocalePage);
         setPageText(index, RBEPlugin.getString(
                 "editor.new.tab"));
-        setPageImage(index, newPropertyImage);
+        setPageImage(
+                index, UIUtils.getImage(UIUtils.IMAGE_NEW_PROPERTIES_FILE));
     }
 
-    /**
-     * The <code>MultiPageEditorPart</code> implementation of this 
-     * <code>IWorkbenchPart</code> method disposes all nested editors.
-     * Subclasses may extend.
-     */
-    public void dispose() {
-        super.dispose();
-        propertyImage.dispose();
-        newPropertyImage.dispose();
-        bundleImage.dispose();
-    }
     /**
      * Saves the multi-page editor's document.
      */

@@ -45,6 +45,11 @@ import org.eclipse.swt.widgets.Shell;
  */
 public final class UIUtils {
 
+    public static final String IMAGE_RESOURCE_BUNDLE = "resourcebundle.gif"; 
+    public static final String IMAGE_PROPERTIES_FILE = "propertiesfile.gif"; 
+    public static final String IMAGE_NEW_PROPERTIES_FILE = 
+                "newpropertiesfile.gif"; 
+    
     /** Image registry. */
     private static final ImageRegistry imageRegistry = new ImageRegistry();
     

@@ -52,7 +52,7 @@ public class KeyTreeLabelProvider
     public static final int WARNING = 1 << 4;
     public static final int WARNING_GREY = 1 << 5;
 
-    //TODO move imageregistry to UIUtils and add getImage method
+    /** Registry instead of UIUtils one for image not keyed by file name. */
     private ImageRegistry imageRegistry = new ImageRegistry();
     
     private Color commentedColor = UIUtils.getSystemColor(SWT.COLOR_GRAY);

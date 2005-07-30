@@ -57,6 +57,7 @@ import com.essiembre.eclipse.rbe.model.tree.updater.FlatKeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.GroupedKeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.tree.visitors.KeysStartingWithVisitor;
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
+import com.essiembre.eclipse.rbe.ui.UIUtils;
 import com.essiembre.eclipse.rbe.ui.preferences.RBEPreferences;
 
 /**
@@ -103,10 +104,8 @@ public class KeyTreeComposite extends Composite {
         super(parent, SWT.BORDER);
         this.keyTree = keyTree;
 
-        treeToggleImage = RBEPlugin.getImageDescriptor(
-                "hierarchicalLayout.gif").createImage();
-        flatToggleImage = RBEPlugin.getImageDescriptor(
-                "flatLayout.gif").createImage();
+        treeToggleImage = UIUtils.getImage("hierarchicalLayout.gif");
+        flatToggleImage = UIUtils.getImage("flatLayout.gif");
 
         setLayout(new GridLayout(1, false));
         createTopSection();
@@ -143,15 +142,6 @@ public class KeyTreeComposite extends Composite {
             key = (String) item.getId();
         }
         return key;
-    }
-
-    /**
-     * @see org.eclipse.swt.widgets.Widget#dispose()
-     */
-    public void dispose() {
-        super.dispose();
-        treeToggleImage.dispose();
-        flatToggleImage.dispose();
     }
 
     /**
