@@ -41,7 +41,7 @@ Release 0.7.0 (2005-??-??)
 º Commented entries are now shown with grey text and grey keys.
 º Fix (bug #1233610): No longer throws NullPointerException in some cases
   when preference "Support Eclipse "nl" structure..." is selected.
-
+º New: Duplicate keys can now be reported.
 
 Release 0.6.0 (2005-05-24)
 --------------------------
