@@ -52,10 +52,10 @@ public class KeyTreeLabelProvider
     public static final int WARNING = 1 << 4;
     public static final int WARNING_GREY = 1 << 5;
 
+    //TODO move imageregistry to UIUtils and add getImage method
     private ImageRegistry imageRegistry = new ImageRegistry();
     
-    private Color commentedColor = RBEPlugin.getDefault().getWorkbench()
-            .getDisplay().getSystemColor(SWT.COLOR_GRAY);
+    private Color commentedColor = UIUtils.getSystemColor(SWT.COLOR_GRAY);
 
     /** Group font. */
     private Font groupFontKey = UIUtils.createFont(SWT.BOLD);
