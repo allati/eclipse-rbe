@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import com.essiembre.eclipse.rbe.ui.RBEPlugin;
 
@@ -43,6 +44,7 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
     private Button reportMissingVals;
     private Button reportDuplVals;
     private Button reportSimVals;
+    private Text reportSimPrecision;
     private Button[] reportSimValsMode = new Button[2];
 
     /**
@@ -118,22 +120,18 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
         new Label(simValModeGroup, SWT.NONE).setText(
                 RBEPlugin.getString("prefs.perform.simVals.levensthein"));
         
-//        Composite newLineRadioGroup = new Composite(field, SWT.NONE); 
-//        new Label(newLineRadioGroup, SWT.NONE).setText(
-//                RBEPlugin.getString(
-//                        "prefs.newline.force"));
-//        newLineRadioGroup.setLayout(new RowLayout());
-//        newLineTypes[RBEPreferences.NEW_LINE_UNIX] = 
-//                new Button(newLineRadioGroup, SWT.RADIO);
-//        newLineTypes[RBEPreferences.NEW_LINE_UNIX].setText("UNIX (\\n)");
-//        newLineTypes[RBEPreferences.NEW_LINE_WIN] = 
-//                new Button(newLineRadioGroup, SWT.RADIO);
-//        newLineTypes[RBEPreferences.NEW_LINE_WIN].setText("Windows (\\r\\n)");
-//        newLineTypes[RBEPreferences.NEW_LINE_MAC] =
-//                new Button(newLineRadioGroup, SWT.RADIO);
-//        newLineTypes[RBEPreferences.NEW_LINE_MAC].setText("Mac (\\r)");
-//        newLineTypes[prefs.getInt(
-//                RBEPreferences.NEW_LINE_TYPE)].setSelection(true);
+        // Report similar values: precision level
+        field = createFieldComposite(composite, indentPixels);
+        new Label(field, SWT.NONE).setText(
+                RBEPlugin.getString("prefs.perform.simVals.precision"));
+        reportSimPrecision = new Text(field, SWT.BORDER);
+        reportSimPrecision.setText(
+                prefs.getString(RBEPreferences.REPORT_SIM_VALUES_PRECISION));
+        reportSimPrecision.setTextLimit(6);
+        setWidthInChars(reportSimPrecision, 6);
+        reportSimPrecision.addKeyListener(new DoubleTextValidatorKeyListener(
+                RBEPlugin.getString("prefs.perform.simVals.precision.error"),
+                0, 1));
         
         refreshEnabledStatuses();
         
@@ -156,6 +154,8 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
                 reportSimValsMode[0].getSelection());
         prefs.setValue(RBEPreferences.REPORT_SIM_VALUES_LEVENSTHEIN,
                 reportSimValsMode[1].getSelection());
+        prefs.setValue(RBEPreferences.REPORT_SIM_VALUES_PRECISION,
+                Double.parseDouble(reportSimPrecision.getText()));
         refreshEnabledStatuses();
         return super.performOk();
     }
@@ -176,6 +176,8 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
                 RBEPreferences.REPORT_SIM_VALUES_WORD_COMPARE));
         reportSimValsMode[1].setSelection(prefs.getDefaultBoolean(
                 RBEPreferences.REPORT_SIM_VALUES_LEVENSTHEIN));
+        reportSimPrecision.setText(Double.toString(prefs.getDefaultDouble(
+                RBEPreferences.REPORT_SIM_VALUES_PRECISION)));
         refreshEnabledStatuses();
         super.performDefaults();
     }
@@ -186,6 +188,7 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
         for (int i = 0; i < reportSimValsMode.length; i++) {
             reportSimValsMode[i].setEnabled(isReportingSimilar);
         }
+        reportSimPrecision.setEnabled(isReportingSimilar);
     }
     
 }

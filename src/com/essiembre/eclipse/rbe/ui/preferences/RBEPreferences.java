@@ -110,9 +110,12 @@ public final class RBEPreferences {
     /** Report similar values: word compare. */
     public static final String REPORT_SIM_VALUES_WORD_COMPARE = 
             "reportSimilarValuesWordCompare";
-    /** Report similar values. */
+    /** Report similar values: levensthein distance. */
     public static final String REPORT_SIM_VALUES_LEVENSTHEIN = 
             "reportSimilarValuesLevensthein";
+    /** Report similar values: precision. */
+    public static final String REPORT_SIM_VALUES_PRECISION = 
+            "reportSimilarValuesPrecision";
     
     
     /** RBEPreferences. */
@@ -234,6 +237,10 @@ public final class RBEPreferences {
 
     public static boolean getReportSimilarValuesLevensthein() {
         return PREFS.getBoolean(REPORT_SIM_VALUES_LEVENSTHEIN);
+    }
+
+    public static double getReportSimilarValuesPrecision() {
+        return PREFS.getDouble(REPORT_SIM_VALUES_PRECISION);
     }
     
 }
