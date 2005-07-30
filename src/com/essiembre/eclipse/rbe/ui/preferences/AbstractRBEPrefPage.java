@@ -85,7 +85,6 @@ public abstract class AbstractRBEPrefPage extends PreferencePage implements
         
         private String errMsg = null;
         
-        
         /**
          * Constructor.
          * @param errMsg error message
@@ -102,6 +101,67 @@ public abstract class AbstractRBEPrefPage extends PreferencePage implements
             Text text = (Text) event.widget;
             String value = text.getText(); 
             event.doit = value.matches("^\\d*$");
+            if (event.doit) {
+                errors.remove(text);
+                if (errors.isEmpty()) {
+                    setErrorMessage(null);
+                    setValid(true);
+                } else {
+                    setErrorMessage(
+                            (String) errors.values().iterator().next());
+                }
+            } else {
+                errors.put(text, errMsg);
+                setErrorMessage(errMsg);
+                setValid(false);
+            }
+        }
+    }
+
+    protected class DoubleTextValidatorKeyListener extends KeyAdapter {
+        
+        private String errMsg;
+        private double minValue;
+        private double maxValue;
+        
+        /**
+         * Constructor.
+         * @param errMsg error message
+         */
+        public DoubleTextValidatorKeyListener(String errMsg) {
+            super();
+            this.errMsg = errMsg;
+        }
+        /**
+         * Constructor.
+         * @param errMsg error message
+         * @param minValue minimum value (inclusive)
+         * @param maxValue maximum value (inclusive)
+         */
+        public DoubleTextValidatorKeyListener(
+                String errMsg, double minValue, double maxValue) {
+            super();
+            this.errMsg = errMsg;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+        }
+        
+        /**
+         * @see org.eclipse.swt.events.KeyAdapter#keyPressed(
+         *          org.eclipse.swt.events.KeyEvent)
+         */
+        public void keyReleased(KeyEvent event) {
+            Text text = (Text) event.widget;
+            String value = text.getText(); 
+            boolean valid = value.length() > 0;
+            if (valid) {
+                valid = value.matches("^\\d*\\.?\\d*$");
+            }
+            if (valid && minValue != maxValue) {
+                double doubleValue = Double.parseDouble(value);
+                valid = doubleValue >= minValue && doubleValue <= maxValue;
+            }
+            event.doit = valid;
             if (event.doit) {
                 errors.remove(text);
                 if (errors.isEmpty()) {
