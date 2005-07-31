@@ -66,10 +66,10 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
         composite.setLayout(new GridLayout(1, false));
         
         new Label(composite, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.perform.intro1"));
+                RBEPlugin.getString("prefs.perform.intro1")); //$NON-NLS-1$
         new Label(composite, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.perform.intro2"));
-        new Label(composite, SWT.NONE).setText(" ");
+                RBEPlugin.getString("prefs.perform.intro2")); //$NON-NLS-1$
+        new Label(composite, SWT.NONE).setText(" "); //$NON-NLS-1$
         
         // Report missing values?
         field = createFieldComposite(composite);
@@ -77,7 +77,7 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
         reportMissingVals.setSelection(
                 prefs.getBoolean(RBEPreferences.REPORT_MISSING_VALUES));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.perform.missingVals"));
+                RBEPlugin.getString("prefs.perform.missingVals")); //$NON-NLS-1$
 
         // Report duplicate values?
         field = createFieldComposite(composite);
@@ -85,7 +85,7 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
         reportDuplVals.setSelection(
                 prefs.getBoolean(RBEPreferences.REPORT_DUPL_VALUES));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.perform.duplVals"));
+                RBEPlugin.getString("prefs.perform.duplVals")); //$NON-NLS-1$
         
         // Report similar values?
         field = createFieldComposite(composite);
@@ -93,7 +93,7 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
         reportSimVals.setSelection(
                 prefs.getBoolean(RBEPreferences.REPORT_SIM_VALUES));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.perform.simVals"));
+                RBEPlugin.getString("prefs.perform.simVals")); //$NON-NLS-1$
         reportSimVals.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
                 refreshEnabledStatuses();
@@ -111,27 +111,28 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
         reportSimValsMode[0] = new Button(simValModeGroup, SWT.RADIO);
         reportSimValsMode[0].setSelection(prefs.getBoolean(
                 RBEPreferences.REPORT_SIM_VALUES_WORD_COMPARE));
-        new Label(simValModeGroup, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.perform.simVals.wordCount"));
+        new Label(simValModeGroup, SWT.NONE).setText(RBEPlugin.getString(
+                "prefs.perform.simVals.wordCount")); //$NON-NLS-1$
         
         // Report similar values: Levensthein
         reportSimValsMode[1] = new Button(simValModeGroup, SWT.RADIO);
         reportSimValsMode[1].setSelection(prefs.getBoolean(
                 RBEPreferences.REPORT_SIM_VALUES_LEVENSTHEIN));
-        new Label(simValModeGroup, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.perform.simVals.levensthein"));
+        new Label(simValModeGroup, SWT.NONE).setText(RBEPlugin.getString(
+                "prefs.perform.simVals.levensthein")); //$NON-NLS-1$
         
         // Report similar values: precision level
         field = createFieldComposite(composite, indentPixels);
-        new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.perform.simVals.precision"));
+        new Label(field, SWT.NONE).setText(RBEPlugin.getString(
+                "prefs.perform.simVals.precision")); //$NON-NLS-1$
         reportSimPrecision = new Text(field, SWT.BORDER);
         reportSimPrecision.setText(
                 prefs.getString(RBEPreferences.REPORT_SIM_VALUES_PRECISION));
         reportSimPrecision.setTextLimit(6);
         setWidthInChars(reportSimPrecision, 6);
         reportSimPrecision.addKeyListener(new DoubleTextValidatorKeyListener(
-                RBEPlugin.getString("prefs.perform.simVals.precision.error"),
+                RBEPlugin.getString(
+                        "prefs.perform.simVals.precision.error"), //$NON-NLS-1$
                 0, 1));
         
         refreshEnabledStatuses();
@@ -183,7 +184,7 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
         super.performDefaults();
     }
 
-    private void refreshEnabledStatuses() {
+    /*default*/ void refreshEnabledStatuses() {
         boolean isReportingSimilar = reportSimVals.getSelection();
 
         for (int i = 0; i < reportSimValsMode.length; i++) {

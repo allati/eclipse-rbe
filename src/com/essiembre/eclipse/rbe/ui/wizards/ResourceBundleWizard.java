@@ -99,9 +99,10 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
                         String fileName = baseName;
                         if (locales[i].equals(
                                 ResourceBundleNewWizardPage.DEFAULT_LOCALE)) {
-                            fileName += ".properties";
+                            fileName += ".properties"; //$NON-NLS-1$
                         } else {
-                            fileName += "_" + locales[i] + ".properties";
+                            fileName += "_" + locales[i] //$NON-NLS-1$
+                                     + ".properties"; //$NON-NLS-1$
                         }
                         doFinish(containerName, fileName, monitor);
                     }
@@ -118,31 +119,31 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
             return false;
         } catch (InvocationTargetException e) {
             Throwable realException = e.getTargetException();
-            MessageDialog.openError(
-                    getShell(), "Error", realException.getMessage());
+            MessageDialog.openError(getShell(), 
+                    "Error", realException.getMessage()); //$NON-NLS-1$
             return false;
         }
         return true;
     }
     
-    /**
+    /*
      * The worker method. It will find the container, create the
      * file if missing or just replace its contents, and open
      * the editor on the newly created file.
      */
-    private void doFinish(
+    /*default*/ void doFinish(
             String containerName,
             String fileName,
             IProgressMonitor monitor)
             throws CoreException {
         
         monitor.beginTask(RBEPlugin.getString(
-                "editor.wiz.creating") + fileName, 2);
+                "editor.wiz.creating") + fileName, 2); //$NON-NLS-1$
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IResource resource = root.findMember(new Path(containerName));
         if (!resource.exists() || !(resource instanceof IContainer)) {
-            throwCoreException("Container \"" + containerName 
-                    + "\" does not exist.");
+            throwCoreException("Container \"" + containerName  //$NON-NLS-1$
+                    + "\" does not exist."); //$NON-NLS-1$
         }
         IContainer container = (IContainer) resource;
         final IFile file = container.getFile(new Path(fileName));
@@ -158,13 +159,13 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
         }
         monitor.worked(1);
         monitor.setTaskName(
-                RBEPlugin.getString("editor.wiz.creating"));
+                RBEPlugin.getString("editor.wiz.creating")); //$NON-NLS-1$
         getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
-                IWorkbenchPage page = PlatformUI.getWorkbench()
+                IWorkbenchPage wbPage = PlatformUI.getWorkbench()
                         .getActiveWorkbenchWindow().getActivePage();
                 try {
-                    IDE.openEditor(page, file, true);
+                    IDE.openEditor(wbPage, file, true);
                 } catch (PartInitException e) {
                 }
             }
@@ -172,12 +173,11 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
         monitor.worked(1);
     }
     
-    /**
+    /*
      * We will initialize file contents with a sample text.
      */
-
     private InputStream openContentStream() {
-        String contents = "";
+        String contents = ""; //$NON-NLS-1$
         if (RBEPreferences.getShowGenerator()) {
             contents = PropertiesGenerator.GENERATED_BY;
         }
@@ -186,7 +186,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
 
     private void throwCoreException(String message) throws CoreException {
         IStatus status = new Status(IStatus.ERROR, 
-                "com.essiembre.eclipse.i18n.resourcebundle", 
+                "com.essiembre.eclipse.i18n.resourcebundle",  //$NON-NLS-1$
                 IStatus.OK, message, null);
         throw new CoreException(status);
     }
@@ -196,7 +196,8 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
      * we can initialize from it.
      * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
      */
-    public void init(IWorkbench workbench, IStructuredSelection selection) {
-        this.selection = selection;
+    public void init(
+            IWorkbench workbench, IStructuredSelection structSelection) {
+        this.selection = structSelection;
     }
 }

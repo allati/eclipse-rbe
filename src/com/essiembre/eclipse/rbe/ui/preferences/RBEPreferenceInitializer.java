@@ -58,7 +58,7 @@ public class RBEPreferenceInitializer extends
         
         prefs.setDefault(RBEPreferences.SPACES_AROUND_EQUAL_SIGNS, true);
         
-        prefs.setDefault(RBEPreferences.KEY_GROUP_SEPARATOR, ".");
+        prefs.setDefault(RBEPreferences.KEY_GROUP_SEPARATOR, "."); //$NON-NLS-1$
         prefs.setDefault(RBEPreferences.ALIGN_EQUAL_SIGNS, true);
         prefs.setDefault(RBEPreferences.SHOW_GENERATOR, true);
         prefs.setDefault(RBEPreferences.KEY_TREE_HIERARCHICAL, true);

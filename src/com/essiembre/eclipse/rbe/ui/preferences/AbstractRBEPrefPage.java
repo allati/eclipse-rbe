@@ -100,7 +100,7 @@ public abstract class AbstractRBEPrefPage extends PreferencePage implements
         public void keyReleased(KeyEvent event) {
             Text text = (Text) event.widget;
             String value = text.getText(); 
-            event.doit = value.matches("^\\d*$");
+            event.doit = value.matches("^\\d*$"); //$NON-NLS-1$
             if (event.doit) {
                 errors.remove(text);
                 if (errors.isEmpty()) {
@@ -155,7 +155,7 @@ public abstract class AbstractRBEPrefPage extends PreferencePage implements
             String value = text.getText(); 
             boolean valid = value.length() > 0;
             if (valid) {
-                valid = value.matches("^\\d*\\.?\\d*$");
+                valid = value.matches("^\\d*\\.?\\d*$"); //$NON-NLS-1$
             }
             if (valid && minValue != maxValue) {
                 double doubleValue = Double.parseDouble(value);

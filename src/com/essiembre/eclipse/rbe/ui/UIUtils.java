@@ -47,14 +47,19 @@ import com.essiembre.eclipse.rbe.RBEPlugin;
  */
 public final class UIUtils {
 
+    /** Name of resource bundle image. */
     public static final String IMAGE_RESOURCE_BUNDLE = 
             "resourcebundle.gif";  //$NON-NLS-1$
+    /** Name of properties file image. */
     public static final String IMAGE_PROPERTIES_FILE = 
             "propertiesfile.gif";  //$NON-NLS-1$
+    /** Name of new properties file image. */
     public static final String IMAGE_NEW_PROPERTIES_FILE = 
             "newpropertiesfile.gif";  //$NON-NLS-1$
+    /** Name of hierarchical layout image. */
     public static final String IMAGE_LAYOUT_HIERARCHICAL =
             "hierarchicalLayout.gif";  //$NON-NLS-1$
+    /** Name of flat layout image. */
     public static final String IMAGE_LAYOUT_FLAT = 
             "flatLayout.gif";  //$NON-NLS-1$
     
@@ -141,7 +146,7 @@ public final class UIUtils {
      * characters in a control.
      * @param control the control on which to get width
      * @param widthInChars the number of chars
-     * @return
+     * @return width
      */    
     public static int getWidthInChars(Control control, int widthInChars) {
         GC gc = new GC(control);
@@ -179,8 +184,8 @@ public final class UIUtils {
                 IStatus.ERROR, 
                 RBEPlugin.ID,
                 0, 
-                RBEPlugin.getString(msgKey) + " "
-                        + RBEPlugin.getString("error.seeLogs"),
+                RBEPlugin.getString(msgKey) + " " //$NON-NLS-1$
+                        + RBEPlugin.getString("error.seeLogs"), //$NON-NLS-1$
                 exception);
         ErrorDialog.openError(
                 shell,
@@ -189,15 +194,23 @@ public final class UIUtils {
                 status);
     }
     
-
+    /**
+     * Gets a locale, null-safe, display name.
+     * @param locale locale to get display name
+     * @return display name
+     */
     public static String getDisplayName(Locale locale) {
         if (locale == null) {
-            return RBEPlugin.getString("editor.default");
+            return RBEPlugin.getString("editor.default"); //$NON-NLS-1$
         }
         return locale.getDisplayName();
     }
     
-    
+    /**
+     * Gets an image.
+     * @param imageName image name
+     * @return image
+     */
     public static Image getImage(String imageName) {
         Image image = imageRegistry.get(imageName);
         if (image == null) {

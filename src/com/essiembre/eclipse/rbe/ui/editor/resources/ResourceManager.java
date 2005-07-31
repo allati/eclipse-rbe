@@ -137,41 +137,65 @@ public class ResourceManager {
      * @param monitor progress monitor
      */
     public void save(IProgressMonitor monitor) {
-        SourceEditor[] sourceEditors = resourcesFactory.getSourceEditors();
-        for (int i = 0; i < sourceEditors.length; i++) {
-            ((SourceEditor) sourceEditors[i]).getEditor().doSave(monitor);
+        SourceEditor[] editors = resourcesFactory.getSourceEditors();
+        for (int i = 0; i < editors.length; i++) {
+            editors[i].getEditor().doSave(monitor);
         }
     }
         
-    
+    /**
+     * Gets the multi-editor display name.
+     * @return display name
+     */
     public String getEditorDisplayName() {
         return resourcesFactory.getEditorDisplayName();
     }
 
+    /**
+     * Returns whether a given file is known to the resource manager (i.e.,
+     * if it is part of a resource bundle).
+     * @param file file to test
+     * @return <code>true</code> if a known resource
+     */
     public boolean isResource(IFile file) {
-        SourceEditor[] sourceEditors = resourcesFactory.getSourceEditors();
-        for (int i = 0; i < sourceEditors.length; i++) {
-            if (((SourceEditor) sourceEditors[i]).getFile().equals(file)) {
+        SourceEditor[] editors = resourcesFactory.getSourceEditors();
+        for (int i = 0; i < editors.length; i++) {
+            if (editors[i].getFile().equals(file)) {
                 return true;
             }
         }
         return false;
     }
     
+    /**
+     * Creates a properties file.
+     * @param locale a locale
+     * @return the newly created file
+     * @throws CoreException problem creating file
+     * @throws IOException problem creating file
+     */
     public IFile createPropertiesFile(Locale locale) 
             throws CoreException, IOException {
         return resourcesFactory.getPropertiesFileCreator().createPropertiesFile(
                 locale);
     }
     
+    /**
+     * Gets the source editor matching the given locale.
+     * @param locale locale matching requested source editor
+     * @return source editor or <code>null</code> if no match
+     */
     public SourceEditor getSourceEditor(Locale locale) {
         return (SourceEditor) sourceEditors.get(locale);
     }
     
+    /**
+     * Reloads the properties files (parse them).
+     */
     public void reloadProperties() {
-        SourceEditor[] sourceEditors = resourcesFactory.getSourceEditors();
-        for (int i = 0; i < sourceEditors.length; i++) {
-            SourceEditor editor = (SourceEditor) sourceEditors[i];
+        SourceEditor[] editors = resourcesFactory.getSourceEditors();
+        for (int i = 0; i < editors.length; i++) {
+            SourceEditor editor = editors[i];
             if (editor.isCacheDirty()) {
                 bundleGroup.addBundle(
                         editor.getLocale(),

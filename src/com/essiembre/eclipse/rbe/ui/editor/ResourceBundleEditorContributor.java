@@ -20,7 +20,6 @@
  */
 package com.essiembre.eclipse.rbe.ui.editor;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -41,7 +40,6 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
  */
 public class ResourceBundleEditorContributor extends MultiPageEditorActionBarContributor {
 	private IEditorPart activeEditorPart;
-	private Action sampleAction;
 	/**
 	 * Creates a multi-page contributor.
 	 */
@@ -51,15 +49,18 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
 	}
 	/**
 	 * Returns the action registed with the given text editor.
+     * @param editor eclipse text editor
+     * @param actionID action id
 	 * @return IAction or null if editor is null.
 	 */
 	protected IAction getAction(ITextEditor editor, String actionID) {
 		return (editor == null ? null : editor.getAction(actionID));
 	}
-	/* (non-JavaDoc)
-	 * Method declared in AbstractMultiPageEditorActionBarContributor.
-	 */
 
+    /**
+	 * @see MultiPageEditorActionBarContributor
+     *         #setActivePage(org.eclipse.ui.IEditorPart)
+	 */
 	public void setActivePage(IEditorPart part) {
         if (activeEditorPart == part)
 			return;
@@ -105,19 +106,29 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
 	private void createActions() {
 //		sampleAction = new Action() {
 //			public void run() {
-//				MessageDialog.openInformation(null, "ResourceBundle Editor Plug-in", "Sample Action Executed");
+//				MessageDialog.openInformation(null,
+//        "ResourceBundle Editor Plug-in", "Sample Action Executed");
 //			}
 //		};
 //		sampleAction.setText("Sample Action");
 //		sampleAction.setToolTipText("Sample Action tool tip");
-//		sampleAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//		sampleAction.setImageDescriptor(
+//        PlatformUI.getWorkbench().getSharedImages().
 //				getImageDescriptor(IDE.SharedImages.IMG_OBJS_TASK_TSK));
 	}
-	public void contributeToMenu(IMenuManager manager) {
+	/**
+	 * @see org.eclipse.ui.part.EditorActionBarContributor
+     *         #contributeToMenu(org.eclipse.jface.action.IMenuManager)
+	 */
+    public void contributeToMenu(IMenuManager manager) {
 //		IMenuManager menu = new MenuManager("Editor &Menu");
 //		manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
 //		menu.add(sampleAction);
 	}
+    /**
+     * @see org.eclipse.ui.part.EditorActionBarContributor
+     *         #contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
+     */
 	public void contributeToToolBar(IToolBarManager manager) {
 //		manager.add(new Separator());
 //		manager.add(sampleAction);

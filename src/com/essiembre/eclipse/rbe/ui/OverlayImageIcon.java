@@ -12,19 +12,25 @@ import org.eclipse.swt.graphics.Point;
  */
 public class OverlayImageIcon extends CompositeImageDescriptor {
 
+    /** Constant for overlaying icon in top left corner. */
     public static final int TOP_LEFT = 0;
+    /** Constant for overlaying icon in top right corner. */
     public static final int TOP_RIGHT = 1;
+    /** Constant for overlaying icon in bottom left corner. */
     public static final int BOTTOM_LEFT = 2;
+    /** Constant for overlaying icon in bottom right corner. */
     public static final int BOTTOM_RIGHT = 3;
 
     private Image baseImage;
     private Image overlayImage;
     private int location;
     private Point imgSize;
-    
-    
+
     /**
      * Constructor.
+     * @param baseImage background image
+     * @param overlayImage the image to put on top of background image
+     * @param location in which corner to put the icon
      */
     public OverlayImageIcon(Image baseImage, Image overlayImage, int location) {
         super();

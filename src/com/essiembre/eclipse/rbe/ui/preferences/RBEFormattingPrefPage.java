@@ -88,7 +88,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         showGeneratedBy.setSelection(
                 prefs.getBoolean(RBEPreferences.SHOW_GENERATOR));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.showGeneratedBy"));
+                RBEPlugin.getString("prefs.showGeneratedBy")); //$NON-NLS-1$
 
         // Convert unicode to encoded?
         field = createFieldComposite(composite);
@@ -101,7 +101,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
             }
         });
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.convertUnicode"));
+                RBEPlugin.getString("prefs.convertUnicode")); //$NON-NLS-1$
 
         // Use upper case for encoded hexadecimal values?
         field = createFieldComposite(composite, indentPixels);
@@ -109,7 +109,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         convertUnicodeUpperCase.setSelection(prefs.getBoolean(
                 RBEPreferences.CONVERT_UNICODE_TO_ENCODED_UPPER));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.convertUnicode.upper"));
+                RBEPlugin.getString("prefs.convertUnicode.upper"));//$NON-NLS-1$
         
         // Align equal signs?
         field = createFieldComposite(composite);
@@ -122,14 +122,14 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
             }
         });
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.alignEquals"));
+                RBEPlugin.getString("prefs.alignEquals")); //$NON-NLS-1$
 
         field = createFieldComposite(composite);
         ensureSpacesAroundEquals = new Button(field, SWT.CHECK);
         ensureSpacesAroundEquals.setSelection(
                 prefs.getBoolean(RBEPreferences.SPACES_AROUND_EQUAL_SIGNS));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.spacesAroundEquals"));
+                RBEPlugin.getString("prefs.spacesAroundEquals")); //$NON-NLS-1$
         
         // Group keys?
         field = createFieldComposite(composite);
@@ -141,24 +141,24 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
             }
         });
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.groupKeys"));
+                RBEPlugin.getString("prefs.groupKeys")); //$NON-NLS-1$
 
         // Group keys by how many level deep?
         field = createFieldComposite(composite, indentPixels);
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.levelDeep"));
+                RBEPlugin.getString("prefs.levelDeep")); //$NON-NLS-1$
         groupLevelDeep = new Text(field, SWT.BORDER);
         groupLevelDeep.setText(prefs.getString(RBEPreferences.GROUP_LEVEL_DEEP));
         groupLevelDeep.setTextLimit(2);
         setWidthInChars(groupLevelDeep, 2);
         groupLevelDeep.addKeyListener(new IntTextValidatorKeyListener(
                 RBEPlugin.getString(
-                        "prefs.levelDeep.error")));
+                        "prefs.levelDeep.error"))); //$NON-NLS-1$
         
         // How many lines between groups?
         field = createFieldComposite(composite, indentPixels);
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.linesBetween"));
+                RBEPlugin.getString("prefs.linesBetween")); //$NON-NLS-1$
         groupLineBreaks = new Text(field, SWT.BORDER);
         groupLineBreaks.setText(
                 prefs.getString(RBEPreferences.GROUP_LINE_BREAKS));
@@ -166,7 +166,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         setWidthInChars(groupLineBreaks, 2);
         groupLineBreaks.addKeyListener(new IntTextValidatorKeyListener(
                 RBEPlugin.getString(
-                        "prefs.linesBetween.error")));
+                        "prefs.linesBetween.error"))); //$NON-NLS-1$
 
         // Align equal signs within groups?
         field = createFieldComposite(composite, indentPixels);
@@ -175,7 +175,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
                 prefs.getBoolean(RBEPreferences.GROUP_ALIGN_EQUAL_SIGNS));
         new Label(field, SWT.NONE).setText(
                 RBEPlugin.getString(
-                        "prefs.groupAlignEquals"));
+                        "prefs.groupAlignEquals")); //$NON-NLS-1$
 
         // Wrap lines?
         field = createFieldComposite(composite);
@@ -187,19 +187,19 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
             }
         });
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.wrapLines"));
+                RBEPlugin.getString("prefs.wrapLines")); //$NON-NLS-1$
         
         // After how many characters should we wrap?
         field = createFieldComposite(composite, indentPixels);
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.wrapLinesChar"));
+                RBEPlugin.getString("prefs.wrapLinesChar")); //$NON-NLS-1$
         wrapCharLimit = new Text(field, SWT.BORDER);
         wrapCharLimit.setText(prefs.getString(RBEPreferences.WRAP_CHAR_LIMIT));
         wrapCharLimit.setTextLimit(4);
         setWidthInChars(wrapCharLimit, 4);
         wrapCharLimit.addKeyListener(new IntTextValidatorKeyListener(
                 RBEPlugin.getString(
-                        "prefs.wrapLinesChar.error")));
+                        "prefs.wrapLinesChar.error"))); //$NON-NLS-1$
         
         // Align wrapped lines with equal signs?
         field = createFieldComposite(composite, indentPixels);
@@ -212,13 +212,12 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
             }
         });
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString(
-                        "prefs.wrapAlignEquals"));
+                RBEPlugin.getString("prefs.wrapAlignEquals")); //$NON-NLS-1$
 
         // How many spaces/tabs to use for indenting?
         field = createFieldComposite(composite, indentPixels);
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.wrapIndent"));
+                RBEPlugin.getString("prefs.wrapIndent")); //$NON-NLS-1$
         wrapIndentSpaces = new Text(field, SWT.BORDER);
         wrapIndentSpaces.setText(
                 prefs.getString(RBEPreferences.WRAP_INDENT_SPACES));
@@ -226,7 +225,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         setWidthInChars(wrapIndentSpaces, 2);
         wrapIndentSpaces.addKeyListener(new IntTextValidatorKeyListener(
                 RBEPlugin.getString(
-                        "prefs.wrapIndent.error")));
+                        "prefs.wrapIndent.error"))); //$NON-NLS-1$
 
         // Should we wrap after new line characters
         field = createFieldComposite(composite);
@@ -235,7 +234,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
                 prefs.getBoolean(RBEPreferences.NEW_LINE_NICE));
         new Label(field, SWT.NONE).setText(
                 RBEPlugin.getString(
-                        "prefs.newline.nice"));
+                        "prefs.newline.nice")); //$NON-NLS-1$
 
         // How should new lines appear in properties file
         field = createFieldComposite(composite);
@@ -250,17 +249,20 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         Composite newLineRadioGroup = new Composite(field, SWT.NONE); 
         new Label(newLineRadioGroup, SWT.NONE).setText(
                 RBEPlugin.getString(
-                        "prefs.newline.force"));
+                        "prefs.newline.force")); //$NON-NLS-1$
         newLineRadioGroup.setLayout(new RowLayout());
         newLineTypes[RBEPreferences.NEW_LINE_UNIX] = 
                 new Button(newLineRadioGroup, SWT.RADIO);
-        newLineTypes[RBEPreferences.NEW_LINE_UNIX].setText("UNIX (\\n)");
+        newLineTypes[RBEPreferences.NEW_LINE_UNIX].setText(
+                "UNIX (\\n)"); //$NON-NLS-1$
         newLineTypes[RBEPreferences.NEW_LINE_WIN] = 
                 new Button(newLineRadioGroup, SWT.RADIO);
-        newLineTypes[RBEPreferences.NEW_LINE_WIN].setText("Windows (\\r\\n)");
+        newLineTypes[RBEPreferences.NEW_LINE_WIN].setText(
+                "Windows (\\r\\n)"); //$NON-NLS-1$
         newLineTypes[RBEPreferences.NEW_LINE_MAC] =
                 new Button(newLineRadioGroup, SWT.RADIO);
-        newLineTypes[RBEPreferences.NEW_LINE_MAC].setText("Mac (\\r)");
+        newLineTypes[RBEPreferences.NEW_LINE_MAC].setText(
+                "Mac (\\r)"); //$NON-NLS-1$
         newLineTypes[prefs.getInt(
                 RBEPreferences.NEW_LINE_TYPE)].setSelection(true);
         
@@ -356,7 +358,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         super.performDefaults();
     }
 
-    private void refreshEnabledStatuses() {
+    /*default*/ void refreshEnabledStatuses() {
         boolean isEncodingUnicode = convertUnicodeToEncoded.getSelection();
         boolean isGroupKeyEnabled = groupKeys.getSelection();
         boolean isAlignEqualsEnabled = alignEqualSigns.getSelection();
@@ -368,7 +370,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         groupLevelDeep.setEnabled(isGroupKeyEnabled);
         groupLineBreaks.setEnabled(isGroupKeyEnabled);
         groupAlignEqualSigns.setEnabled(
-                isGroupKeyEnabled && alignEqualSigns.getSelection());
+                isGroupKeyEnabled && isAlignEqualsEnabled);
         wrapCharLimit.setEnabled(isWrapEnabled);
         wrapAlignEqualSigns.setEnabled(isWrapEnabled);
         wrapIndentSpaces.setEnabled(isWrapEnabled && !isWrapAlignEqualsEnabled);

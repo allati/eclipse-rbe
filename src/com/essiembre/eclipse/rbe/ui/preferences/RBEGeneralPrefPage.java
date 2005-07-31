@@ -59,7 +59,8 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
     }
 
     /**
-     * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
+     * @see org.eclipse.jface.preference.PreferencePage
+     *         #createContents(org.eclipse.swt.widgets.Composite)
      */
     protected Control createContents(Composite parent) {
         IPreferenceStore prefs = getPreferenceStore();
@@ -70,7 +71,7 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
         // Key group separator
         field = createFieldComposite(composite);
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.groupSep"));
+                RBEPlugin.getString("prefs.groupSep")); //$NON-NLS-1$
         keyGroupSeparator = new Text(field, SWT.BORDER);
         keyGroupSeparator.setText(
                 prefs.getString(RBEPreferences.KEY_GROUP_SEPARATOR));
@@ -82,14 +83,14 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
         convertEncodedToUnicode.setSelection(
                 prefs.getBoolean(RBEPreferences.CONVERT_ENCODED_TO_UNICODE));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.convertEncoded"));
+                RBEPlugin.getString("prefs.convertEncoded")); //$NON-NLS-1$
 
         // Support "NL" localization structure
         field = createFieldComposite(composite);
         supportNL = new Button(field, SWT.CHECK);
         supportNL.setSelection(prefs.getBoolean(RBEPreferences.SUPPORT_NL));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.supportNL"));
+                RBEPlugin.getString("prefs.supportNL")); //$NON-NLS-1$
         
         // Default key tree mode (tree vs flat)
         field = createFieldComposite(composite);
@@ -97,15 +98,15 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
         keyTreeHierarchical.setSelection(
                 prefs.getBoolean(RBEPreferences.KEY_TREE_HIERARCHICAL));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.keyTree.hierarchical"));
+                RBEPlugin.getString("prefs.keyTree.hierarchical"));//$NON-NLS-1$
 
         // Default key tree expand status (expanded vs collapsed)
         field = createFieldComposite(composite);
         keyTreeExpanded = new Button(field, SWT.CHECK);
-        keyTreeExpanded.setSelection(
-                prefs.getBoolean(RBEPreferences.KEY_TREE_EXPANDED));
+        keyTreeExpanded.setSelection(prefs.getBoolean(
+                RBEPreferences.KEY_TREE_EXPANDED)); //$NON-NLS-1$
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.keyTree.expanded"));
+                RBEPlugin.getString("prefs.keyTree.expanded")); //$NON-NLS-1$
 
         // Default tab key behaviour in text field
         field = createFieldComposite(composite);
@@ -113,7 +114,7 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
         fieldTabInserts.setSelection(
                 prefs.getBoolean(RBEPreferences.FIELD_TAB_INSERTS));
         new Label(field, SWT.NONE).setText(
-                RBEPlugin.getString("prefs.fieldTabInserts"));
+                RBEPlugin.getString("prefs.fieldTabInserts")); //$NON-NLS-1$
         
         refreshEnabledStatuses();
         return composite;

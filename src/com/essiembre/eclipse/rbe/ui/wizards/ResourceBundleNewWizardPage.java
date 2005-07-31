@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -57,30 +58,29 @@ import com.essiembre.eclipse.rbe.ui.widgets.LocaleSelector;
  */
 public class ResourceBundleNewWizardPage extends WizardPage {
 
-    static final String DEFAULT_LOCALE = 
-           "[" + RBEPlugin.getString("editor.default") + "]";
+    static final String DEFAULT_LOCALE = "[" //$NON-NLS-1$
+            + RBEPlugin.getString("editor.default") //$NON-NLS-1$
+            + "]"; //$NON-NLS-1$
     
     private Text containerText;
     private Text fileText;
     private ISelection selection;
     
-    private Button addButton;
-    private Button removeButton;
+    /*default*/ Button addButton;
+    /*default*/ Button removeButton;
     
-    private List bundleLocalesList;
+    /*default*/ List bundleLocalesList;
     
     private LocaleSelector localeSelector;
 
     /**
      * Constructor for SampleNewWizardPage.
-     * @param pageName
+     * @param selection workbench selection
      */
     public ResourceBundleNewWizardPage(ISelection selection) {
-        super("wizardPage");
-        setTitle(RBEPlugin.getString(
-                "editor.wiz.title"));
-        setDescription(RBEPlugin.getString(
-                "editor.wiz.desc"));
+        super("wizardPage"); //$NON-NLS-1$
+        setTitle(RBEPlugin.getString("editor.wiz.title")); //$NON-NLS-1$
+        setDescription(RBEPlugin.getString("editor.wiz.desc")); //$NON-NLS-1$
         this.selection = selection;
     }
 
@@ -148,7 +148,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         GridData gd = new GridData(GridData.FILL_BOTH);
         selectedGroup.setLayoutData(gd);
         selectedGroup.setText(RBEPlugin.getString(
-                "editor.wiz.selected"));
+                "editor.wiz.selected")); //$NON-NLS-1$
         bundleLocalesList = 
                 new List(selectedGroup, SWT.READ_ONLY | SWT.MULTI | SWT.BORDER);
         gd = new GridData(GridData.FILL_BOTH);
@@ -179,7 +179,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         gd = new GridData(GridData.FILL_HORIZONTAL);
         addButton.setLayoutData(gd);
         addButton.setText(RBEPlugin.getString(
-                "editor.wiz.add"));
+                "editor.wiz.add")); //$NON-NLS-1$
         addButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
                 bundleLocalesList.add(getSelectedLocaleAsString());
@@ -191,7 +191,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         gd = new GridData(GridData.FILL_HORIZONTAL);
         removeButton.setLayoutData(gd);
         removeButton.setText(RBEPlugin.getString(
-                "editor.wiz.remove"));
+                "editor.wiz.remove")); //$NON-NLS-1$
         removeButton.setEnabled(false);
         removeButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
@@ -236,7 +236,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         // Folder
         Label label = new Label(container, SWT.NULL);
         label.setText(RBEPlugin.getString(
-                "editor.wiz.folder"));
+                "editor.wiz.folder")); //$NON-NLS-1$
 
         containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -248,7 +248,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         });
         Button button = new Button(container, SWT.PUSH);
         button.setText(RBEPlugin.getString(
-                "editor.wiz.browse"));
+                "editor.wiz.browse")); //$NON-NLS-1$
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 handleBrowse();
@@ -258,7 +258,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         // Bundle name
         label = new Label(container, SWT.NULL);
         label.setText(RBEPlugin.getString(
-                "editor.wiz.bundleName"));
+                "editor.wiz.bundleName")); //$NON-NLS-1$
 
         fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -269,7 +269,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
             }
         });
         label = new Label(container, SWT.NULL);
-        label.setText("[locale].properties");
+        label.setText("[locale].properties"); //$NON-NLS-1$
     }
     
     
@@ -291,7 +291,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
                 containerText.setText(container.getFullPath().toString());
             }
         }
-        fileText.setText("ApplicationResources");
+        fileText.setText("ApplicationResources"); //$NON-NLS-1$
     }
     
     /**
@@ -299,15 +299,15 @@ public class ResourceBundleNewWizardPage extends WizardPage {
      * choose the new value for the container field.
      */
 
-    private void handleBrowse() {
+    /*default*/ void handleBrowse() {
         ContainerSelectionDialog dialog =
             new ContainerSelectionDialog(
                 getShell(),
                 ResourcesPlugin.getWorkspace().getRoot(),
                 false,
                 RBEPlugin.getString(
-                        "editor.wiz.selectFolder"));
-        if (dialog.open() == ContainerSelectionDialog.OK) {
+                        "editor.wiz.selectFolder")); //$NON-NLS-1$
+        if (dialog.open() == Window.OK) {
             Object[] result = dialog.getResult();
             if (result.length == 1) {
                 containerText.setText(((Path)result[0]).toOSString());
@@ -318,25 +318,24 @@ public class ResourceBundleNewWizardPage extends WizardPage {
     /**
      * Ensures that both text fields are set.
      */
-
-    private void dialogChanged() {
+    /*default*/ void dialogChanged() {
         String container = getContainerName();
         String fileName = getFileName();
 
         if (container.length() == 0) {
             updateStatus(RBEPlugin.getString(
-                    "editor.wiz.error.containerName"));
+                    "editor.wiz.error.containerName")); //$NON-NLS-1$
             return;
         }
         if (fileName.length() == 0) {
             updateStatus(RBEPlugin.getString(
-                    "editor.wiz.error.bundleName"));
+                    "editor.wiz.error.bundleName")); //$NON-NLS-1$
             return;
         }
         int dotLoc = fileName.lastIndexOf('.');
         if (dotLoc != -1) {
             updateStatus(RBEPlugin.getString(
-                    "editor.wiz.error.extension"));
+                    "editor.wiz.error.extension")); //$NON-NLS-1$
             return;
         }
         updateStatus(null);
@@ -347,9 +346,17 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         setPageComplete(message == null);
     }
 
+    /**
+     * Gets the container name.
+     * @return container name
+     */
     public String getContainerName() {
         return containerText.getText();
     }
+    /** 
+     * Gets the file name.
+     * @return file name
+     */
     public String getFileName() {
         return fileText.getText();
     }
@@ -357,7 +364,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
     /**
      * Sets the "add" button state. 
      */
-    private void setAddButtonState() {
+    /*default*/ void setAddButtonState() {
         addButton.setEnabled(bundleLocalesList.indexOf(
                 getSelectedLocaleAsString()) == -1);
     }
@@ -366,7 +373,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
      * Gets the user selected locales.
      * @return locales
      */
-    String[] getLocaleStrings() {
+    /*default*/ String[] getLocaleStrings() {
         return bundleLocalesList.getItems();
     }
     
@@ -374,12 +381,11 @@ public class ResourceBundleNewWizardPage extends WizardPage {
      * Gets a string representation of selected locale.
      * @return string representation of selected locale
      */
-    private String getSelectedLocaleAsString() {
+    /*default*/ String getSelectedLocaleAsString() {
         Locale selectedLocale = localeSelector.getSelectedLocale();
         if (selectedLocale != null) {
             return selectedLocale.toString();
-        } else {
-            return DEFAULT_LOCALE;
         }
+        return DEFAULT_LOCALE;
     }
 }

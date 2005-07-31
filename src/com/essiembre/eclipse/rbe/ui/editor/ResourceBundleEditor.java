@@ -73,19 +73,19 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
                 resourceMediator = new ResourceManager(site, file);
             } catch (CoreException e) {
                 UIUtils.showErrorDialog(
-                        getSite().getShell(), e, "error.init.ui");
+                        getSite().getShell(), e, "error.init.ui"); //$NON-NLS-1$
             }
                         
             setPartName(resourceMediator.getEditorDisplayName());
             setContentDescription(
-                    RBEPlugin.getString("editor.content.desc")
-                  + resourceMediator.getEditorDisplayName() + "."); 
+                    RBEPlugin.getString("editor.content.desc") //$NON-NLS-1$
+                  + resourceMediator.getEditorDisplayName() + ".");//$NON-NLS-1$
             setTitleImage(UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
             closeIfAreadyOpen(site, file);
             super.init(site, editorInput);
         } else {
             throw new PartInitException(
-                    "Invalid Input: Must be IFileEditorInput");
+                    "Invalid Input: Must be IFileEditorInput"); //$NON-NLS-1$
         }
     }
     
@@ -97,14 +97,15 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
         i18nPage = new I18nPage(
                 getContainer(), SWT.H_SCROLL | SWT.V_SCROLL, resourceMediator);
         int index = addPage(i18nPage);
-        setPageText(index, RBEPlugin.getString("editor.properties"));
+        setPageText(index, RBEPlugin.getString(
+                "editor.properties")); //$NON-NLS-1$
         setPageImage(index, UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
         
         // Create text editor pages for each locales
         try {
             SourceEditor[] sourceEditors = resourceMediator.getSourceEditors();
             for (int i = 0; i < sourceEditors.length; i++) {
-                SourceEditor sourceEditor = (SourceEditor) sourceEditors[i];
+                SourceEditor sourceEditor = sourceEditors[i];
                 index = addPage(
                         sourceEditor.getEditor(), 
                         sourceEditor.getEditor().getEditorInput());
@@ -114,16 +115,15 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
                         UIUtils.getImage(UIUtils.IMAGE_PROPERTIES_FILE));
             }
         } catch (PartInitException e) {
-            ErrorDialog.openError(
-                getSite().getShell(), "Error creating text editor page.",
+            ErrorDialog.openError(getSite().getShell(), 
+                "Error creating text editor page.", //$NON-NLS-1$
                 null, e.getStatus());
         }
         
         // Add "new locale" page
         newLocalePage = new NewLocalePage(getContainer(), resourceMediator);
         index = addPage(newLocalePage);
-        setPageText(index, RBEPlugin.getString(
-                "editor.new.tab"));
+        setPageText(index, RBEPlugin.getString("editor.new.tab")); //$NON-NLS-1$
         setPageImage(
                 index, UIUtils.getImage(UIUtils.IMAGE_NEW_PROPERTIES_FILE));
     }
@@ -153,6 +153,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
     /**
      * Change current page based on locale.  If there is no editors associated
      * with current locale, do nothing.
+     * @param locale locale used to identify the page to change to
      */
     public void setActivePage(Locale locale) {
         SourceEditor[] editors = resourceMediator.getSourceEditors();

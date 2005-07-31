@@ -40,7 +40,9 @@ public class SourceEditor {
     
     /**
      * Constructor.
-     * 
+     * @param editor text editor
+     * @param locale a locale
+     * @param file properties file
      */
     public SourceEditor(ITextEditor editor, Locale locale, IFile file) {
         super();
@@ -50,34 +52,66 @@ public class SourceEditor {
         contentCache = getContent();
     }
 
+    /**
+     * Gets the locale associated with this source editor.
+     * @return locale
+     */
     public Locale getLocale() {
         return locale;
     }
+    /**
+     * Gets the file associated with this source editor.
+     * @return properties file
+     */
     public IFile getFile() {
         return file;
     }
+    /**
+     * Gets the text editor associated with this source editor.
+     * @return text editor
+     */
     public ITextEditor getEditor() {
         return editor;
     }
     
+    /**
+     * Checks whether the underlying file content differs from the cached
+     * source editor content.
+     * @return <code>true</code> if dirty
+     */
     public boolean isCacheDirty() {
         return !getContent().equals(contentCache);
     }
     
+    /**
+     * Resets the source editor cache.
+     */
     public void resetCache() {
         contentCache = getContent();
     }
     
+    /**
+     * Gets the content of this source editor.
+     * @return content
+     */
     public String getContent() {
         return editor.getDocumentProvider().getDocument(
                 editor.getEditorInput()).get();
     }
     
+    /**
+     * Sets the content of this source editor (replacing existing content).
+     * @param content new content
+     */
     public void setContent(String content) {
         editor.getDocumentProvider().getDocument(
                 editor.getEditorInput()).set(content);
     }
     
+    /**
+     * Checks whether this source editor is read-only.
+     * @return <code>true</code> if read-only.
+     */
     public boolean isReadOnly() {
         return ((TextEditor) editor).isEditorInputReadOnly();
     }
