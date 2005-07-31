@@ -46,31 +46,52 @@ public abstract class ResourceFactory {
 
     /** Class name of Properties file editor (Eclipse 3.1). */
     protected static final String PROPERTIES_EDITOR_CLASS_NAME = 
-            "org.eclipse.jdt.internal.ui.propertiesfileeditor."
-          + "PropertiesFileEditor";
+            "org.eclipse.jdt.internal.ui.propertiesfileeditor." //$NON-NLS-1$
+          + "PropertiesFileEditor"; //$NON-NLS-1$
 
     /** Token to replace in a regular expression with a bundle name. */
-    private static final String TOKEN_BUNDLE_NAME = "BUNDLENAME";
+    private static final String TOKEN_BUNDLE_NAME = "BUNDLENAME"; //$NON-NLS-1$
     /** Token to replace in a regular expression with a file extension. */
-    private static final String TOKEN_FILE_EXTENSION = "FILEEXTENSION";
+    private static final String TOKEN_FILE_EXTENSION = 
+            "FILEEXTENSION"; //$NON-NLS-1$
     /** Regex to match a properties file. */
     private static final String PROPERTIES_FILE_REGEX = 
-            "^(" + TOKEN_BUNDLE_NAME + ")"
-          + "((_[a-z]{2,3})|(_[a-z]{2,3}_[A-Z]{2})"
-          + "|(_[a-z]{2,3}_[A-Z]{2}_\\w*))?(\\."
-          + TOKEN_FILE_EXTENSION + ")$";
+            "^(" + TOKEN_BUNDLE_NAME + ")"  //$NON-NLS-1$//$NON-NLS-2$
+          + "((_[a-z]{2,3})|(_[a-z]{2,3}_[A-Z]{2})" //$NON-NLS-1$
+          + "|(_[a-z]{2,3}_[A-Z]{2}_\\w*))?(\\." //$NON-NLS-1$
+          + TOKEN_FILE_EXTENSION + ")$"; //$NON-NLS-1$
     
+    /**
+     * Gets the editor display name.
+     * @return editor display name
+     */
     public abstract String getEditorDisplayName();
+    
+    /**
+     * Gets the source editors associated with this RBE.
+     * @return source editors
+     */
     public abstract SourceEditor[] getSourceEditors();
+    
+    /**
+     * Gets a properties file creator.
+     * @return properties file creator
+     */
     public abstract PropertiesFileCreator getPropertiesFileCreator();
     
+    /**
+     * Creates a resource factory based on given arguments.
+     * @param site eclipse editor site
+     * @param file file used to create factory
+     * @return resource factory
+     * @throws CoreException problem creating factory
+     */
     public static ResourceFactory createFactory(IEditorSite site, IFile file)
             throws CoreException {
         if (isNLResource(file)) {
             return new NLResourceFactory(site, file);
-        } else {
-            return new StandardResourceFactory(site, file);
         }
+        return new StandardResourceFactory(site, file);
     }
     
     protected SourceEditor createEditor(
@@ -115,7 +136,7 @@ public abstract class ResourceFactory {
         IResource nlDir = null;
         while (container != null 
                 && (nlDir == null || !(nlDir instanceof Folder))) {
-            nlDir = container.findMember("nl");
+            nlDir = container.findMember("nl"); //$NON-NLS-1$
             container = container.getParent();
         }
         if (nlDir == null || !(nlDir instanceof Folder)) {
@@ -134,11 +155,11 @@ public abstract class ResourceFactory {
     
     protected static String getBundleName(IFile file) {
         String name = file.getName();
-        String regex = "^(.*?)"
-                + "((_[a-z]{2,3})|(_[a-z]{2,3}_[A-Z]{2})"
-                + "|(_[a-z]{2,3}_[A-Z]{2}_\\w*))?(\\."
-                + file.getFileExtension() + ")$";
-        return name.replaceFirst(regex, "$1");
+        String regex = "^(.*?)" //$NON-NLS-1$
+                + "((_[a-z]{2,3})|(_[a-z]{2,3}_[A-Z]{2})" //$NON-NLS-1$
+                + "|(_[a-z]{2,3}_[A-Z]{2}_\\w*))?(\\." //$NON-NLS-1$
+                + file.getFileExtension() + ")$"; //$NON-NLS-1$
+        return name.replaceFirst(regex, "$1"); //$NON-NLS-1$
     }
     protected static String getPropertiesFileRegEx(IFile file) {
         String bundleName = getBundleName(file);

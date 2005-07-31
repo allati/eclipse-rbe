@@ -49,7 +49,9 @@ public class NLResourceFactory extends ResourceFactory {
     
     /**
      * Constructor.
-     * @throws CoreException
+     * @param site editor site
+     * @param file file used to open all related files
+     * @throws CoreException problem creating factory
      */
     protected NLResourceFactory(IEditorSite site, IFile file) 
             throws CoreException {
@@ -62,7 +64,7 @@ public class NLResourceFactory extends ResourceFactory {
         IResource nlDir = null;
         while (container != null 
                 && (nlDir == null || !(nlDir instanceof Folder))) {
-            nlDir = container.findMember("nl");
+            nlDir = container.findMember("nl"); //$NON-NLS-1$
             container = container.getParent();
         }
         

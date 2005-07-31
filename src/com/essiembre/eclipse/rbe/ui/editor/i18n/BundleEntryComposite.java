@@ -33,7 +33,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -44,6 +43,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import com.essiembre.eclipse.rbe.RBEPlugin;
 import com.essiembre.eclipse.rbe.model.bundle.BundleEntry;
 import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
 import com.essiembre.eclipse.rbe.model.bundle.visitors.DuplicateValuesVisitor;
@@ -64,27 +64,29 @@ import com.essiembre.eclipse.rbe.ui.editor.resources.SourceEditor;
  */
 public class BundleEntryComposite extends Composite {
 
-    private final ResourceManager resourceManager;
-    private final Locale locale;
+    /*default*/ final ResourceManager resourceManager;
+    /*default*/ final Locale locale;
     private final Font boldFont;
     private final Font smallFont;
-    private final Color yellowColor = UIUtils.getSystemColor(SWT.COLOR_YELLOW);
     
-    private Text textBox;
+    /*default*/ Text textBox;
     private Button commentedCheckbox;
     private Button gotoButton;
     private Button duplButton;
     private Button simButton;
     
-    private String activeKey;
-    private String textBeforeUpdate;
+    /*default*/ String activeKey;
+    /*default*/ String textBeforeUpdate;
 
-    private DuplicateValuesVisitor duplVisitor;
-    private SimilarValuesVisitor similarVisitor;
+    /*default*/ DuplicateValuesVisitor duplVisitor;
+    /*default*/ SimilarValuesVisitor similarVisitor;
     
     
     /**
      * Constructor.
+     * @param parent parent composite
+     * @param resourceManager resource manager
+     * @param locale locale for this bundle entry
      */
     public BundleEntryComposite(
             final Composite parent, 
@@ -152,7 +154,7 @@ public class BundleEntryComposite extends Composite {
             BundleEntry bundleEntry = bundleGroup.getBundleEntry(locale, key);
             SourceEditor sourceEditor = resourceManager.getSourceEditor(locale);
             if (bundleEntry == null) {
-                textBox.setText("");
+                textBox.setText(""); //$NON-NLS-1$
                 commentedCheckbox.setSelection(false);
             } else {
                 commentedCheckbox.setSelection(bundleEntry.isCommented());
@@ -174,7 +176,7 @@ public class BundleEntryComposite extends Composite {
         } else {
             commentedCheckbox.setSelection(false);
             commentedCheckbox.setEnabled(false);
-            textBox.setText("");
+            textBox.setText(""); //$NON-NLS-1$
             textBox.setEnabled(false);
             gotoButton.setEnabled(false);
             duplButton.setVisible(false);
@@ -231,7 +233,8 @@ public class BundleEntryComposite extends Composite {
 
         // Locale text
         Label txtLabel = new Label(labelComposite, SWT.NONE);
-        txtLabel.setText(" " + UIUtils.getDisplayName(locale) + " ");
+        txtLabel.setText(" " +  //$NON-NLS-1$
+                UIUtils.getDisplayName(locale) + " "); //$NON-NLS-1$
         txtLabel.setFont(boldFont);
 
         GridData gridData = new GridData();
@@ -241,23 +244,26 @@ public class BundleEntryComposite extends Composite {
         gridData.horizontalAlignment = GridData.END;
         gridData.grabExcessHorizontalSpace = true;
         simButton = new Button(labelComposite, SWT.PUSH | SWT.FLAT);
-        simButton.setImage(UIUtils.getImage("similar.gif"));
+        simButton.setImage(UIUtils.getImage("similar.gif")); //$NON-NLS-1$
         simButton.setLayoutData(gridData);
         simButton.setVisible(false);
         simButton.setToolTipText(
-                "Similar value(s) found. Click for details");
+                RBEPlugin.getString("value.similar.tooltip")); //$NON-NLS-1$
         simButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
-                String msg = "Below are keys having similar value as key \""
-                        + activeKey + "\" within the locale \""
-                        + UIUtils.getDisplayName(locale) + "\":\n\n";
+                String head = RBEPlugin.getString(
+                        "dialog.similar.head"); //$NON-NLS-1$
+                String body = RBEPlugin.getString(
+                        "dialog.similar.body", activeKey, //$NON-NLS-1$
+                        UIUtils.getDisplayName(locale));
+                body += "\":\n\n"; //$NON-NLS-1$
                 for (Iterator iter = similarVisitor.getSimilars().iterator();
                         iter.hasNext();) {
-                    msg += "        " + ((BundleEntry) iter.next()).getKey()
-                        + "\n";
+                    body += "        " //$NON-NLS-1$
+                          + ((BundleEntry) iter.next()).getKey()
+                          + "\n"; //$NON-NLS-1$
                 }
-                MessageDialog.openInformation(
-                        getShell(), "Similar value(s) found.", msg); 
+                MessageDialog.openInformation(getShell(), head, body); 
             }
         });
 
@@ -265,23 +271,27 @@ public class BundleEntryComposite extends Composite {
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.END;
         duplButton = new Button(labelComposite, SWT.PUSH | SWT.FLAT);
-        duplButton.setImage(UIUtils.getImage("duplicate.gif"));
+        duplButton.setImage(UIUtils.getImage("duplicate.gif")); //$NON-NLS-1$
         duplButton.setLayoutData(gridData);
         duplButton.setVisible(false);
         duplButton.setToolTipText(
-                "Duplicate value(s) found. Click for details");
+                RBEPlugin.getString("value.duplicate.tooltip")); //$NON-NLS-1$
+
         duplButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
-                String msg = "Below are keys having the same value as key \""
-                        + activeKey + "\" within the locale \""
-                        + UIUtils.getDisplayName(locale) + "\":\n\n";
+                String head = RBEPlugin.getString(
+                        "dialog.identical.head"); //$NON-NLS-1$
+                String body = RBEPlugin.getString(
+                        "dialog.identical.body", activeKey, //$NON-NLS-1$
+                        UIUtils.getDisplayName(locale));
+                body += "\":\n\n"; //$NON-NLS-1$
                 for (Iterator iter = duplVisitor.getDuplicates().iterator();
                         iter.hasNext();) {
-                    msg += "        " + ((BundleEntry) iter.next()).getKey()
-                        + "\n";
+                    body += "        " //$NON-NLS-1$
+                        + ((BundleEntry) iter.next()).getKey()
+                        + "\n"; //$NON-NLS-1$
                 }
-                MessageDialog.openInformation(
-                        getShell(), "Duplicate value(s) found.", msg); 
+                MessageDialog.openInformation(getShell(), head, body); 
             }
         });
         
@@ -291,7 +301,7 @@ public class BundleEntryComposite extends Composite {
         //gridData.grabExcessHorizontalSpace = true;
         commentedCheckbox = new Button(
                 labelComposite, SWT.CHECK);
-        commentedCheckbox.setText("#");//TODO translate
+        commentedCheckbox.setText("#"); //$NON-NLS-1$
         commentedCheckbox.setFont(smallFont);
         commentedCheckbox.setLayoutData(gridData);
         commentedCheckbox.addSelectionListener(new SelectionAdapter() {
@@ -315,7 +325,7 @@ public class BundleEntryComposite extends Composite {
         gotoButton = new Button(
                 labelComposite, SWT.ARROW | SWT.RIGHT);
         gotoButton.setToolTipText(
-                "Click to go to corresponding properties file");
+                RBEPlugin.getString("value.goto.tooltip")); //$NON-NLS-1$
         gotoButton.setEnabled(false);
         gotoButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
@@ -363,19 +373,19 @@ public class BundleEntryComposite extends Composite {
         });
         textBox.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent event) {
-                Text textBox = (Text) event.widget;
+                Text eventBox = (Text) event.widget;
                 final ITextEditor editor = resourceManager.getSourceEditor(
                         locale).getEditor();
                 // Text field has changed: make editor dirty if not already
                 if (textBeforeUpdate != null 
-                        && !textBeforeUpdate.equals(textBox.getText())) {
+                        && !textBeforeUpdate.equals(eventBox.getText())) {
                     // Make the editor dirty if not already.  If it is, 
                     // we wait until field focus lost (or save) to 
                     // update it completely.
                     if (!editor.isDirty()) {
-                        int caretPosition = textBox.getCaretPosition();
+                        int caretPosition = eventBox.getCaretPosition();
                         updateBundleOnChanges();
-                        textBox.setSelection(caretPosition);
+                        eventBox.setSelection(caretPosition);
                     }
                 // Text field is the same as original (make non-dirty)
                 } else {
@@ -394,35 +404,35 @@ public class BundleEntryComposite extends Composite {
     
     /**
      * Loads country icon based on locale country.
-     * @param locale the locale on which to grab the country
+     * @param countryLocale the locale on which to grab the country
      * @return an image, or <code>null</code> if no match could be made
      */
-    private Image loadCountryIcon(Locale locale) {
+    private Image loadCountryIcon(Locale countryLocale) {
         Image image = null;
         String countryCode = null;
-        if (locale != null && locale.getCountry() != null) {
-            countryCode = locale.getCountry().toLowerCase();
+        if (countryLocale != null && countryLocale.getCountry() != null) {
+            countryCode = countryLocale.getCountry().toLowerCase();
         }
         if (countryCode != null && countryCode.length() > 0) {
-            String imageName = 
-                    "countries/" + countryCode.toLowerCase() + ".gif";
+            String imageName = "countries/" + //$NON-NLS-1$
+                    countryCode.toLowerCase() + ".gif"; //$NON-NLS-1$
             image = UIUtils.getImage(imageName);
         }
         if (image == null) {
-            image = UIUtils.getImage("countries/blank.gif");
+            image = UIUtils.getImage("countries/blank.gif"); //$NON-NLS-1$
         }
         return image;
     }
     
-    private void resetCommented() {
+    /*default*/ void resetCommented() {
         if (commentedCheckbox.getSelection()) {
             commentedCheckbox.setToolTipText(
-                    "Uncheck to uncomment this entry.");
+                   RBEPlugin.getString("value.uncomment.tooltip"));//$NON-NLS-1$
             textBox.setForeground(
                     getDisplay().getSystemColor(SWT.COLOR_GRAY));
         } else {
             commentedCheckbox.setToolTipText(
-                    "Check to comment this entry.");
+                   RBEPlugin.getString("value.comment.tooltip"));//$NON-NLS-1$
             textBox.setForeground(null);
         }
     }

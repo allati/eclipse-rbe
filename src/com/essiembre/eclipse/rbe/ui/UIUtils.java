@@ -47,10 +47,16 @@ import com.essiembre.eclipse.rbe.RBEPlugin;
  */
 public final class UIUtils {
 
-    public static final String IMAGE_RESOURCE_BUNDLE = "resourcebundle.gif"; 
-    public static final String IMAGE_PROPERTIES_FILE = "propertiesfile.gif"; 
+    public static final String IMAGE_RESOURCE_BUNDLE = 
+            "resourcebundle.gif";  //$NON-NLS-1$
+    public static final String IMAGE_PROPERTIES_FILE = 
+            "propertiesfile.gif";  //$NON-NLS-1$
     public static final String IMAGE_NEW_PROPERTIES_FILE = 
-                "newpropertiesfile.gif"; 
+            "newpropertiesfile.gif";  //$NON-NLS-1$
+    public static final String IMAGE_LAYOUT_HIERARCHICAL =
+            "hierarchicalLayout.gif";  //$NON-NLS-1$
+    public static final String IMAGE_LAYOUT_FLAT = 
+            "flatLayout.gif";  //$NON-NLS-1$
     
     /** Image registry. */
     private static final ImageRegistry imageRegistry = new ImageRegistry();

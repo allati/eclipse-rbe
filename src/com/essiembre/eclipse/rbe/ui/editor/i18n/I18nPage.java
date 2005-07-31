@@ -53,7 +53,7 @@ public class I18nPage extends ScrolledComposite {
     private final KeyTreeComposite keysComposite;
     private final Collection entryComposites = new ArrayList(); 
     
-    private BundleEntryComposite activeEntry;
+    /*default*/ BundleEntryComposite activeEntry;
     
     /**
      * Constructor.
@@ -116,49 +116,20 @@ public class I18nPage extends ScrolledComposite {
         }
     }
     
-    /**
-//     * Gets the currently active property key.
-//     * @return active property key 
-//     */
-//    public String getSelectedKey(){
-//        return keysComposite.getSelectedKey();
-//    }
-
-    /**
-     * Refreshes all fields and data linked to this page. This includes
-     * resource bundle data, text boxes, and key tree.
-     */
-    public void refresh(){
-
-        System.out.println("REFresh!!" + System.currentTimeMillis());
-        //        bundles.refreshData();
-//        bundles.refreshTextBoxes(keysComposite.getSelectedKey());
-//        keysComposite.refresh(keysComposite.getSelectedKey());
-    }
 
 	/**
 	 * Refreshes the editor associated with the active text box (if any)
      * if it has changed.
 	 */
 	public void refreshEditorOnChanges(){
-//        if (activeTextBox != null) {
-//            String text = activeTextBox.getText();
-//            if (!text.equals(textBeforeUpdate)) {
-//                Bundle bundle = bundles.getBundle(activeTextBox);                        
-//                Map data = bundle.getData();
-//                String selectedKey = 
-//                        (String) activeTextBox.getData(SELECTED_KEY);
-//                data.put(selectedKey, activeTextBox.getText());
-//                bundle.refreshEditor();
-//                if (text == null || text.trim().length() == 0
-//                        || textBeforeUpdate == null 
-//                        || textBeforeUpdate.trim().length() == 0) {
-//                    keysComposite.refreshBranchIcons(selectedKey);
-//                }
-//            }
-//        }
+        if (activeEntry != null) {
+            activeEntry.updateBundleOnChanges();
+        }
 	}
 	    
+    /**
+     * Refreshes all value-holding text boxes in this page.
+     */
     public void refreshTextBoxes() {
         String key = keysComposite.getSelectedKey();
         for (Iterator iter = entryComposites.iterator(); iter.hasNext();) {

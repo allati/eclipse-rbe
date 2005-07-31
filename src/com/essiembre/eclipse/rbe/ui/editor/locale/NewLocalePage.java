@@ -53,13 +53,11 @@ public class NewLocalePage extends Composite {
     /**
      * Constructor.
      * @param parent parent component.
-     * @param basePathAddFileName base path and file name.
-     * @param baseFileName base file name.
-     * @param nlDir path to "nl" directory. <code>null</code> if regular bundle. 
+     * @param resourceManager resource manager 
      */
     public NewLocalePage(
             final Composite parent, 
-            final ResourceManager resourceMediator) {
+            final ResourceManager resourceManager) {
         super(parent, SWT.NONE);
         
         setLayout(new GridLayout());
@@ -76,8 +74,7 @@ public class NewLocalePage extends Composite {
         
         // Title label
         Label label = new Label(block, SWT.NONE);
-        label.setText(RBEPlugin.getString(
-                "editor.new.title"));
+        label.setText(RBEPlugin.getString("editor.new.title")); //$NON-NLS-1$
         label.setFont(UIUtils.createFont(this, SWT.BOLD, 5));
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.CENTER;
@@ -93,7 +90,7 @@ public class NewLocalePage extends Composite {
         // Create button
         Button createButton = new Button(block, SWT.NULL);
         createButton.setText(RBEPlugin.getString(
-                "editor.new.create"));
+                "editor.new.create")); //$NON-NLS-1$
         createButton.setFont(UIUtils.createFont(this, SWT.BOLD, 1));
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.CENTER;
@@ -106,7 +103,7 @@ public class NewLocalePage extends Composite {
                     try {
                         //TODO add "newPropertiesFile" method to seGroup.
                         final IFile file = 
-                                resourceMediator.createPropertiesFile(locale);
+                                resourceManager.createPropertiesFile(locale);
                         // Reopen
                         getShell().getDisplay().asyncExec(new Runnable() {
                             public void run() {
@@ -116,21 +113,21 @@ public class NewLocalePage extends Composite {
                                     IDE.openEditor(page, file, true);
                                 } catch (PartInitException e) {
                                     UIUtils.showErrorDialog(getShell(), e,
-                                            "error.newfile.cannotCreate");
+                                     "error.newfile.cannotCreate");//$NON-NLS-1$
                                 }
                             }
                         });
                     } catch (NullPointerException e) {
                         UIUtils.showErrorDialog(getShell(), e, 
-                                "error.newfile.cannotCreate");
+                                "error.newfile.cannotCreate"); //$NON-NLS-1$
                         throw e;
                     }
                 } catch (CoreException e) {
-                    UIUtils.showErrorDialog(
-                            getShell(), e, "error.newfile.cannotCreate");
+                    UIUtils.showErrorDialog(getShell(), e, 
+                            "error.newfile.cannotCreate"); //$NON-NLS-1$
                 } catch (IOException e) {
-                    UIUtils.showErrorDialog(
-                            getShell(), e, "error.newfile.cannotCreate");
+                    UIUtils.showErrorDialog(getShell(), e, 
+                            "error.newfile.cannotCreate"); //$NON-NLS-1$
                 }
             }
         });

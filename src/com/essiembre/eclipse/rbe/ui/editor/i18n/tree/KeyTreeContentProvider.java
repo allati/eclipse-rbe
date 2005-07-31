@@ -35,25 +35,24 @@ import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class KeyTreeContentProvider implements ITreeContentProvider, IDeltaListener {
+public class KeyTreeContentProvider implements 
+        ITreeContentProvider, IDeltaListener {
 
     /** Represents empty objects. */
     private static Object[] EMPTY_ARRAY = new Object[0];
     /** Viewer this provided act upon. */
-    protected TreeViewer viewer;
-    /** Key tree used to provide content. */
-    private KeyTree keyTree;
+    protected TreeViewer treeViewer;
     
     /**
-     * @see IContentProvider#dispose()
+     * @see ITreeContentProvider#dispose()
      */
     public void dispose() {}
 
     /**
-     * @see IContentProvider#inputChanged(Viewer, Object, Object)
+     * @see ITreeContentProvider#inputChanged(Viewer, Object, Object)
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        this.viewer = (TreeViewer)viewer;
+        this.treeViewer = (TreeViewer) viewer;
         if(oldInput != null) {
             ((KeyTree) oldInput).removeListener(this);
         }
@@ -66,7 +65,6 @@ public class KeyTreeContentProvider implements ITreeContentProvider, IDeltaListe
      * @see ITreeContentProvider#getChildren(Object)
      */
     public Object[] getChildren(Object parentElement) {
-        String key = null;
         if(parentElement instanceof KeyTree) {
             return ((KeyTree) parentElement).getRootKeyItems().toArray();
         } else if (parentElement instanceof KeyTreeItem) {
@@ -93,7 +91,7 @@ public class KeyTreeContentProvider implements ITreeContentProvider, IDeltaListe
     }
 
     /**
-     * @see IStructuredContentProvider#getElements(Object)
+     * @see ITreeContentProvider#getElements(Object)
      */
     public Object[] getElements(Object inputElement) {
         return getChildren(inputElement);
@@ -103,14 +101,14 @@ public class KeyTreeContentProvider implements ITreeContentProvider, IDeltaListe
      * @see IDeltaListener#add(DeltaEvent)
      */
     public void add(DeltaEvent event) {
-        viewer.refresh(true);
+        treeViewer.refresh(true);
     }
 
     /**
      * @see IDeltaListener#remove(DeltaEvent)
      */
     public void remove(DeltaEvent event) {
-        viewer.refresh(true);
+        treeViewer.refresh(true);
     }
 
     /**
@@ -119,8 +117,8 @@ public class KeyTreeContentProvider implements ITreeContentProvider, IDeltaListe
     public void modify(DeltaEvent event) {
         KeyTreeItem treeItem = (KeyTreeItem) event.receiver();
         Object parentTreeItem = treeItem.getParent();
-        viewer.refresh(parentTreeItem, true);
-        viewer.setSelection(new StructuredSelection(treeItem), true);
+        treeViewer.refresh(parentTreeItem, true);
+        treeViewer.setSelection(new StructuredSelection(treeItem), true);
 
     }
 }

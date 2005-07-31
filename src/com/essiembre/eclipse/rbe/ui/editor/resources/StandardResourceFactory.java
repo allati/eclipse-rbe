@@ -49,7 +49,9 @@ public class StandardResourceFactory extends ResourceFactory {
 
     /**
      * Constructor.
-     * 
+     * @param site editor site
+     * @param file file used to open all related files
+     * @throws CoreException problem creating factory
      */
     protected StandardResourceFactory(IEditorSite site, IFile file) 
              throws CoreException {
@@ -63,9 +65,10 @@ public class StandardResourceFactory extends ResourceFactory {
             IResource resource = resources[i];
             String resourceName = resource.getName();
             // Build local title
-            String localeText = resourceName.replaceFirst(regex, "$2");
+            String localeText = 
+                    resourceName.replaceFirst(regex, "$2"); //$NON-NLS-1$
             StringTokenizer tokens = 
-                new StringTokenizer(localeText, "_");
+                new StringTokenizer(localeText, "_"); //$NON-NLS-1$
             List localeSections = new ArrayList();
             while (tokens.hasMoreTokens()) {
                 localeSections.add(tokens.nextToken());
@@ -101,25 +104,29 @@ public class StandardResourceFactory extends ResourceFactory {
                 file.getParent().getFullPath().toString(),
                 bundleName,
                 file.getFileExtension());
-        displayName = bundleName + "[...]." + file.getFileExtension();
+        displayName = bundleName
+                + "[...]." + file.getFileExtension(); //$NON-NLS-1$
     }
     
     /**
-     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory#getEditorDisplayName()
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory
+     *         #getEditorDisplayName()
      */
     public String getEditorDisplayName() {
         return displayName;
     }
 
     /**
-     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory#getSourceEditors()
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory
+     *         #getSourceEditors()
      */
     public SourceEditor[] getSourceEditors() {
         return sourceEditors;
     }
 
     /**
-     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory#getPropertiesFileCreator()
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory
+     *         #getPropertiesFileCreator()
      */
     public PropertiesFileCreator getPropertiesFileCreator() {
         return fileCreator;
@@ -134,7 +141,7 @@ public class StandardResourceFactory extends ResourceFactory {
             resources = file.getParent().members();
         } catch (CoreException e) {
             throw new PartInitException(
-                    "Can't initialize resource bundle editor.", e);
+                   "Can't initialize resource bundle editor.", e); //$NON-NLS-1$
         }
         Collection validResources = new ArrayList();
         for (int i = 0; i < resources.length; i++) {

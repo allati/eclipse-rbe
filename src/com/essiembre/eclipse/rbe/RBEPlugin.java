@@ -28,6 +28,7 @@ import org.osgi.framework.BundleContext;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -94,6 +95,43 @@ public class RBEPlugin extends AbstractUIPlugin {
 		}
 	}
 
+    /**
+     * Returns the string from the plugin's resource bundle,
+     * or 'key' if not found.
+     * @param key the key for which to fetch a localized text
+     * @param arg1 runtime argument to replace in key value 
+     * @return localized string corresponding to key
+     */
+    public static String getString(String key, String arg1) {
+        return MessageFormat.format(getString(key), new String[]{arg1});
+    }
+    /**
+     * Returns the string from the plugin's resource bundle,
+     * or 'key' if not found.
+     * @param key the key for which to fetch a localized text
+     * @param arg1 runtime first argument to replace in key value
+     * @param arg2 runtime second argument to replace in key value
+     * @return localized string corresponding to key
+     */
+    public static String getString(String key, String arg1, String arg2) {
+        return MessageFormat.format(
+                getString(key), new String[]{arg1, arg2});
+    }
+    /**
+     * Returns the string from the plugin's resource bundle,
+     * or 'key' if not found.
+     * @param key the key for which to fetch a localized text
+     * @param arg1 runtime argument to replace in key value 
+     * @param arg2 runtime second argument to replace in key value
+     * @param arg3 runtime third argument to replace in key value
+     * @return localized string corresponding to key
+     */
+    public static String getString(
+            String key, String arg1, String arg2, String arg3) {
+        return MessageFormat.format(
+                getString(key), new String[]{arg1, arg2, arg3});
+    }
+    
 	/**
 	 * Returns the plugin's resource bundle,
 	 */

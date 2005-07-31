@@ -55,12 +55,15 @@ public class ResourceManager {
     private ResourceFactory resourcesFactory;
     private final BundleGroup bundleGroup;
     private final KeyTree keyTree;
-    private final Map sourceEditors = new HashMap(); //key=Locale;value=SourceE.
+    /** key=Locale;value=SourceEditor */
+    /*default*/ final Map sourceEditors = new HashMap();
     private final Collection locales = new ArrayList();
     
     /**
      * Constructor.
-     * @throws CoreException
+     * @param site eclipse editor site
+     * @param file file used to create manager
+     * @throws CoreException problem creating resource manager
      */
     public ResourceManager(final IEditorSite site, final IFile file)
             throws CoreException {
@@ -101,18 +104,38 @@ public class ResourceManager {
         this.keyTree = new KeyTree(bundleGroup, treeUpdater);
     }
 
+    /**
+     * Gets a bundle group.
+     * @return bundle group
+     */
     public BundleGroup getBundleGroup() {
         return bundleGroup;
     }
+    /**
+     * Gets all locales in this bundle.
+     * @return locales
+     */
     public Collection getLocales() {
         return locales;
     }
+    /**
+     * Gets the key tree for this bundle.
+     * @return key tree
+     */
     public KeyTree getKeyTree() {
         return keyTree;
     }
+    /**
+     * Gets the source editors.
+     * @return source editors.
+     */
     public SourceEditor[] getSourceEditors() {
         return resourcesFactory.getSourceEditors();
     }
+    /**
+     * Save all dirty editors.
+     * @param monitor progress monitor
+     */
     public void save(IProgressMonitor monitor) {
         SourceEditor[] sourceEditors = resourcesFactory.getSourceEditors();
         for (int i = 0; i < sourceEditors.length; i++) {

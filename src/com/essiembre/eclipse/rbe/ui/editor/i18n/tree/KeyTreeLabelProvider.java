@@ -46,11 +46,11 @@ import com.essiembre.eclipse.rbe.ui.UIUtils;
 public class KeyTreeLabelProvider 
         extends LabelProvider implements IFontProvider, IColorProvider {	
     
-    public static final int KEY_DEFAULT = 1 << 1;
-    public static final int KEY_COMMENTED = 1 << 2;
-    public static final int KEY_NOT = 1 << 3;
-    public static final int WARNING = 1 << 4;
-    public static final int WARNING_GREY = 1 << 5;
+    private static final int KEY_DEFAULT = 1 << 1;
+    private static final int KEY_COMMENTED = 1 << 2;
+    private static final int KEY_NOT = 1 << 3;
+    private static final int WARNING = 1 << 4;
+    private static final int WARNING_GREY = 1 << 5;
 
     /** Registry instead of UIUtils one for image not keyed by file name. */
     private ImageRegistry imageRegistry = new ImageRegistry();
@@ -120,9 +120,8 @@ public class KeyTreeLabelProvider
         if (item.getChildren().size() > 0) {
             if (item.getKeyTree().getBundleGroup().isKey(item.getId())) {
                 return groupFontKey;
-            } else {
-                return groupFontNoKey;
             }
+            return groupFontNoKey;
         }
         return null;
     }
@@ -154,24 +153,24 @@ public class KeyTreeLabelProvider
      * @return generated image
      */
     private Image generateImage(int iconFlags) {
-        Image image = imageRegistry.get("" + iconFlags);
+        Image image = imageRegistry.get("" + iconFlags); //$NON-NLS-1$
         if (image == null) {
             // Figure background image
             if ((iconFlags & KEY_COMMENTED) != 0) {
-                image = getRegistryImage("keyCommented.gif");
+                image = getRegistryImage("keyCommented.gif"); //$NON-NLS-1$
             } else if ((iconFlags & KEY_NOT) != 0) {
-                image = getRegistryImage("key.gif");
+                image = getRegistryImage("key.gif"); //$NON-NLS-1$
             } else {
-                image = getRegistryImage("key.gif");
+                image = getRegistryImage("key.gif"); //$NON-NLS-1$
             }
             
             // Add warning icon
             if ((iconFlags & WARNING) != 0) {
-                image = overlayImage(
-                        image, "warning.gif", OverlayImageIcon.BOTTOM_RIGHT);
+                image = overlayImage(image, "warning.gif", //$NON-NLS-1$
+                        OverlayImageIcon.BOTTOM_RIGHT);
             } else if ((iconFlags & WARNING_GREY) != 0) {
-                image = overlayImage(image, 
-                        "warningGrey.gif", OverlayImageIcon.BOTTOM_RIGHT);
+                image = overlayImage(image, "warningGrey.gif", //$NON-NLS-1$
+                        OverlayImageIcon.BOTTOM_RIGHT);
             }
         }
         return image;
