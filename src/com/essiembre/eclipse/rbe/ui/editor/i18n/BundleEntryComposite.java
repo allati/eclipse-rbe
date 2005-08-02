@@ -256,7 +256,7 @@ public class BundleEntryComposite extends Composite {
                 String body = RBEPlugin.getString(
                         "dialog.similar.body", activeKey, //$NON-NLS-1$
                         UIUtils.getDisplayName(locale));
-                body += "\":\n\n"; //$NON-NLS-1$
+                body += "\n\n"; //$NON-NLS-1$
                 for (Iterator iter = similarVisitor.getSimilars().iterator();
                         iter.hasNext();) {
                     body += "        " //$NON-NLS-1$
@@ -284,7 +284,7 @@ public class BundleEntryComposite extends Composite {
                 String body = RBEPlugin.getString(
                         "dialog.identical.body", activeKey, //$NON-NLS-1$
                         UIUtils.getDisplayName(locale));
-                body += "\":\n\n"; //$NON-NLS-1$
+                body += "\n\n"; //$NON-NLS-1$
                 for (Iterator iter = duplVisitor.getDuplicates().iterator();
                         iter.hasNext();) {
                     body += "        " //$NON-NLS-1$
