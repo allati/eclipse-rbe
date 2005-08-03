@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -143,6 +144,17 @@ public abstract class ResourceFactory {
             return false;
         }
 
+        /*
+         * Ensures NL directory is part of file path, or that file dir
+         * is parent of NL directory.
+         */
+        IPath filePath = file.getFullPath();
+        IPath nlDirPath = nlDir.getFullPath();
+        if (!nlDirPath.isPrefixOf(filePath)
+                && !filePath.removeLastSegments(1).isPrefixOf(nlDirPath)) {
+            return false;
+        }
+        
         /*
          * Ensure that there are no other files which could make a standard
          * resource bundle.
