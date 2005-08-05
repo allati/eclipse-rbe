@@ -41,8 +41,12 @@ public final class PropertiesGenerator {
         '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
     };
 
-    /** Special resouce bundle characters. */
-    private static final String SPECIAL_SAVE_CHARS = "=: \t\f#!"; //$NON-NLS-1$
+    /** Special resouce bundle characters when persisting any text. */
+    private static final String SPECIAL_VALUE_SAVE_CHARS = 
+            "\t\f"; //$NON-NLS-1$
+    /** Special resouce bundle characters when persisting keys. */
+    private static final String SPECIAL_KEY_SAVE_CHARS = 
+            "=\t\f#!: "; //$NON-NLS-1$
     
     /** System line separator. */
     private static final String SYSTEM_LINE_SEP = 
@@ -214,13 +218,13 @@ public final class PropertiesGenerator {
                     int breakPos = line.indexOf(SYSTEM_LINE_SEP);
                     if (breakPos != -1) {
                         endPos = breakPos + SYSTEM_LINE_SEP.length();
-                        saveText(text, valueBuf.substring(0, endPos));
+                        saveValue(text, valueBuf.substring(0, endPos));
                         //text.append(valueBuf.substring(0, endPos));
                     } else {
                         breakPos = line.lastIndexOf(' ');
                         if (breakPos != -1) {
                             endPos = breakPos + 1;
-                            saveText(text, valueBuf.substring(0, endPos));
+                            saveValue(text, valueBuf.substring(0, endPos));
                             //text.append(valueBuf.substring(0, endPos));
                             text.append("\\"); //$NON-NLS-1$
                             text.append(SYSTEM_LINE_SEP);
@@ -242,7 +246,7 @@ public final class PropertiesGenerator {
                 }
                 text.append(valueBuf);
             } else {
-                saveText(text, value);
+                saveValue(text, value);
                 //text.append(value);
             }
         }
@@ -261,7 +265,9 @@ public final class PropertiesGenerator {
         if (commented) {
             text.append("##"); //$NON-NLS-1$
         }
-        saveText(text, key);
+        
+        // Escape and persist the rest
+        saveKey(text, key);
 //        text.append(key);
         for (int i = 0; i < equalIndex - key.length(); i++) {
             text.append(' ');
@@ -273,16 +279,26 @@ public final class PropertiesGenerator {
         }
     }
     
+    
+    private static void saveKey(StringBuffer buf, String str) {
+        saveText(buf, str, SPECIAL_KEY_SAVE_CHARS);
+    }
+    private static void saveValue(StringBuffer buf, String str) {
+        saveText(buf, str, SPECIAL_VALUE_SAVE_CHARS);
+    }
+    
     /**
      * Saves some text in a given buffer after converting special characters.
      * @param buf the buffer to store the text into
      * @param str the value to save
+     * @param escapeChars characters to escape
      */
-    private static void saveText(StringBuffer buf, String str) {
+    private static void saveText(
+            StringBuffer buf, String str, String escapeChars) {
         int len = str.length();
         for(int x = 0; x < len; x++) {
             char aChar = str.charAt(x);
-            if (SPECIAL_SAVE_CHARS.indexOf(aChar) != -1) {
+            if (escapeChars.indexOf(aChar) != -1) {
                 buf.append('\\');
             }
             buf.append(aChar);

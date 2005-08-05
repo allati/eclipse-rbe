@@ -101,6 +101,8 @@ public final class PropertiesParser {
                     }
                 }
                 String key = lineBuf.substring(0, equalPosition).trim();
+                key = unescapeKey(key);
+                
                 String value = lineBuf.substring(equalPosition + 1).trim();
                 if (RBEPreferences.getConvertEncodedToUnicode()) {
                     key = PropertiesParser.convertEncodedToUnicode(key);
@@ -201,11 +203,24 @@ public final class PropertiesParser {
         int length = str.length();
         for (index = 0; index < length; index++) {
             char currentChar = str.charAt(index);
-            if (currentChar == '\\')
+            if (currentChar == '\\') {
                 index++;
-            else if (KEY_VALUE_SEPARATORS.indexOf(currentChar) != -1)
+            } else if (KEY_VALUE_SEPARATORS.indexOf(currentChar) != -1) {
                 break;
+            }
         }
         return index;
+    }
+    
+    private static String unescapeKey(String key) {
+        int length = key.length();
+        StringBuffer buf = new StringBuffer();
+        for (int index = 0; index < length; index++) {
+            char currentChar = key.charAt(index);
+            if (currentChar != '\\') {
+                buf.append(currentChar);
+            }
+        }
+        return buf.toString();
     }
 }
