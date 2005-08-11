@@ -22,7 +22,6 @@ package com.essiembre.eclipse.rbe.model.bundle;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -273,7 +272,8 @@ public class BundleGroup extends Model implements IBundleVisitable {
         for (Iterator iter = iterator(); iter.hasNext();) {
             keys.addAll(((Bundle) iter.next()).getKeys());
         }
-        return Collections.unmodifiableSet(keys);
+        return keys;
+//        return Collections.unmodifiableSet(keys);
     }
 
     /**

@@ -21,7 +21,6 @@
 package com.essiembre.eclipse.rbe.model.bundle;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -222,7 +221,8 @@ public class Bundle extends Model implements IBundleVisitable {
     public Set getKeys() {
         Set keys = new TreeSet();
         keys.addAll(entries.keySet());
-        return Collections.unmodifiableSet(keys);
+        return keys;
+        //        return Collections.unmodifiableSet(keys);
     }
 
     /**
