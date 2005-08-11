@@ -21,7 +21,6 @@
 package com.essiembre.eclipse.rbe.ui.editor.i18n.tree;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -115,10 +114,9 @@ public class KeyTreeContentProvider implements
      * @see IDeltaListener#modify(DeltaEvent)
      */
     public void modify(DeltaEvent event) {
+        //TODO how to make sure many changes could do a "batch" refresh on tree?
         KeyTreeItem treeItem = (KeyTreeItem) event.receiver();
         Object parentTreeItem = treeItem.getParent();
         treeViewer.refresh(parentTreeItem, true);
-        treeViewer.setSelection(new StructuredSelection(treeItem), true);
-
     }
 }
