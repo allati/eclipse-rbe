@@ -67,9 +67,10 @@ public final class PropertiesParser {
             lineBuf.setLength(0);
             lineBuf.append(line);
         
-            int equalPosition = findKeyValueSeparator(line);// lineBuf.indexOf("=");
+            int equalPosition = findKeyValueSeparator(line);
             boolean isRegularLine = line.matches("^[^#].*"); //$NON-NLS-1$
-            boolean isCommentedLine = line.matches("^##[^#].*"); //$NON-NLS-1$
+            boolean isCommentedLine = doneWithFileComment 
+                    && line.matches("^##[^#].*"); //$NON-NLS-1$
             
             // parse regular and commented lines
             if (equalPosition >= 1 && (isRegularLine || isCommentedLine)) {
@@ -199,13 +200,14 @@ public final class PropertiesParser {
      * @return the separator index or -1 if no separator was found
      */
     private static int findKeyValueSeparator(String str) {
-        int index;
+        int index = -1;
         int length = str.length();
-        for (index = 0; index < length; index++) {
-            char currentChar = str.charAt(index);
+        for (int i = 0; i < length; i++) {
+            char currentChar = str.charAt(i);
             if (currentChar == '\\') {
-                index++;
+                i++;
             } else if (KEY_VALUE_SEPARATORS.indexOf(currentChar) != -1) {
+                index = i;
                 break;
             }
         }
