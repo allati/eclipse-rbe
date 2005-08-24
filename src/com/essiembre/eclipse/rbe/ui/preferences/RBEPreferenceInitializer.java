@@ -49,11 +49,13 @@ public class RBEPreferenceInitializer extends
         Preferences prefs = RBEPlugin.getDefault().getPluginPreferences();
 
         //General
+        prefs.setDefault(RBEPreferences.CONVERT_ENCODED_TO_UNICODE, true);
         prefs.setDefault(RBEPreferences.FIELD_TAB_INSERTS, true);
         prefs.setDefault(RBEPreferences.KEY_TREE_HIERARCHICAL, true);
         prefs.setDefault(RBEPreferences.KEY_TREE_EXPANDED, true);
         
         //Formatting
+        prefs.setDefault(RBEPreferences.CONVERT_UNICODE_TO_ENCODED, true);
         prefs.setDefault(RBEPreferences.CONVERT_UNICODE_TO_ENCODED_UPPER, true);
         
         prefs.setDefault(RBEPreferences.SPACES_AROUND_EQUAL_SIGNS, true);
