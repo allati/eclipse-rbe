@@ -2,24 +2,15 @@ Here is an overview of changes for each releases:
 
 Release 0.7.0 (2005-??-??)
 --------------------------
-º Improved resource management (Fonts and Images are now disposed after usage).
+º New: German plugin translation added.
 º New (feature #1219647): Changes on key tree structure are now dynamic 
   (the tree is no longer re-generated, which resulted in losing 
   expanded/collapsed information.
-º Double-clicking on a key tree group will now expand/collapse it instead of
-  offering to rename.
-º Minimum text box size for key values is now a big bigger.
-º Key tree now always expanded by default.
 º New: Added "Copy" feature to key tree contextual menu.   
 º New: Added "Comment" feature to key tree contextual menu.
 º New: Added "Expand All/Collapse All" features to key tree contextual menu.
-º The "Add" button for adding new keys is now disabled when the corresponding
-  text represents an existing key.
 º New (feature #1216393): Matching keys are now highlighted in navigation tree 
   as you type text in the text field below it.
-º Warning icons are now grey when a key has at least one child with a missing
-  key but is not missing one itself.
-º A new preference page was added for formatting-related preferences. 
 º New: Default key tree display mode (hierarchical vs flat) is now configurable.
 º New: Default key tree expended state is now configurable.
 º New (feature #1218467): Localized text fields tab key behaviour is now 
@@ -33,20 +24,31 @@ Release 0.7.0 (2005-??-??)
   contextual menu.
 º New: Added button for each localized text boxed to go to corresponding
   "source" editor.
+º New: Duplicate keys can now be reported.
+º New (feature #1200455): Similar entries can now be reported.
+º Change (feature #1266627): Unicode characters are now (un)escaped by default.
+º Improved resource management (Fonts and Images are now disposed after usage).
+º Double-clicking on a key tree group will now expand/collapse it instead of
+  offering to rename.
+º Minimum text box size for key values is now a big bigger.
+º Key tree now always expanded by default.
+º The "Add" button for adding new keys is now disabled when the corresponding
+  text represents an existing key.
+º Warning icons are now grey when a key has at least one child with a missing
+  key but is not missing one itself.
+º A new preference page was added for formatting-related preferences. 
 º Now loads commented properties (double ## key/value lines).
 º A tree key with at least one commented localized entry now shows as grey.
 º A checkbox was added to localized text fields to comment/uncomment keys.
   Content shows as grey when commented.
 º Key groups not representing existing keys are now shown as italic.
 º Commented entries are now shown with grey text and grey keys.
+º Better detection of NL vs Standard structure when opening files.
 º Fix (bug #1233610): No longer throws NullPointerException in some cases
   when preference "Support Eclipse "nl" structure..." is selected.
-º New: Duplicate keys can now be reported.
-º Better detection of NL vs Standard structure when opening files.
 º Fix (bug #1240858): Malformed \uxxxx encoding in properties files no longer
   triggers an exception when opening files and more special characters
   are better escaped/unescaped.
-º New (feature #1200455): Similar entries can now be reported.
 
 
 Release 0.6.0 (2005-05-24)
