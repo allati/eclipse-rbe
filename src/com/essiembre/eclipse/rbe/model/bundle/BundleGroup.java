@@ -42,6 +42,10 @@ public class BundleGroup extends Model implements IBundleVisitable {
     /** Bundles forming the group (key=Locale; value=Bundle). */
     private final Map bundles = new HashMap();
     
+    //TODO tentative:
+    private final Set keys = new TreeSet(); 
+    
+    
     /**
      * Constructor.
      */
@@ -83,9 +87,11 @@ public class BundleGroup extends Model implements IBundleVisitable {
         bundle.setBundleGroup(this);
         if (localBundle == null) {
             bundles.put(locale, bundle);
+            refreshKeys();
             fireAdd(bundle);
         } else { // TODO if (!localBundle.equals(bundle)) {
             localBundle.copyFrom(bundle);
+            refreshKeys();
             fireModify(bundle);
         }
     }
@@ -114,6 +120,7 @@ public class BundleGroup extends Model implements IBundleVisitable {
                 bundleEntry.setBundle(bundle);
                 bundleEntry.setLocale(locale);
                 bundle.addEntry(bundleEntry);
+                refreshKeys();
                 fireModify(bundle);
             }
         }
@@ -148,6 +155,7 @@ public class BundleGroup extends Model implements IBundleVisitable {
             BundleEntry entry = getBundleEntry(locale, oldKey);
             if (entry != null) {
                 bundle.renameKey(oldKey, newKey);
+                refreshKeys();
                 fireModify(bundle);
             }
             
@@ -203,6 +211,7 @@ public class BundleGroup extends Model implements IBundleVisitable {
             BundleEntry origEntry = getBundleEntry(locale, origKey);
             if (origEntry != null) {
                 bundle.copyKey(origKey, newKey);
+                refreshKeys();
                 fireModify(bundle);
             }
             
@@ -220,6 +229,7 @@ public class BundleGroup extends Model implements IBundleVisitable {
             BundleEntry entry = getBundleEntry(locale, key);
             if (entry != null) {
                 bundle.removeEntry(entry);
+                refreshKeys();
                 fireModify(bundle);
             }
         }
@@ -262,13 +272,23 @@ public class BundleGroup extends Model implements IBundleVisitable {
     public Iterator iterator() {
         return bundles.values().iterator();
     }
-    
+
     /**
      * Gets all resource bundle keys.
      * @return <code>List</code> of resource bundle keys.
      */
     public Set getKeys() {
-        Set keys = new TreeSet();
+        return keys;
+    }
+
+    /**
+     * Gets all resource bundle keys.
+     * @return <code>List</code> of resource bundle keys.
+     */
+//    public Set getKeys() {
+    private Set refreshKeys() {
+        //Set keys = new TreeSet();
+        keys.clear();
         for (Iterator iter = iterator(); iter.hasNext();) {
             keys.addAll(((Bundle) iter.next()).getKeys());
         }
