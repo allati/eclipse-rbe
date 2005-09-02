@@ -1,5 +1,9 @@
 Here is an overview of changes for each releases:
 
+Release 0.7.1 (2005-??-??)
+--------------------------
+º Fix (bug #1276347): Great performance improvement on large files.
+
 Release 0.7.0 (2005-08-28)
 --------------------------
 º New: German plugin translation added.

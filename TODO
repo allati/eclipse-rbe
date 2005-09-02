@@ -1,4 +1,3 @@
-- Improve performance: Reduce getKeys() access time.
 - FIX editor not properly close before opening new one when adding locale.
 - Consider threading what happens on focust lost to improve UI response.
 - Display internationalized tooltips for most components
