@@ -195,7 +195,7 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
         for (Iterator iter = bundleGroup.getKeys().iterator();
                 iter.hasNext();) {
             /*
-             * Do not call "addKey" method from here for extreme performance
+             * Do not call "fireAdd" method from here for extreme performance
              * improvement.  This is not an addition in the sense that we are
              * laying out existing keys, not adding any new ones.  We will
              * refresh the whole tree after we are done looping.
