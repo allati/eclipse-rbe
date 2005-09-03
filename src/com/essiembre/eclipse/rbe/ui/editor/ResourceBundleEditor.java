@@ -24,7 +24,9 @@ package com.essiembre.eclipse.rbe.ui.editor;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
@@ -35,6 +37,8 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
@@ -47,7 +51,8 @@ import com.essiembre.eclipse.rbe.ui.editor.resources.SourceEditor;
 /**
  * Multi-page editor for editing resource bundles.
  */
-public class ResourceBundleEditor extends MultiPageEditorPart {
+public class ResourceBundleEditor extends MultiPageEditorPart
+        implements IGotoMarker {
 
     private ResourceManager resourceMediator;
     private I18nPage i18nPage;
@@ -171,6 +176,24 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
             setActivePage(index + 1);
         }
     }
+
+    /**
+     * @see org.eclipse.ui.ide.IGotoMarker#gotoMarker(
+     *         org.eclipse.core.resources.IMarker)
+     */
+    public void gotoMarker(IMarker marker) {
+        IPath markerPath = marker.getResource().getProjectRelativePath();
+        SourceEditor[] sourceEditors = resourceMediator.getSourceEditors();
+        for (int i = 0; i < sourceEditors.length; i++) {
+            SourceEditor editor = sourceEditors[i];
+            IPath editorPath = editor.getFile().getProjectRelativePath();
+            if (markerPath.equals(editorPath)) {
+                setActivePage(editor.getLocale());
+                IDE.gotoMarker(editor.getEditor(), marker);
+                break;
+            }
+        }
+    }
     
     /**
      * Calculates the contents of page GUI page when it is activated.
@@ -205,8 +228,5 @@ public class ResourceBundleEditor extends MultiPageEditorPart {
             }
         }
     }
-    
-    
-    
 
 }
