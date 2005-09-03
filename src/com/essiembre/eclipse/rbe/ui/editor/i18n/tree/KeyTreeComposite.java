@@ -40,6 +40,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -95,6 +96,9 @@ public class KeyTreeComposite extends Composite {
     /** Whether to synchronize the add text box with tree key selection. */
     /*default*/ boolean syncAddTextBox = true;
     
+    /*default*/ Cursor waitCursor = UIUtils.createCursor(SWT.CURSOR_WAIT);
+    /*default*/ Cursor defaultCursor = UIUtils.createCursor(SWT.CURSOR_ARROW);
+    
     /**
      * Constructor.
      * @param parent parent composite
@@ -144,6 +148,16 @@ public class KeyTreeComposite extends Composite {
         return key;
     }
 
+    /**
+     * @see org.eclipse.swt.widgets.Widget#dispose()
+     */
+    public void dispose() {
+        super.dispose();
+        waitCursor.dispose();
+        defaultCursor.dispose();
+    }
+
+    
     /**
      * Renames a key or group of key.
      */
@@ -332,6 +346,8 @@ public class KeyTreeComposite extends Composite {
                     flatModeButton.setSelection(false);
                     flatModeButton.setEnabled(true);
                     hierModeButton.setEnabled(false);
+                    setCursor(waitCursor);
+                    setVisible(false);
                     keyTree.setUpdater(new GroupedKeyTreeUpdater(
                             RBEPreferences.getKeyGroupSeparator()));
                     expandItem.setEnabled(true);
@@ -340,6 +356,8 @@ public class KeyTreeComposite extends Composite {
                         treeViewer.expandAll();
                     }
                     selectKeyTreeItem(addTextBox.getText());
+                    setVisible(true);
+                    setCursor(defaultCursor);
                 }
             }
         });
@@ -349,10 +367,14 @@ public class KeyTreeComposite extends Composite {
                     hierModeButton.setSelection(false);
                     hierModeButton.setEnabled(true);
                     flatModeButton.setEnabled(false);
+                    setCursor(waitCursor);
+                    setVisible(false);
                     keyTree.setUpdater(new FlatKeyTreeUpdater());
                     expandItem.setEnabled(false);
                     collapseItem.setEnabled(false);
                     selectKeyTreeItem(addTextBox.getText());
+                    setVisible(true);
+                    setCursor(defaultCursor);
                 }
             }
         });
