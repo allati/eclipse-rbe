@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
@@ -131,6 +132,16 @@ public final class UIUtils {
         return new Font(display, fontData);
     }
 
+    /**
+     * Creates a cursor matching given style.
+     * @param style   style to apply to the new font
+     * @return newly created cursor
+     */
+    public static Cursor createCursor(int style) {
+        Display display = RBEPlugin.getDefault().getWorkbench().getDisplay();
+        return new Cursor(display, style);
+    }
+    
     /**
      * Gets a system color.
      * @param colorId SWT constant
