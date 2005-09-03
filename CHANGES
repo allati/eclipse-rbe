@@ -2,6 +2,8 @@ Here is an overview of changes for each releases:
 
 Release 0.7.1 (2005-??-??)
 --------------------------
+º New (feature #1219758): Clicking on a file search result entry will now
+  highlight the corresponding matches in the right properties file.
 º Fix (bug #1276347): Great performance improvement on large files.
 
 Release 0.7.0 (2005-08-28)
