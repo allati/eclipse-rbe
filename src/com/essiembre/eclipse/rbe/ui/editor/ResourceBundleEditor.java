@@ -207,8 +207,12 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     }
 
     
-    
-    protected boolean isBundleMember(IFile file) {
+    /**
+     * Is the given file a member of this resource bundle.
+     * @param file file to test
+     * @return <code>true</code> if file is part of bundle
+     */
+    public boolean isBundleMember(IFile file) {
         return resourceMediator.isResource(file);
     }
 
@@ -229,4 +233,14 @@ public class ResourceBundleEditor extends MultiPageEditorPart
         }
     }
 
+    
+    
+    /**
+     * @see org.eclipse.ui.IWorkbenchPart#dispose()
+     */
+    public void dispose() {
+        i18nPage.dispose();
+        newLocalePage.dispose();
+        super.dispose();
+    }
 }
