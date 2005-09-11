@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -50,6 +51,9 @@ import com.essiembre.eclipse.rbe.ui.widgets.LocaleSelector;
  */
 public class NewLocalePage extends Composite {
 
+    private Font fontBoldBig = UIUtils.createFont(this, SWT.BOLD, 5);
+    private Font fontBold = UIUtils.createFont(this, SWT.BOLD, 1);
+    
     /**
      * Constructor.
      * @param parent parent component.
@@ -75,7 +79,7 @@ public class NewLocalePage extends Composite {
         // Title label
         Label label = new Label(block, SWT.NONE);
         label.setText(RBEPlugin.getString("editor.new.title")); //$NON-NLS-1$
-        label.setFont(UIUtils.createFont(this, SWT.BOLD, 5));
+        label.setFont(fontBoldBig);
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.CENTER;
         label.setLayoutData(gridData);
@@ -91,7 +95,7 @@ public class NewLocalePage extends Composite {
         Button createButton = new Button(block, SWT.NULL);
         createButton.setText(RBEPlugin.getString(
                 "editor.new.create")); //$NON-NLS-1$
-        createButton.setFont(UIUtils.createFont(this, SWT.BOLD, 1));
+        createButton.setFont(fontBold);
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.CENTER;
         createButton.setLayoutData(gridData);
@@ -134,4 +138,12 @@ public class NewLocalePage extends Composite {
         this.layout();
     }
 
+    /**
+     * @see org.eclipse.swt.widgets.Widget#dispose()
+     */
+    public void dispose() {
+        fontBold.dispose();
+        fontBoldBig.dispose();
+        super.dispose();
+    }
 }

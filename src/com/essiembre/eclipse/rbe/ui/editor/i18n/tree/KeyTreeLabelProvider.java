@@ -53,7 +53,7 @@ public class KeyTreeLabelProvider
     private static final int WARNING_GREY = 1 << 5;
 
     /** Registry instead of UIUtils one for image not keyed by file name. */
-    private ImageRegistry imageRegistry = new ImageRegistry();
+    private static ImageRegistry imageRegistry = new ImageRegistry();
     
     private Color commentedColor = UIUtils.getSystemColor(SWT.COLOR_GRAY);
 
@@ -167,19 +167,31 @@ public class KeyTreeLabelProvider
             // Add warning icon
             if ((iconFlags & WARNING) != 0) {
                 image = overlayImage(image, "warning.gif", //$NON-NLS-1$
-                        OverlayImageIcon.BOTTOM_RIGHT);
+                        OverlayImageIcon.BOTTOM_RIGHT, iconFlags);
             } else if ((iconFlags & WARNING_GREY) != 0) {
                 image = overlayImage(image, "warningGrey.gif", //$NON-NLS-1$
-                        OverlayImageIcon.BOTTOM_RIGHT);
+                        OverlayImageIcon.BOTTOM_RIGHT, iconFlags);
             }
         }
         return image;
     }
+
     private Image overlayImage(
-            Image baseImage, String imageName, int location) {
-        return new OverlayImageIcon(
-                baseImage, getRegistryImage(imageName), location).createImage();
+            Image baseImage, String imageName, int location, int iconFlags) {
+        /* To obtain a unique key, we assume here that the baseImage and 
+         * location are always the same for each imageName and keyFlags 
+         * combination.
+         */
+        String imageKey = imageName + iconFlags;
+        Image image = imageRegistry.get(imageKey);
+        if (image == null) {
+            image = new OverlayImageIcon(baseImage, getRegistryImage(
+                    imageName), location).createImage();
+            imageRegistry.put(imageKey, image);
+        }
+        return image;
     }
+
     private Image getRegistryImage(String imageName) {
         Image image = imageRegistry.get(imageName);
         if (image == null) {

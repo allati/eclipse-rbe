@@ -73,6 +73,9 @@ public class KeyTreeComposite extends Composite {
     /** Image for flat mode toggle button. */
     private Image flatToggleImage;
 
+    /*default*/ Cursor waitCursor;
+    /*default*/ Cursor defaultCursor;
+
     /** "Expand All" menu item. */
     MenuItem expandItem; 
     /** "Collapse All" menu item. */
@@ -96,9 +99,6 @@ public class KeyTreeComposite extends Composite {
     /** Whether to synchronize the add text box with tree key selection. */
     /*default*/ boolean syncAddTextBox = true;
     
-    /*default*/ Cursor waitCursor = UIUtils.createCursor(SWT.CURSOR_WAIT);
-    /*default*/ Cursor defaultCursor = UIUtils.createCursor(SWT.CURSOR_ARROW);
-    
     /**
      * Constructor.
      * @param parent parent composite
@@ -110,6 +110,8 @@ public class KeyTreeComposite extends Composite {
 
         treeToggleImage = UIUtils.getImage(UIUtils.IMAGE_LAYOUT_HIERARCHICAL);
         flatToggleImage = UIUtils.getImage(UIUtils.IMAGE_LAYOUT_FLAT);
+        waitCursor = UIUtils.createCursor(SWT.CURSOR_WAIT);
+        defaultCursor = UIUtils.createCursor(SWT.CURSOR_ARROW);
 
         setLayout(new GridLayout(1, false));
         createTopSection();
@@ -152,11 +154,15 @@ public class KeyTreeComposite extends Composite {
      * @see org.eclipse.swt.widgets.Widget#dispose()
      */
     public void dispose() {
-        super.dispose();
         waitCursor.dispose();
         defaultCursor.dispose();
+        expandItem.dispose();
+        collapseItem.dispose();
+        labelProvider.dispose();
+        addTextBox.dispose();
+        
+        super.dispose();
     }
-
     
     /**
      * Renames a key or group of key.
