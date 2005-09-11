@@ -138,4 +138,16 @@ public class I18nPage extends ScrolledComposite {
             entryComposite.refresh(key);
         }
     }
+    
+    
+    /**
+     * @see org.eclipse.swt.widgets.Widget#dispose()
+     */
+    public void dispose() {
+        keysComposite.dispose();
+        for (Iterator iter = entryComposites.iterator(); iter.hasNext();) {
+            ((BundleEntryComposite) iter.next()).dispose();
+        }
+        super.dispose();
+    }
 }
