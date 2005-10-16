@@ -54,6 +54,10 @@ import com.essiembre.eclipse.rbe.ui.editor.resources.SourceEditor;
 public class ResourceBundleEditor extends MultiPageEditorPart
         implements IGotoMarker {
 
+    /** Editor ID, as defined in plugin.xml. */
+    public static final String EDITOR_ID = 
+       "com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditor"; //$NON-NLS-1$
+    
     private ResourceManager resourceMediator;
     private I18nPage i18nPage;
     /** New locale page. */
