@@ -144,6 +144,23 @@ public class BundleEntryComposite extends Composite {
     }
 
     /**
+     * Gets the locale associated with this bundle entry
+     * @return a locale
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Sets a selection in the text box.
+     * @param start starting position to select
+     * @param end ending position to select
+     */
+    public void setTextSelection(int start, int end) {
+        textBox.setSelection(start, end);
+    }
+    
+    /**
      * Refreshes the text field value with value matching given key.
      * @param key key used to grab value
      */
