@@ -119,7 +119,9 @@ public class BundleEntryComposite extends Composite {
             BundleGroup bundleGroup = resourceManager.getBundleGroup();
             BundleEntry entry = bundleGroup.getBundleEntry(locale, activeKey);
             boolean commentedSelected = commentedCheckbox.getSelection();
-            if (entry == null || !textBox.getText().equals(entry.getValue())
+            String textBoxValue = textBox.getText();
+            
+            if (entry == null || !textBoxValue.equals(entry.getValue())
                    || entry.isCommented() != commentedSelected) {
                 String comment = null;
                 if (entry != null) {
@@ -404,11 +406,6 @@ public class BundleEntryComposite extends Composite {
                         updateBundleOnChanges();
                         eventBox.setSelection(caretPosition);
                     }
-                // Text field is the same as original (make non-dirty)
-                } else {
-                    if (editor.isDirty()) {
-                        editor.doRevertToSaved();
-                    }                        
                 }
             }
         });
