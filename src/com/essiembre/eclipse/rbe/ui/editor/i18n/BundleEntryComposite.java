@@ -407,11 +407,7 @@ public class BundleEntryComposite extends Composite {
                 // Text field is the same as original (make non-dirty)
                 } else {
                     if (editor.isDirty()) {
-                        getShell().getDisplay().asyncExec(new Runnable() {
-                            public void run() {
-                                editor.doRevertToSaved();
-                            }
-                        });
+                        editor.doRevertToSaved();
                     }                        
                 }
             }
