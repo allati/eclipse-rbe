@@ -1,5 +1,10 @@
 Here is an overview of changes for each releases:
 
+Release 0.?.? (200?-??-??)
+--------------------------
+º Fix (bug #1312643): No longer drop some characters when saving.
+º New: Norwegian plugin translation added.
+
 Release 0.7.1 (2005-09-03)
 --------------------------
 º New (feature #1219758): Clicking on a file search result entry will now
