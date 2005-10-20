@@ -106,6 +106,7 @@ public class SourceEditor {
     public void setContent(String content) {
         editor.getDocumentProvider().getDocument(
                 editor.getEditorInput()).set(content);
+        contentCache = content;
     }
     
     /**
