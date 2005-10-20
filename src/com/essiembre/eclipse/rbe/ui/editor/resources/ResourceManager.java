@@ -86,11 +86,7 @@ public class ResourceManager {
                 final Bundle bundle = (Bundle) event.receiver();
                 final SourceEditor editor = 
                         (SourceEditor) sourceEditors.get(bundle.getLocale());
-                site.getShell().getDisplay().asyncExec(new Runnable() {
-                    public void run() {
-                        editor.setContent(PropertiesGenerator.generate(bundle));
-                    }
-                });
+                editor.setContent(PropertiesGenerator.generate(bundle));
             }
         });
         
