@@ -98,11 +98,15 @@ public final class PropertiesGenerator {
             String value = bundleEntry.getValue(); 
             String comment = bundleEntry.getComment();    
             
-            // handle new lines in value
             if (value != null){
+                // escape backslashes
+                value = value.replaceAll(
+                        "\\\\", "\\\\\\\\");//$NON-NLS-1$ //$NON-NLS-2$
+                
+                // handle new lines in value
                 if (RBEPreferences.getForceNewLineType()) {
                     value = value.replaceAll(
-                            "\\r\\n|\\r|\\n", FORCED_LINE_SEP[ //$NON-NLS-1$
+                            "\r\n|\r|\n", FORCED_LINE_SEP[ //$NON-NLS-1$
                                     RBEPreferences.getNewLineType()]);
                 } else {
                     value = value.replaceAll(
