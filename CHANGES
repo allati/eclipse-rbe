@@ -2,9 +2,10 @@ Here is an overview of changes for each releases:
 
 Release 0.?.? (200?-??-??)
 --------------------------
+º New: Norwegian plugin translation added.
 º Fix (bug #1312643 and #1326580): No longer drop some characters when saving.
 º Fix (bug #1285026): SWT resources no longer leaking.
-º New: Norwegian plugin translation added.
+º Fix (bug #1310626): Backslashes are now escaped properly when saved to file.
 
 Release 0.7.1 (2005-09-03)
 --------------------------
