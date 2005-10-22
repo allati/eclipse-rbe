@@ -1,6 +1,6 @@
 Here is an overview of changes for each releases:
 
-Release 0.7.2 (2005-1?-??)
+Release 0.7.2 (2005-10-21)
 --------------------------
 º New: Norwegian plugin translation added.
 º Fix (bug #1312643 and #1326580): No longer drop some characters when saving.
@@ -64,7 +64,6 @@ Release 0.7.0 (2005-08-28)
 º Fix (bug #1240858): Malformed \uxxxx encoding in properties files no longer
   triggers an exception when opening files and more special characters
   are better escaped/unescaped.
-
 
 Release 0.6.0 (2005-05-24)
 --------------------------
