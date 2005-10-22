@@ -197,9 +197,11 @@ public class KeyTreeComposite extends Composite {
             for (Iterator iter = items.iterator(); iter.hasNext();) {
                 KeyTreeItem item = (KeyTreeItem) iter.next();
                 String oldItemKey = item.getId();
-                String newItemKey = 
-                        oldItemKey.replaceFirst("^" + key, newKey);//$NON-NLS-1$
-                bundleGroup.renameKey(oldItemKey, newItemKey);
+                if (oldItemKey.startsWith(key)) {
+                    String newItemKey = 
+                            newKey + oldItemKey.substring(key.length());
+                    bundleGroup.renameKey(oldItemKey, newItemKey);
+                }
             }
         }
     }
@@ -237,9 +239,11 @@ public class KeyTreeComposite extends Composite {
             for (Iterator iter = items.iterator(); iter.hasNext();) {
                 KeyTreeItem item = (KeyTreeItem) iter.next();
                 String origItemKey = item.getId();
-                String newItemKey = origItemKey.replaceFirst(
-                        "^" + key, newKey); //$NON-NLS-1$
-                bundleGroup.copyKey(origItemKey, newItemKey);
+                if (origItemKey.startsWith(key)) {
+                    String newItemKey = 
+                            newKey + origItemKey.substring(key.length());
+                    bundleGroup.copyKey(origItemKey, newItemKey);
+                }
             }
         }
     }
