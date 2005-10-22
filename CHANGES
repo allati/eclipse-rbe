@@ -6,6 +6,8 @@ Release 0.?.? (200?-??-??)
 º Fix (bug #1312643 and #1326580): No longer drop some characters when saving.
 º Fix (bug #1285026): SWT resources no longer leaking.
 º Fix (bug #1310626): Backslashes are now escaped properly when saved to file.
+º Fix (bug #1312638): Keys with special characters can now be renamed and 
+  copied successfully.
 
 Release 0.7.1 (2005-09-03)
 --------------------------
