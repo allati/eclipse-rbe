@@ -1,6 +1,6 @@
 Here is an overview of changes for each releases:
 
-Release 0.?.? (200?-??-??)
+Release 0.7.2 (2005-1?-??)
 --------------------------
 º New: Norwegian plugin translation added.
 º Fix (bug #1312643 and #1326580): No longer drop some characters when saving.
