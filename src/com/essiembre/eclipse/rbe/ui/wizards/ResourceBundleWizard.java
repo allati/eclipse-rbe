@@ -95,6 +95,10 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
         IRunnableWithProgress op = new IRunnableWithProgress() {
             public void run(IProgressMonitor monitor) throws InvocationTargetException {
                 try {
+                    monitor.worked(1);
+                    monitor.setTaskName(RBEPlugin.getString(
+                            "editor.wiz.creating")); //$NON-NLS-1$
+                    IFile file = null;
                     for (int i = 0; i <  locales.length; i++) {
                         String fileName = baseName;
                         if (locales[i].equals(
@@ -104,8 +108,20 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
                             fileName += "_" + locales[i] //$NON-NLS-1$
                                      + ".properties"; //$NON-NLS-1$
                         }
-                        doFinish(containerName, fileName, monitor);
+                        file = createFile(containerName, fileName, monitor);
                     }
+                    final IFile lastFile = file;
+                    getShell().getDisplay().asyncExec(new Runnable() {
+                        public void run() {
+                            IWorkbenchPage wbPage = PlatformUI.getWorkbench()
+                                    .getActiveWorkbenchWindow().getActivePage();
+                            try {
+                                IDE.openEditor(wbPage, lastFile, true);
+                            } catch (PartInitException e) {
+                            }
+                        }
+                    });
+                    monitor.worked(1);
                 } catch (CoreException e) {
                     throw new InvocationTargetException(e);
                 } finally {
@@ -131,7 +147,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
      * file if missing or just replace its contents, and open
      * the editor on the newly created file.
      */
-    /*default*/ void doFinish(
+    /*default*/ IFile createFile(
             String containerName,
             String fileName,
             IProgressMonitor monitor)
@@ -157,20 +173,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
             stream.close();
         } catch (IOException e) {
         }
-        monitor.worked(1);
-        monitor.setTaskName(
-                RBEPlugin.getString("editor.wiz.creating")); //$NON-NLS-1$
-        getShell().getDisplay().asyncExec(new Runnable() {
-            public void run() {
-                IWorkbenchPage wbPage = PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getActivePage();
-                try {
-                    IDE.openEditor(wbPage, file, true);
-                } catch (PartInitException e) {
-                }
-            }
-        });
-        monitor.worked(1);
+        return file;
     }
     
     /*
