@@ -108,11 +108,11 @@ public class NewLocalePage extends Composite {
                         //TODO add "newPropertiesFile" method to seGroup.
                         final IFile file = 
                                 resourceManager.createPropertiesFile(locale);
-                        // Reopen
+                        final IWorkbenchPage page = PlatformUI.getWorkbench()
+                                .getActiveWorkbenchWindow().getActivePage();
+                        // Open new editor with new locale
                         getShell().getDisplay().asyncExec(new Runnable() {
                             public void run() {
-                                IWorkbenchPage page = PlatformUI.getWorkbench()
-                                        .getActiveWorkbenchWindow().getActivePage();
                                 try {
                                     IDE.openEditor(page, file, true);
                                 } catch (PartInitException e) {
@@ -121,6 +121,8 @@ public class NewLocalePage extends Composite {
                                 }
                             }
                         });
+                        // Close active editor (prior adding locale)
+                        page.closeEditor(page.getActiveEditor(), true);
                     } catch (NullPointerException e) {
                         UIUtils.showErrorDialog(getShell(), e, 
                                 "error.newfile.cannotCreate"); //$NON-NLS-1$
