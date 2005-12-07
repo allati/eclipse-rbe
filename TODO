@@ -1,5 +1,5 @@
+- Add support for detecting text [to be translated].
 - Add ResourceBundle search page/result.
-- FIX editor not properly close before opening new one when adding locale.
 - Consider threading what happens on focust lost to improve UI response.
 - Display internationalized tooltips for most components
 - Consider merging the 2 tree providers and caching some visitor results

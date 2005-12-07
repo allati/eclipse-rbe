@@ -9,6 +9,8 @@ Release 0.?.? (200?-??-??)
 º Fix (bug #1369312): Fixed an english typo.
 º Fix (bug #1369272): Background for key.gif and keyCommented.gif now 
   transparent. 
+º Fix (bug #1369267): The "New ResourceBundle" wizard no displays proper message
+  when no folder is selected.  
 
 Release 0.7.2 (2005-10-21)
 --------------------------
