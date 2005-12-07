@@ -324,7 +324,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
 
         if (container.length() == 0) {
             updateStatus(RBEPlugin.getString(
-                    "editor.wiz.error.containerName")); //$NON-NLS-1$
+                    "editor.wiz.error.container")); //$NON-NLS-1$
             return;
         }
         if (fileName.length() == 0) {
