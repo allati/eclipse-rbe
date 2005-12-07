@@ -6,6 +6,7 @@ Release 0.?.? (200?-??-??)
 º New: Japanese plugin translation added.
 º Fix (bug #1369313): No longer create separate editor instances when creating
   properties files.
+º Fix (bug #1369312): Fixed an english typo.
 
 Release 0.7.2 (2005-10-21)
 --------------------------
