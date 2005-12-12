@@ -156,14 +156,28 @@ public final class UIUtils {
      * Gets the approximate width required to display a given number of
      * characters in a control.
      * @param control the control on which to get width
-     * @param widthInChars the number of chars
+     * @param numOfChars the number of chars
      * @return width
      */    
-    public static int getWidthInChars(Control control, int widthInChars) {
+    public static int getWidthInChars(Control control, int numOfChars) {
         GC gc = new GC(control);
         Point extent = gc.textExtent("W");//$NON-NLS-1$
         gc.dispose();
-        return widthInChars * extent.x;
+        return numOfChars * extent.x;
+    }
+
+    /**
+     * Gets the approximate height required to display a given number of
+     * characters in a control, assuming, they were laid out vertically.
+     * @param control the control on which to get height
+     * @param numOfChars the number of chars
+     * @return height
+     */    
+    public static int getHeightInChars(Control control, int numOfChars) {
+        GC gc = new GC(control);
+        Point extent = gc.textExtent("W");//$NON-NLS-1$
+        gc.dispose();
+        return numOfChars * extent.y;
     }
     
     /**
