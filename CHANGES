@@ -2,177 +2,179 @@ Here is an overview of changes for each releases:
 
 Release 0.?.? (200?-??-??)
 --------------------------
-º New: Italian plugin translation added.
-º New: Japanese plugin translation added.
-º Fix (bug #1369313): No longer create separate editor instances when creating
+ï¿½ New: Italian plugin translation added.
+ï¿½ New: Japanese plugin translation added.
+ï¿½ Fix (bug #1369313): No longer create separate editor instances when creating
   properties files.
-º Fix (bug #1369312): Fixed an english typo.
-º Fix (bug #1369272): Background for key.gif and keyCommented.gif now 
+ï¿½ Fix (bug #1369312): Fixed an english typo.
+ï¿½ Fix (bug #1369272): Background for key.gif and keyCommented.gif now 
   transparent. 
-º Fix (bug #1369267): The "New ResourceBundle" wizard no displays proper message
+ï¿½ Fix (bug #1369267): The "New ResourceBundle" wizard no displays proper message
   when no folder is selected.  
+ï¿½ Fix (bug #1369260): The "variant" text field no longer appears squeezed on
+  some platforms.
 
 Release 0.7.2 (2005-10-21)
 --------------------------
-º New: Norwegian plugin translation added.
-º Fix (bug #1312643 and #1326580): No longer drop some characters when saving.
-º Fix (bug #1285026): SWT resources no longer leaking.
-º Fix (bug #1310626): Backslashes are now escaped properly when saved to file.
-º Fix (bug #1312638): Keys with special characters can now be renamed and 
+ï¿½ New: Norwegian plugin translation added.
+ï¿½ Fix (bug #1312643 and #1326580): No longer drop some characters when saving.
+ï¿½ Fix (bug #1285026): SWT resources no longer leaking.
+ï¿½ Fix (bug #1310626): Backslashes are now escaped properly when saved to file.
+ï¿½ Fix (bug #1312638): Keys with special characters can now be renamed and 
   copied successfully.
 
 Release 0.7.1 (2005-09-03)
 --------------------------
-º New (feature #1219758): Clicking on a file search result entry will now
+ï¿½ New (feature #1219758): Clicking on a file search result entry will now
   highlight the corresponding matches in the right properties file.
-º Fix (bug #1276347): Great performance improvement on large files.
+ï¿½ Fix (bug #1276347): Great performance improvement on large files.
 
 Release 0.7.0 (2005-08-28)
 --------------------------
-º New: German plugin translation added.
-º New (feature #1219647): Changes on key tree structure are now dynamic 
+ï¿½ New: German plugin translation added.
+ï¿½ New (feature #1219647): Changes on key tree structure are now dynamic 
   (the tree is no longer re-generated, which resulted in losing 
   expanded/collapsed information.
-º New: Added "Copy" feature to key tree contextual menu.   
-º New: Added "Comment" feature to key tree contextual menu.
-º New: Added "Expand All/Collapse All" features to key tree contextual menu.
-º New (feature #1216393): Matching keys are now highlighted in navigation tree 
+ï¿½ New: Added "Copy" feature to key tree contextual menu.   
+ï¿½ New: Added "Comment" feature to key tree contextual menu.
+ï¿½ New: Added "Expand All/Collapse All" features to key tree contextual menu.
+ï¿½ New (feature #1216393): Matching keys are now highlighted in navigation tree 
   as you type text in the text field below it.
-º New: Default key tree display mode (hierarchical vs flat) is now configurable.
-º New: Default key tree expended state is now configurable.
-º New (feature #1218467): Localized text fields tab key behaviour is now 
+ï¿½ New: Default key tree display mode (hierarchical vs flat) is now configurable.
+ï¿½ New: Default key tree expended state is now configurable.
+ï¿½ New (feature #1218467): Localized text fields tab key behaviour is now 
   configurable.
-º New (feature #1218322): You can now chose to have unicode encoded hexadecimal
+ï¿½ New (feature #1218322): You can now chose to have unicode encoded hexadecimal
   letters uppercase or lowercase.
-º New (feature #1218320): You can now chose whether to have spaces around equals
+ï¿½ New (feature #1218320): You can now chose whether to have spaces around equals
   signs in generated properties files.
-º New (feature #1115778): Existing comments are now preserved.
-º New (feature #1211728): Added "Comment/Uncomment" features to key tree 
+ï¿½ New (feature #1115778): Existing comments are now preserved.
+ï¿½ New (feature #1211728): Added "Comment/Uncomment" features to key tree 
   contextual menu.
-º New: Added button for each localized text boxed to go to corresponding
+ï¿½ New: Added button for each localized text boxed to go to corresponding
   "source" editor.
-º New: Duplicate keys can now be reported.
-º New (feature #1200455): Similar entries can now be reported.
-º Change (feature #1266627): Unicode characters are now (un)escaped by default.
-º Improved resource management (Fonts and Images are now disposed after usage).
-º Double-clicking on a key tree group will now expand/collapse it instead of
+ï¿½ New: Duplicate keys can now be reported.
+ï¿½ New (feature #1200455): Similar entries can now be reported.
+ï¿½ Change (feature #1266627): Unicode characters are now (un)escaped by default.
+ï¿½ Improved resource management (Fonts and Images are now disposed after usage).
+ï¿½ Double-clicking on a key tree group will now expand/collapse it instead of
   offering to rename.
-º Minimum text box size for key values is now a big bigger.
-º Key tree now always expanded by default.
-º The "Add" button for adding new keys is now disabled when the corresponding
+ï¿½ Minimum text box size for key values is now a big bigger.
+ï¿½ Key tree now always expanded by default.
+ï¿½ The "Add" button for adding new keys is now disabled when the corresponding
   text represents an existing key.
-º Warning icons are now grey when a key has at least one child with a missing
+ï¿½ Warning icons are now grey when a key has at least one child with a missing
   key but is not missing one itself.
-º A new preference page was added for formatting-related preferences. 
-º Now loads commented properties (double ## key/value lines).
-º A tree key with at least one commented localized entry now shows as grey.
-º A checkbox was added to localized text fields to comment/uncomment keys.
+ï¿½ A new preference page was added for formatting-related preferences. 
+ï¿½ Now loads commented properties (double ## key/value lines).
+ï¿½ A tree key with at least one commented localized entry now shows as grey.
+ï¿½ A checkbox was added to localized text fields to comment/uncomment keys.
   Content shows as grey when commented.
-º Key groups not representing existing keys are now shown as italic.
-º Commented entries are now shown with grey text and grey keys.
-º Better detection of NL vs Standard structure when opening files.
-º Fix (bug #1233610): No longer throws NullPointerException in some cases
+ï¿½ Key groups not representing existing keys are now shown as italic.
+ï¿½ Commented entries are now shown with grey text and grey keys.
+ï¿½ Better detection of NL vs Standard structure when opening files.
+ï¿½ Fix (bug #1233610): No longer throws NullPointerException in some cases
   when preference "Support Eclipse "nl" structure..." is selected.
-º Fix (bug #1240858): Malformed \uxxxx encoding in properties files no longer
+ï¿½ Fix (bug #1240858): Malformed \uxxxx encoding in properties files no longer
   triggers an exception when opening files and more special characters
   are better escaped/unescaped.
 
 Release 0.6.0 (2005-05-24)
 --------------------------
-º New: Wizard for creating new resource bundle.
-º New (feature #1163003): Can now add a locale (properties file) from an open
+ï¿½ New: Wizard for creating new resource bundle.
+ï¿½ New (feature #1163003): Can now add a locale (properties file) from an open
   ResourceBundle editor.
-º New: Support for Eclipse "nl" structure for I18N of plugin development.
-º New (feature #1160110): Escaped new line character style is now configurable
+ï¿½ New: Support for Eclipse "nl" structure for I18N of plugin development.
+ï¿½ New (feature #1160110): Escaped new line character style is now configurable
   (UNIX/Windows/Mac).
-º New (feature #1160096): Lines in properties files can wrap after escaped new 
+ï¿½ New (feature #1160096): Lines in properties files can wrap after escaped new 
   line characters (configurable).
-º New: Spanish plugin translation added.
-º New (feature #1160118): "Generated By..." comment now optional (preferences).
-º Now supports three-letter ISO languages in properties file locales.
-º Fix (bug #1195518): Files with the same start names (with an underscore) 
+ï¿½ New: Spanish plugin translation added.
+ï¿½ New (feature #1160118): "Generated By..." comment now optional (preferences).
+ï¿½ Now supports three-letter ISO languages in properties file locales.
+ï¿½ Fix (bug #1195518): Files with the same start names (with an underscore) 
   no longer cause the wrong set of files to be open 
   (e.g. "file.properties" and "file_ohter.properties").
-º Fix (bug #1201355): It is now impossible to add content in fields representing
+ï¿½ Fix (bug #1201355): It is now impossible to add content in fields representing
   read-only files.
   
 Release 0.5.4 (2005-03-08)
 --------------------------
-º Fix (bug #1126175): New line and carriage return characters are now always
+ï¿½ Fix (bug #1126175): New line and carriage return characters are now always
   escaped (as '\n' and '\r') when saved, and unescaped when loaded.
 
 Release 0.5.3 (2005-03-06)
 --------------------------
-º Fix (bug #1154785): Saving now saves the content of a text field currently 
+ï¿½ Fix (bug #1154785): Saving now saves the content of a text field currently 
   being modified (having focus) and the asterisk gets displayed accordingly.
-º Fix (bug #1154785): No longer throws NullPointerException when clicking Add 
+ï¿½ Fix (bug #1154785): No longer throws NullPointerException when clicking Add 
   or updating the properties files in other ways while there are some empty
   values.
-º Fix (bug #1116119): Short keys with equal sign at position 1 in properties
+ï¿½ Fix (bug #1116119): Short keys with equal sign at position 1 in properties
   files are now being recognized and loaded properly.
-º Fix (bug #1126175): New line characters ('\n') for values are now converted 
+ï¿½ Fix (bug #1126175): New line characters ('\n') for values are now converted 
   to spaces while carriage returns ('\r') are simply removed. 
 
 Release 0.5.2 (2005-01-31)
 --------------------------
-º New (feature #1099520):  Eclipse 3.1 (M4+) users can now enjoy the new
+ï¿½ New (feature #1099520):  Eclipse 3.1 (M4+) users can now enjoy the new
   Eclipse Properties File Editor, for the "plain" editor tabs of the 
   ResourceBundle Editor.
-º Fix (bug #1112881): The plugin is no longer loading more properties files
+ï¿½ Fix (bug #1112881): The plugin is no longer loading more properties files
   than it should in some circomstances.
 
 Release 0.5.1 (2005-01-07)
 --------------------------
-º Icon for key groups is now the same as single keys (this resolves some 
+ï¿½ Icon for key groups is now the same as single keys (this resolves some 
   inconsistencies). 
-º Fix (bug #1097273): UI labels are now present.
+ï¿½ Fix (bug #1097273): UI labels are now present.
 
 Release 0.5.0 (2004-12-28)
 --------------------------
-º New (feature #1075305): Added to preferences options to convert extended
+ï¿½ New (feature #1075305): Added to preferences options to convert extended
   characters to/from encoded unicode equivalent. 
-º New: French plugin translation added.
-º New: Added icons to editor bottom tabs.
-º Small changes: Modified editor top tab icon, modified editor top tab text.
+ï¿½ New: French plugin translation added.
+ï¿½ New: Added icons to editor bottom tabs.
+ï¿½ Small changes: Modified editor top tab icon, modified editor top tab text.
 
 Release 0.4.0 (2004-12-10)
 --------------------------
-º New: Added several configuration/formating options, available from the plugin
+ï¿½ New: Added several configuration/formating options, available from the plugin
   preference page, added to "Window/Preferences".  Mainly, how to group
   keys and line wrapping options.
-º New: Now displaying country flags, when speficied in properties file name
+ï¿½ New: Now displaying country flags, when speficied in properties file name
   (in the Locale extension).
 
 Release 0.3.1 (2004-12-05)
 --------------------------
-º New: The textbox to add a new key now has its content matching selected key.
-º Fix: Now working with Eclipse 3.1 (tested with 3.1 M4).
+ï¿½ New: The textbox to add a new key now has its content matching selected key.
+ï¿½ Fix: Now working with Eclipse 3.1 (tested with 3.1 M4).
 
 Release 0.3.0 (2004-12-04)
 --------------------------
-º New: Added popup menu to key tree for deleting/renaming items.
-º New: Can now toggle between flat and hierarchical view of keys.
-º New (feature #1075305): Header comments are now kept.
-º New: Added "Generated by" to header comment.
-º Fix: Warning icons are now being refreshed properly and no more
+ï¿½ New: Added popup menu to key tree for deleting/renaming items.
+ï¿½ New: Can now toggle between flat and hierarchical view of keys.
+ï¿½ New (feature #1075305): Header comments are now kept.
+ï¿½ New: Added "Generated by" to header comment.
+ï¿½ Fix: Warning icons are now being refreshed properly and no more
   NullPointerException when (un)emptying a key value.
 
 Release 0.2.0 (2004-12-02)
 --------------------------
-º New: Warning icons are now displayed when a key is missing at least one value.
-º New: Icons are now used for reprenting keys and groups of keys.
-º New (feature #1075306): Now possible to rename and delete groups of key.
-º Fix (bug #1077596): When editing a value and clicking on a different key, 
+ï¿½ New: Warning icons are now displayed when a key is missing at least one value.
+ï¿½ New: Icons are now used for reprenting keys and groups of keys.
+ï¿½ New (feature #1075306): Now possible to rename and delete groups of key.
+ï¿½ Fix (bug #1077596): When editing a value and clicking on a different key, 
   the field value no longer gets saved under the newly selected key.
 
 Release 0.1.1 (2004-11-29)
 --------------------------
-º Fix (bug #1075490): Values now always saved under the right key.
-º Fix (bug #1075485): Keys deleted in all editors now removed from tree.
-º Fix (bug #1075473 and #1075303): When a field is disabled, it is re-enabled
+ï¿½ Fix (bug #1075490): Values now always saved under the right key.
+ï¿½ Fix (bug #1075485): Keys deleted in all editors now removed from tree.
+ï¿½ Fix (bug #1075473 and #1075303): When a field is disabled, it is re-enabled
   upon selecting a valid key, whether the value for it is empty or not.
 
 Release 0.1.0 (2004-11-28)
 --------------------------
-º Initial development release.
+ï¿½ Initial development release.
 
