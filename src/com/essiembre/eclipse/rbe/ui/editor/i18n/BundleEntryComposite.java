@@ -104,11 +104,16 @@ public class BundleEntryComposite extends Composite {
         gridLayout.verticalSpacing = 2;
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
-        setLayout(gridLayout);
-        setLayoutData(new GridData(GridData.FILL_BOTH));
 
         createLabelRow();
         createTextRow();
+
+        setLayout(gridLayout);
+        GridData gd = new GridData(GridData.FILL_BOTH);
+        gd.heightHint = 80;
+        setLayoutData(gd);
+
+        
     }
 
     /**
@@ -372,6 +377,7 @@ public class BundleEntryComposite extends Composite {
         gridData.grabExcessVerticalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         gridData.grabExcessHorizontalSpace = true;
+        gridData.heightHint = UIUtils.getHeightInChars(textBox, 3);
         textBox.setLayoutData(gridData);
         textBox.addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent event) {

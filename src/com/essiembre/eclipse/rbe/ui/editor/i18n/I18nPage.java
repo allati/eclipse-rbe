@@ -32,6 +32,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
@@ -47,7 +48,7 @@ import com.essiembre.eclipse.rbe.ui.editor.resources.ResourceManager;
 public class I18nPage extends ScrolledComposite {
 
     /** Minimum height of text fields. */
-    private static final int TEXT_MIN_HEIGHT = 60;
+    private static final int TEXT_MIN_HEIGHT = 90;
 
     private final ResourceManager resourceMediator;
     private final KeyTreeComposite keysComposite;
