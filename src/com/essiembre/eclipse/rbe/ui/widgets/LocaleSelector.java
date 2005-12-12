@@ -147,6 +147,7 @@ public class LocaleSelector extends Composite {
         // Variant field
         gd = new GridData();
         variantText = new Text(selectionGroup, SWT.BORDER);
+        gd.widthHint = UIUtils.getWidthInChars(variantText, 4);
         variantText.setLayoutData(gd);
         variantText.addFocusListener(new FocusAdapter() {
             public void focusLost(FocusEvent e) {
