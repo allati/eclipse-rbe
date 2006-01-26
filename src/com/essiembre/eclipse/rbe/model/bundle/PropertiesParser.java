@@ -149,9 +149,9 @@ public final class PropertiesParser {
 
         for (int x = 0; x < len;) {
             aChar = str.charAt(x++);
-            if (aChar == '\\' && x + 5 <= len) {
+            if (aChar == '\\' && x + 1 <= len) {
                 aChar = str.charAt(x++);
-                if (aChar == 'u') {
+                if (aChar == 'u' && x + 4 <= len) {
                     // Read the xxxx
                     int value = 0;
                     for (int i = 0; i < 4; i++) {
@@ -177,14 +177,17 @@ public final class PropertiesParser {
                     }
                     outBuffer.append((char) value);
                 } else {
-                    if (aChar == 't')
+                    if (aChar == 't') {
                         aChar = '\t';
-                    else if (aChar == 'r')
+                    } else if (aChar == 'r') {
                         aChar = '\r';
-                    else if (aChar == 'n')
+                    } else if (aChar == 'n') {
                         aChar = '\n';
-                    else if (aChar == 'f')
+                    } else if (aChar == 'f') {
                         aChar = '\f';
+                    } else if (aChar == 'u') {
+                        outBuffer.append("\\");
+                    }
                     outBuffer.append(aChar);
                 }
             } else {
