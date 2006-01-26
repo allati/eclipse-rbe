@@ -74,10 +74,10 @@ public class I18nPage extends ScrolledComposite {
         setExpandHorizontal(true);
         setExpandVertical(true);
         setMinWidth(400);
-        setMinHeight(resourceMediator.getLocales().size() * TEXT_MIN_HEIGHT);
 
         keysComposite = new KeyTreeComposite(
-                sashForm, resourceMediator.getKeyTree());
+                sashForm, 
+                resourceMediator.getKeyTree());
         keysComposite.getTreeViewer().addSelectionChangedListener(
                 new ISelectionChangedListener() {
                     public void selectionChanged(SelectionChangedEvent event) {
@@ -96,8 +96,17 @@ public class I18nPage extends ScrolledComposite {
      * @param sashForm parent sash form
      */
     private void createSashRightSide(SashForm sashForm) {
-        Composite rightComposite = new Composite(sashForm, SWT.BORDER);
-        
+        ScrolledComposite scrolledComposite =
+                new ScrolledComposite(sashForm, SWT.V_SCROLL | SWT.H_SCROLL);
+        scrolledComposite.setExpandHorizontal(true);
+        scrolledComposite.setExpandVertical(true);
+        scrolledComposite.setAlwaysShowScrollBars(true);
+        scrolledComposite.setSize(SWT.DEFAULT, 100);
+        Composite rightComposite = new Composite(scrolledComposite, SWT.BORDER);
+        scrolledComposite.setContent(rightComposite);
+        scrolledComposite.setMinSize(rightComposite.computeSize(
+                SWT.DEFAULT,
+                resourceMediator.getLocales().size() * TEXT_MIN_HEIGHT));
         rightComposite.setLayout(new GridLayout(1, false));
         for (Iterator iter = resourceMediator.getLocales().iterator();
                 iter.hasNext();) {

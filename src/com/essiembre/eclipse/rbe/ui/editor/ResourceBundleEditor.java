@@ -104,7 +104,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     protected void createPages() {
         // Create I18N page
         i18nPage = new I18nPage(
-                getContainer(), SWT.H_SCROLL | SWT.V_SCROLL, resourceMediator);
+                getContainer(), SWT.NONE, resourceMediator);
         int index = addPage(i18nPage);
         setPageText(index, RBEPlugin.getString(
                 "editor.properties")); //$NON-NLS-1$
