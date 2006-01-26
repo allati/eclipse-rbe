@@ -1,5 +1,11 @@
 Here is an overview of changes for each releases:
 
+Release 0.?.? (2006-??-??)
+--------------------------
+- Fix (bug #1395662) Added italian and japanese languages.
+- Key navigation tree now independent of localized field scrolling (when there
+  are too many for the screen).
+
 Release 0.7.3 (2005-12-17)
 --------------------------
 - New: Italian plugin translation added.
