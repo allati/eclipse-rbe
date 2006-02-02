@@ -47,6 +47,9 @@
             category="com.essiembre.eclipse.i18n.resourcebundle"
             class="com.essiembre.eclipse.rbe.ui.wizards.ResourceBundleWizard"
             id="com.essiembre.eclipse.rbe.ui.wizards.ResourceBundleWizard">
+            <description> 
+               %wizard.description 
+            </description> 
       </wizard>
    </extension>
    <extension
