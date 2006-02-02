@@ -197,6 +197,10 @@ public final class PropertiesGenerator {
             StringBuffer text, String value, 
             int equalIndex, boolean commented) {
         if (value != null) {
+            // Escape potential leading spaces.
+            if (value.startsWith(" ")) { //$NON-NLS-1$
+                value = "\\" + value; //$NON-NLS-1$
+            }
             int lineLength = RBEPreferences.getWrapCharLimit() - 1;
             int valueStartPos = equalIndex;
             if (RBEPreferences.getSpacesAroundEqualSigns()) {
