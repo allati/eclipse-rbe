@@ -2,6 +2,8 @@ Here is an overview of changes for each releases:
 
 Release 0.?.? (2006-??-??)
 --------------------------
+- Fix (bug #1414470) Value with leading spaces now have the first leading space
+  escaped when written to file.
 - Fix (bug #1395662) Added missing Italian and Japanese languages files.
 - Fix (bug #1359651) Fixed invalid parsing of escaped characters (e.g. \n\r\t)
   showing near the end of lines.
