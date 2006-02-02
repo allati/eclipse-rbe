@@ -100,7 +100,6 @@ public class I18nPage extends ScrolledComposite {
                 new ScrolledComposite(sashForm, SWT.V_SCROLL | SWT.H_SCROLL);
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
-        scrolledComposite.setAlwaysShowScrollBars(true);
         scrolledComposite.setSize(SWT.DEFAULT, 100);
         Composite rightComposite = new Composite(scrolledComposite, SWT.BORDER);
         scrolledComposite.setContent(rightComposite);
