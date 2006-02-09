@@ -100,8 +100,10 @@ public final class PropertiesGenerator {
             
             if (value != null){
                 // escape backslashes
-                value = value.replaceAll(
-                        "\\\\", "\\\\\\\\");//$NON-NLS-1$ //$NON-NLS-2$
+                if (RBEPreferences.getConvertUnicodeToEncoded()) {
+                    value = value.replaceAll(
+                            "\\\\", "\\\\\\\\");//$NON-NLS-1$ //$NON-NLS-2$
+                }
                 
                 // handle new lines in value
                 if (RBEPreferences.getForceNewLineType()) {
