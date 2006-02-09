@@ -105,6 +105,11 @@ public final class PropertiesParser {
                 key = unescapeKey(key);
                 
                 String value = lineBuf.substring(equalPosition + 1).trim();
+                // Unescape leading spaces
+                if (value.startsWith("\\ ")) { //$NON-NLS-1$
+                    value = value.substring(1);
+                }
+                
                 if (RBEPreferences.getConvertEncodedToUnicode()) {
                     key = PropertiesParser.convertEncodedToUnicode(key);
                     value = PropertiesParser.convertEncodedToUnicode(value);
@@ -186,7 +191,7 @@ public final class PropertiesParser {
                     } else if (aChar == 'f') {
                         aChar = '\f';
                     } else if (aChar == 'u') {
-                        outBuffer.append("\\");
+                        outBuffer.append("\\"); //$NON-NLS-1$
                     }
                     outBuffer.append(aChar);
                 }
