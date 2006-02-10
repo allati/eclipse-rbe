@@ -1,6 +1,6 @@
 Here is an overview of changes for each releases:
 
-Release 0.?.? (2006-??-??)
+Release 0.7.4 (2006-02-09)
 --------------------------
 - New: Portuguese/Brazilian translation added.
 - Fix (bug #1427638) Backslashes are no longer escaped when not converting
