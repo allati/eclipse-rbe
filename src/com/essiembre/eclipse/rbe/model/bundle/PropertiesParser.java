@@ -91,7 +91,7 @@ public final class PropertiesParser {
                     lineBuf.replace(
                             lineBreakPosition,
                             lineBreakPosition + 1, ""); //$NON-NLS-1$
-                    if (++i <= lines.length) {
+                    if (++i < lines.length) {
                         String wrappedLine = lines[i].trim();
                         if (isCommentedLine) {
                             lineBuf.append(wrappedLine.replaceFirst(

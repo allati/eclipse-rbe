@@ -1,5 +1,9 @@
 Here is an overview of changes for each releases:
 
+Release 0.?.? (2006-04-01)
+--------------------------
+- Fix (but #1455517): No more ArrayIndexOutOfBoundsException.
+
 Release 0.7.4 (2006-02-09)
 --------------------------
 - New: Portuguese/Brazilian translation added.
