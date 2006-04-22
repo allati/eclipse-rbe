@@ -104,7 +104,7 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
         field = createFieldComposite(composite);
         keyTreeExpanded = new Button(field, SWT.CHECK);
         keyTreeExpanded.setSelection(prefs.getBoolean(
-                RBEPreferences.KEY_TREE_EXPANDED)); //$NON-NLS-1$
+                RBEPreferences.KEY_TREE_EXPANDED));
         new Label(field, SWT.NONE).setText(
                 RBEPlugin.getString("prefs.keyTree.expanded")); //$NON-NLS-1$
 
