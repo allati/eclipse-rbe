@@ -1,8 +1,10 @@
 Here is an overview of changes for each releases:
 
-Release 0.?.? (2006-04-01)
+Release 0.7.5 (2006-??-??)
 --------------------------
-- Fix (but #1455517): No more ArrayIndexOutOfBoundsException.
+- Fix (bug #1455517): No more ArrayIndexOutOfBoundsException.
+- Fix to work on Eclipse 3.2RC1.  Discussion at:
+  http://sourceforge.net/forum/forum.php?thread_id=1477852&forum_id=442487
 
 Release 0.7.4 (2006-02-09)
 --------------------------
