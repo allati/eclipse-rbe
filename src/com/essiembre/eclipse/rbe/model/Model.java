@@ -20,7 +20,12 @@
  */
 package com.essiembre.eclipse.rbe.model;
 
-import org.eclipse.core.internal.runtime.ListenerList;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+//import org.eclipse.core.internal.runtime.ListenerList; >= Eclipse 3.2
+//import org.eclipse.core.runtime.ListenerList;           < Eclipse 3.2
 
 /**
  * Base class for core model objects.
@@ -29,17 +34,21 @@ import org.eclipse.core.internal.runtime.ListenerList;
  */
 public abstract class Model {
 
+    /* The holder for listeners was changed from ListenerList to ArrayList
+     * to support both Eclipse 3.1 and 3.2.  The ListenerList location changed
+     * from 3.1 to 3.2 as described here:
+     * https://bugs.eclipse.org/bugs/show_bug.cgi?format=multiple&id=94156
+     */
     /** Listeners for this object. */
-    private final ListenerList listeners = new ListenerList();
+    private final List listeners = new ArrayList();
     
     /**
      * Fires an "add" event.
      * @param added object added
      */
 	protected void fireAdd(Object added) {
-        for (int i = 0; i < listeners.getListeners().length; i++) {
-            IDeltaListener listener = 
-                    (IDeltaListener) listeners.getListeners()[i];
+        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+            IDeltaListener listener = (IDeltaListener) iter.next();
             listener.add(new DeltaEvent(added));
         }
 	}
@@ -49,9 +58,8 @@ public abstract class Model {
      * @param removed object removed
      */
 	protected void fireRemove(Object removed) {
-        for (int i = 0; i < listeners.getListeners().length; i++) {
-            IDeltaListener listener = 
-                    (IDeltaListener) listeners.getListeners()[i];
+        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+            IDeltaListener listener = (IDeltaListener) iter.next();
             listener.remove(new DeltaEvent(removed));
         }
 	}
@@ -61,9 +69,8 @@ public abstract class Model {
      * @param modified object modified
      */
     protected void fireModify(Object modified) {
-        for (int i = 0; i < listeners.getListeners().length; i++) {
-            IDeltaListener listener = 
-                    (IDeltaListener) listeners.getListeners()[i];
+        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+            IDeltaListener listener = (IDeltaListener) iter.next();
             listener.modify(new DeltaEvent(modified));
         }
     }
@@ -73,7 +80,7 @@ public abstract class Model {
      * @param listener listener to add
      */
     public void addListener(IDeltaListener listener) {
-        listeners.add(listener);
+        listeners.add(0, listener);
 	}
     /**
      * Removes a listener from this instance.
