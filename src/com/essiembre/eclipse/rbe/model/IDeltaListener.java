@@ -21,7 +21,7 @@
 package com.essiembre.eclipse.rbe.model;
 
 /**
- * Generic listener for additions, removals, and modifications.
+ * Generic listener for additions, removals, modifications and selections.
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
@@ -41,4 +41,9 @@ public interface IDeltaListener {
      * @param event "modify" event
      */
     public void modify(DeltaEvent event);
+    /**
+     * Adds a "select" event to this listener.
+     * @param event "select" event
+     */
+    public void select(DeltaEvent event);
 }
