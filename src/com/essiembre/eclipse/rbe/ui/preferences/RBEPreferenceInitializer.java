@@ -81,6 +81,9 @@ public class RBEPreferenceInitializer extends
         prefs.setDefault(RBEPreferences.REPORT_DUPL_VALUES, true);
         prefs.setDefault(RBEPreferences.REPORT_SIM_VALUES_WORD_COMPARE, true);
         prefs.setDefault(RBEPreferences.REPORT_SIM_VALUES_PRECISION, 0.75d);
+        
+        prefs.setDefault(RBEPreferences.NO_TREE_IN_EDITOR, false);
+        
     }
 
 }
