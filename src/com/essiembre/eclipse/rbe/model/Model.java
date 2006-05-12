@@ -74,6 +74,17 @@ public abstract class Model {
             listener.modify(new DeltaEvent(modified));
         }
     }
+    
+    /**
+     * Fires a "select" event.
+     * @param selected the selected object.
+     */
+    protected void fireSelect(Object selected) {
+		for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+			IDeltaListener listener = (IDeltaListener) iter.next();
+			listener.select(new DeltaEvent(selected));
+		}
+    }
 
     /**
      * Adds a listener to this instance.
