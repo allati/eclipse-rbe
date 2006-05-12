@@ -64,6 +64,9 @@ public final class UIUtils {
     public static final String IMAGE_LAYOUT_FLAT = 
             "flatLayout.gif";  //$NON-NLS-1$
     
+    public static final String IMAGE_INCOMPLETE_ENTRIES =
+    	    "incomplete.gif";  //$NON-NLS-1$
+    
     /** Image registry. */
     private static final ImageRegistry imageRegistry = new ImageRegistry();
     
