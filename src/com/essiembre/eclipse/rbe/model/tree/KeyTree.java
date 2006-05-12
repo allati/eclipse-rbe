@@ -49,6 +49,8 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
     private KeyTreeUpdater updater;
     /** Bundle group used to build the tree. */
     private BundleGroup bundleGroup;
+    /** the currently selected key. */
+    private String selectedKey;
     
     /**
      * Constructor.
@@ -69,6 +71,9 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
                 // do nothing
             }
             public void modify(DeltaEvent event) {
+                // do nothing
+            }
+            public void select(DeltaEvent event) {
                 // do nothing
             }
         });
@@ -94,6 +99,8 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
             public void modify(DeltaEvent event) {
                 modifyKey(((BundleEntry) event.receiver()).getKey());
             }
+            public void select(DeltaEvent event) {
+            }
         });
     }
 
@@ -104,6 +111,15 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
      */
     public KeyTreeItem getKeyTreeItem(String key) {
         return (KeyTreeItem) keyItemsCache.get(key);
+    }
+    
+    /**
+     * Returns the currently selected key.
+     * 
+     * @return   The currently selected key. null = no selection.
+     */
+    public String getSelectedKey() {
+    	return (selectedKey);
     }
     
     /**
@@ -147,7 +163,17 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
         Object item = keyItemsCache.get(key);
         fireModify(item);
     }
-    
+    /**
+     * Marks a key as selected on this tree.
+     * @param key  key to select.
+     */
+    public void selectKey(String key) {
+	    Object item = keyItemsCache.get(key);
+	    if ((selectedKey == null) || (!selectedKey.equals(key))) {
+	    	selectedKey = key;
+	    	fireSelect(item);
+	    }
+    }
     /**
      * Gets the key tree updater.
      * @return key tree updater
