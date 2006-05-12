@@ -24,13 +24,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -46,8 +44,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 
@@ -75,11 +71,6 @@ public class KeyTreeComposite extends Composite {
 
     /*default*/ Cursor waitCursor;
     /*default*/ Cursor defaultCursor;
-
-    /** "Expand All" menu item. */
-    MenuItem expandItem; 
-    /** "Collapse All" menu item. */
-    MenuItem collapseItem; 
     
     /** Key Tree Viewer. */
     /*default*/ TreeViewer treeViewer;
@@ -98,6 +89,9 @@ public class KeyTreeComposite extends Composite {
     
     /** Whether to synchronize the add text box with tree key selection. */
     /*default*/ boolean syncAddTextBox = true;
+
+    /** Contributes menu items to the tree viewer. */
+    private TreeViewerContributor  treeviewerContributor;
     
     /**
      * Constructor.
@@ -156,97 +150,13 @@ public class KeyTreeComposite extends Composite {
     public void dispose() {
         waitCursor.dispose();
         defaultCursor.dispose();
-        expandItem.dispose();
-        collapseItem.dispose();
+        treeviewerContributor.dispose();
         labelProvider.dispose();
         addTextBox.dispose();
         
         super.dispose();
     }
     
-    /**
-     * Renames a key or group of key.
-     */
-    protected void renameKeyOrGroup() {
-        KeyTreeItem selectedItem = getSelection();
-        String key = selectedItem.getId();
-        String msgHead = null;
-        String msgBody = null;
-        if (selectedItem.getChildren().size() == 0) {
-            msgHead = RBEPlugin.getString(
-                    "dialog.rename.head.single"); //$NON-NLS-1$
-            msgBody = RBEPlugin.getString(
-                    "dialog.rename.body.single", key); //$NON-NLS-1$
-        } else {
-            msgHead = RBEPlugin.getString(
-                    "dialog.rename.head.multiple"); //$NON-NLS-1$
-            msgBody = RBEPlugin.getString(
-                    "dialog.rename.body.multiple", //$NON-NLS-1$
-                    selectedItem.getName());
-        }
-        // Rename single item
-        InputDialog dialog = new InputDialog(
-                getShell(), msgHead, msgBody, key, null);
-        dialog.open();
-        if (dialog.getReturnCode() == Window.OK ) {
-            String newKey = dialog.getValue();
-            BundleGroup bundleGroup = keyTree.getBundleGroup();
-            Collection items = new ArrayList();
-            items.add(selectedItem);
-            items.addAll(selectedItem.getNestedChildren());
-            for (Iterator iter = items.iterator(); iter.hasNext();) {
-                KeyTreeItem item = (KeyTreeItem) iter.next();
-                String oldItemKey = item.getId();
-                if (oldItemKey.startsWith(key)) {
-                    String newItemKey = 
-                            newKey + oldItemKey.substring(key.length());
-                    bundleGroup.renameKey(oldItemKey, newItemKey);
-                }
-            }
-        }
-    }
-
-    /**
-     * Copies a key or group of key.
-     */
-    protected void copyKeyOrGroup() {
-        KeyTreeItem selectedItem = getSelection();
-        String key = selectedItem.getId();
-        String msgHead = null;
-        String msgBody = null;
-        if (selectedItem.getChildren().size() == 0) {
-            msgHead = RBEPlugin.getString(
-                    "dialog.duplicate.head.single"); //$NON-NLS-1$
-            msgBody = RBEPlugin.getString(
-                    "dialog.duplicate.body.single", key); //$NON-NLS-1$
-        } else {
-            msgHead = RBEPlugin.getString(
-                    "dialog.duplicate.head.multiple"); //$NON-NLS-1$
-            msgBody = RBEPlugin.getString(
-                    "dialog.duplicate.body.multiple", //$NON-NLS-1$ 
-                    selectedItem.getName());
-        }
-        // Rename single item
-        InputDialog dialog = new InputDialog(
-                getShell(), msgHead, msgBody, key, null);
-        dialog.open();
-        if (dialog.getReturnCode() == Window.OK ) {
-            String newKey = dialog.getValue();
-            BundleGroup bundleGroup = keyTree.getBundleGroup();
-            Collection items = new ArrayList();
-            items.add(selectedItem);
-            items.addAll(selectedItem.getNestedChildren());
-            for (Iterator iter = items.iterator(); iter.hasNext();) {
-                KeyTreeItem item = (KeyTreeItem) iter.next();
-                String origItemKey = item.getId();
-                if (origItemKey.startsWith(key)) {
-                    String newItemKey = 
-                            newKey + origItemKey.substring(key.length());
-                    bundleGroup.copyKey(origItemKey, newItemKey);
-                }
-            }
-        }
-    }
 
     /**
      * Deletes a key or group of key.
@@ -284,36 +194,6 @@ public class KeyTreeComposite extends Composite {
         }
     }    
 
-    /**
-     * Comments a key or group of key.
-     */
-    protected void commentKey() {
-        KeyTreeItem selectedItem = getSelection();
-        BundleGroup bundleGroup = keyTree.getBundleGroup();
-        Collection items = new ArrayList();
-        items.add(selectedItem);
-        items.addAll(selectedItem.getNestedChildren());
-        for (Iterator iter = items.iterator(); iter.hasNext();) {
-            KeyTreeItem item = (KeyTreeItem) iter.next();
-            bundleGroup.commentKey(item.getId());
-        }
-        
-    }
-
-    /**
-     * Uncomments a key or group of key.
-     */
-    protected void uncommentKey() {
-        KeyTreeItem selectedItem = getSelection();
-        BundleGroup bundleGroup = keyTree.getBundleGroup();
-        Collection items = new ArrayList();
-        items.add(selectedItem);
-        items.addAll(selectedItem.getNestedChildren());
-        for (Iterator iter = items.iterator(); iter.hasNext();) {
-            KeyTreeItem item = (KeyTreeItem) iter.next();
-            bundleGroup.uncommentKey(item.getId());
-        }
-    }
     
     /**
      * Creates the top section (toggle buttons) of this composite.
@@ -333,7 +213,6 @@ public class KeyTreeComposite extends Composite {
         gridData.grabExcessHorizontalSpace = true;
         topComposite.setLayoutData(gridData);
         
-
         final Button hierModeButton = new Button(topComposite, SWT.TOGGLE);
         hierModeButton.setImage(treeToggleImage);
         hierModeButton.setToolTipText(
@@ -360,8 +239,8 @@ public class KeyTreeComposite extends Composite {
                     setVisible(false);
                     keyTree.setUpdater(new GroupedKeyTreeUpdater(
                             RBEPreferences.getKeyGroupSeparator()));
-                    expandItem.setEnabled(true);
-                    collapseItem.setEnabled(true);
+                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_EXPAND).setEnabled(true);
+                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_COLLAPSE).setEnabled(true);
                     if (RBEPreferences.getKeyTreeExpanded()) {
                         treeViewer.expandAll();
                     }
@@ -380,8 +259,8 @@ public class KeyTreeComposite extends Composite {
                     setCursor(waitCursor);
                     setVisible(false);
                     keyTree.setUpdater(new FlatKeyTreeUpdater());
-                    expandItem.setEnabled(false);
-                    collapseItem.setEnabled(false);
+                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_EXPAND).setEnabled(false);
+                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_COLLAPSE).setEnabled(false);
                     selectKeyTreeItem(addTextBox.getText());
                     setVisible(true);
                     setCursor(defaultCursor);
@@ -424,6 +303,7 @@ public class KeyTreeComposite extends Composite {
                     public void selectionChanged(SelectionChangedEvent event) {
                         if (syncAddTextBox && getSelectedKey() != null) {
                             addTextBox.setText(getSelectedKey());
+                            keyTree.selectKey(getSelectedKey());
                         }
                         syncAddTextBox = true;
                     }
@@ -441,64 +321,9 @@ public class KeyTreeComposite extends Composite {
             }
         });
         
-        // Add popup menu
-        Menu menu = new Menu (this);
-        MenuItem renameItem = new MenuItem (menu, SWT.PUSH);
-        renameItem.setText(RBEPlugin.getString("key.rename")); //$NON-NLS-1$
-        renameItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                renameKeyOrGroup();
-            }
-        });
-        MenuItem deleteItem = new MenuItem (menu, SWT.PUSH);
-        deleteItem.setText(RBEPlugin.getString("key.delete")); //$NON-NLS-1$
-        deleteItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                deleteKeyOrGroup();
-            }
-        });
-        MenuItem copyItem = new MenuItem (menu, SWT.PUSH);
-        copyItem.setText(RBEPlugin.getString("key.duplicate")); //$NON-NLS-1$
-        copyItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                copyKeyOrGroup();
-            }
-        });
-        MenuItem commentItem = new MenuItem (menu, SWT.PUSH);
-        commentItem.setText(RBEPlugin.getString("key.comment")); //$NON-NLS-1$
-        commentItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                commentKey();
-            }
-        });
-        MenuItem uncommentItem = new MenuItem (menu, SWT.PUSH);
-        uncommentItem.setText(
-                RBEPlugin.getString("key.uncomment")); //$NON-NLS-1$
-        uncommentItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                uncommentKey();
-            }
-        });
+        treeviewerContributor = new TreeViewerContributor(keyTree, treeViewer);
+        treeviewerContributor.createControl(this);
 
-        new MenuItem(menu, SWT.SEPARATOR);
-        
-        expandItem = new MenuItem (menu, SWT.PUSH);
-        expandItem.setText(RBEPlugin.getString("key.expandAll")); //$NON-NLS-1$
-        expandItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                treeViewer.expandAll();
-            }
-        });
-        collapseItem = new MenuItem (menu, SWT.PUSH);
-        collapseItem.setText(
-                RBEPlugin.getString("key.collapseAll")); //$NON-NLS-1$
-        collapseItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                treeViewer.collapseAll();
-            }
-        });
-
-        treeViewer.getTree().setMenu(menu);
     }
     
     /**
