@@ -51,6 +51,8 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
 
     private Button fieldTabInserts;
     
+    private Button noTreeInEditor;
+    
     /**
      * Constructor.
      */
@@ -104,7 +106,7 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
         field = createFieldComposite(composite);
         keyTreeExpanded = new Button(field, SWT.CHECK);
         keyTreeExpanded.setSelection(prefs.getBoolean(
-                RBEPreferences.KEY_TREE_EXPANDED));
+                RBEPreferences.KEY_TREE_EXPANDED)); //$NON-NLS-1$
         new Label(field, SWT.NONE).setText(
                 RBEPlugin.getString("prefs.keyTree.expanded")); //$NON-NLS-1$
 
@@ -115,6 +117,13 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
                 prefs.getBoolean(RBEPreferences.FIELD_TAB_INSERTS));
         new Label(field, SWT.NONE).setText(
                 RBEPlugin.getString("prefs.fieldTabInserts")); //$NON-NLS-1$
+        
+        field = createFieldComposite(composite);
+        noTreeInEditor = new Button(field, SWT.CHECK);
+        noTreeInEditor.setSelection(
+        		prefs.getBoolean(RBEPreferences.NO_TREE_IN_EDITOR)); //$NON-NLS-1$
+        new Label(field, SWT.NONE).setText(
+        		RBEPlugin.getString("prefs.noTreeInEditor")); //$NON-NLS-1$
         
         refreshEnabledStatuses();
         return composite;
@@ -136,7 +145,8 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
                 keyTreeExpanded.getSelection());
         prefs.setValue(RBEPreferences.FIELD_TAB_INSERTS,
                 fieldTabInserts.getSelection());
-        
+        prefs.setValue(RBEPreferences.NO_TREE_IN_EDITOR,
+        		noTreeInEditor.getSelection());
         refreshEnabledStatuses();
         return super.performOk();
     }
