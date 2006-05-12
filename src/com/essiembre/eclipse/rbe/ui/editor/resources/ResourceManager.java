@@ -88,6 +88,8 @@ public class ResourceManager {
                         (SourceEditor) sourceEditors.get(bundle.getLocale());
                 editor.setContent(PropertiesGenerator.generate(bundle));
             }
+            public void select(DeltaEvent event) {
+            }
         });
         
         KeyTreeUpdater treeUpdater = null;
