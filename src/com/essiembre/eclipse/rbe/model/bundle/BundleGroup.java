@@ -264,6 +264,33 @@ public class BundleGroup extends Model implements IBundleVisitable {
         }
         return entries;
     }
+    
+    /**
+     * Returns true if the supplied key is already existing in this group.
+     * 
+     * @param key   The key that shall be tested.
+     * 
+     * @return  true <=> The key is already existing.
+     */
+    public boolean containsKey(String key) {
+        for (Iterator iter = bundles.keySet().iterator(); iter.hasNext();) {
+            Locale locale = (Locale) iter.next();
+            BundleEntry entry = getBundleEntry(locale, key);
+            if (entry != null) {
+            	return (true);
+            }
+        }
+        return (false);
+    }
+    
+    /**
+     * Returns the number of bundles currently registered with this group.
+     * 
+     * @return  The number of bundles currently registered with this group.
+     */
+    public int getBundleCount() {
+    	return (bundles.size());
+    }
 
     /**
      * Iterates through all bundles in this group.
