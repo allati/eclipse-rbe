@@ -131,6 +131,9 @@ public final class RBEPreferences {
     public static final String REPORT_SIM_VALUES_PRECISION = 
             "reportSimilarValuesPrecision"; //$NON-NLS-1$
     
+    /** Don't show the tree within the editor. */
+    public static final String NO_TREE_IN_EDITOR =
+    	    "noTreeInEditor"; //$NON-NLS-1$
     
     /** RBEPreferences. */
     private static final Preferences PREFS = 
@@ -376,6 +379,14 @@ public final class RBEPreferences {
      */
     public static double getReportSimilarValuesPrecision() {
         return PREFS.getDouble(REPORT_SIM_VALUES_PRECISION);
+    }
+
+    /**
+     * Gets whether a tree shall be displayed within the editor or not.
+     * @return <code>true</code> A tree shall not be displayed.
+     */
+    public static boolean getNoTreeInEditor() {
+        return PREFS.getBoolean(NO_TREE_IN_EDITOR);
     }
     
 }
