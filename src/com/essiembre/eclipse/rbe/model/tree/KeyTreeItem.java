@@ -57,6 +57,15 @@ public class KeyTreeItem implements Comparable, IKeyTreeVisitable {
     }
     
     /**
+     * Returns true if this item is a leaf.
+     * 
+     * @return    true <=> This item is a leaf.
+     */
+    public boolean isLeaf() {
+    	return (children.isEmpty());
+    }
+    
+    /**
      * Gets the "parent" attribute.
      * @return Returns the parent.
      */
