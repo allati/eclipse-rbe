@@ -40,6 +40,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
@@ -47,6 +48,7 @@ import com.essiembre.eclipse.rbe.ui.editor.i18n.I18nPage;
 import com.essiembre.eclipse.rbe.ui.editor.locale.NewLocalePage;
 import com.essiembre.eclipse.rbe.ui.editor.resources.ResourceManager;
 import com.essiembre.eclipse.rbe.ui.editor.resources.SourceEditor;
+import com.essiembre.eclipse.rbe.ui.views.ResourceBundleOutline;
 
 /**
  * Multi-page editor for editing resource bundles.
@@ -62,6 +64,9 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     private I18nPage i18nPage;
     /** New locale page. */
     private NewLocalePage newLocalePage;
+    
+    /** the outline which additionally allows to navigate through the keys. */
+    private ResourceBundleOutline outline;
     
     /**
      * Creates a multi-page editor example.
@@ -123,6 +128,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
                 setPageImage(index, 
                         UIUtils.getImage(UIUtils.IMAGE_PROPERTIES_FILE));
             }
+            outline = new ResourceBundleOutline(resourceMediator);
         } catch (PartInitException e) {
             ErrorDialog.openError(getSite().getShell(), 
                 "Error creating text editor page.", //$NON-NLS-1$
@@ -137,12 +143,28 @@ public class ResourceBundleEditor extends MultiPageEditorPart
                 index, UIUtils.getImage(UIUtils.IMAGE_NEW_PROPERTIES_FILE));
     }
 
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	public Object getAdapter(Class adapter) {
+		Object obj = super.getAdapter(adapter);
+		if (obj == null) {
+			if (IContentOutlinePage.class.equals(adapter)) {
+				return (outline);
+			}
+		}
+		return (obj);
+	}
+	
+	
     /**
      * Saves the multi-page editor's document.
      */
     public void doSave(IProgressMonitor monitor) {
         i18nPage.refreshEditorOnChanges();
         resourceMediator.save(monitor);
+        resourceMediator.getKeyTree().setUpdater(resourceMediator.getKeyTree().getUpdater());
     }
     
     /**
