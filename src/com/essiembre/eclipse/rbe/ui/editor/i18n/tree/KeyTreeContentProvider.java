@@ -20,7 +20,9 @@
  */
 package com.essiembre.eclipse.rbe.ui.editor.i18n.tree;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -47,6 +49,7 @@ public class KeyTreeContentProvider implements
      */
     public void dispose() {}
 
+    
     /**
      * @see ITreeContentProvider#inputChanged(Viewer, Object, Object)
      */
@@ -65,9 +68,9 @@ public class KeyTreeContentProvider implements
      */
     public Object[] getChildren(Object parentElement) {
         if(parentElement instanceof KeyTree) {
-            return ((KeyTree) parentElement).getRootKeyItems().toArray();
+        	return ((KeyTree) parentElement).getRootKeyItems().toArray(); 
         } else if (parentElement instanceof KeyTreeItem) {
-            return ((KeyTreeItem) parentElement).getChildren().toArray();
+        	return ((KeyTreeItem) parentElement).getChildren().toArray(); 
         }
         return EMPTY_ARRAY;
     }
@@ -110,6 +113,31 @@ public class KeyTreeContentProvider implements
         treeViewer.refresh(true);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void select(DeltaEvent event) {
+        KeyTreeItem treeItem = (KeyTreeItem) event.receiver();
+        if (treeItem != null) {
+        	KeyTreeItem currentSelection = getTreeSelection();
+        	if ((currentSelection == null) || (!treeItem.getId().endsWith(currentSelection.getId()))) {
+		        StructuredSelection selection = new StructuredSelection(treeItem);
+		    	treeViewer.setSelection(selection);
+        	}
+        }
+    }
+    
+    
+    /**
+     * Gets the selected key tree item.
+     * @return key tree item
+     */
+    private KeyTreeItem getTreeSelection() {
+        IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+        return ((KeyTreeItem) selection.getFirstElement());
+    }
+    
+    
     /**
      * @see IDeltaListener#modify(DeltaEvent)
      */
