@@ -23,7 +23,6 @@ package com.essiembre.eclipse.rbe.ui.views;
 
 import com.essiembre.eclipse.rbe.model.tree.updater.GroupedKeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.FlatKeyTreeUpdater;
-import com.essiembre.eclipse.rbe.model.tree.updater.IncompletionUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.KeyTreeUpdater;
 
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
@@ -58,9 +57,6 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.graphics.Cursor;
-
-import org.eclipse.swt.SWT;
 
 
 /**
@@ -76,12 +72,8 @@ public class ResourceBundleOutline extends ContentOutlinePage {
 	private ToggleAction            flataction         ;
 	private ToggleAction            hierarchicalaction ;
     private boolean                 hierarchical       ;
-    private Cursor                  waitcursor         ;
-    private Cursor                  defaultcursor      ;
-    private ResourceManager         resourcemediator   ;
-    private KeyTreeUpdater          structuralupdater  ;
     private TreeViewerContributor   contributor        ;
-	
+    
     
     /**
      * Initialises this outline while using the mediator which provides
@@ -89,15 +81,11 @@ public class ResourceBundleOutline extends ContentOutlinePage {
      * 
      * @param mediator   The mediator which comes with all necessary informations.
      */
-	public ResourceBundleOutline(ResourceManager mediator) {
+	public ResourceBundleOutline(KeyTree keytree) {
 		super();
-		resourcemediator  = mediator;
-		tree              = mediator.getKeyTree();
-		structuralupdater = null;
+		tree              = keytree;
 		contentprovider   = new KeyTreeContentProvider();
 		hierarchical      = RBEPreferences.getKeyTreeHierarchical();
-        waitcursor        = UIUtils.createCursor(SWT.CURSOR_WAIT);
-        defaultcursor     = UIUtils.createCursor(SWT.CURSOR_ARROW);
 	}
 	
 	
@@ -126,8 +114,6 @@ public class ResourceBundleOutline extends ContentOutlinePage {
 	 */
 	public void dispose() {
 		contributor.dispose();
-		waitcursor.dispose();
-		defaultcursor.dispose();
 		super.dispose();
 	}
 	
@@ -172,11 +158,6 @@ public class ResourceBundleOutline extends ContentOutlinePage {
 		actionbars.getToolBarManager().add( flataction         );
 		actionbars.getToolBarManager().add( hierarchicalaction );
 		actionbars.getToolBarManager().add( filterincomplete   );
-		if(hierarchical) {
-			structuralupdater = new GroupedKeyTreeUpdater(RBEPreferences.getKeyGroupSeparator());
-		} else {
-			structuralupdater = new FlatKeyTreeUpdater();
-		}
 	}
 
 	
@@ -186,51 +167,17 @@ public class ResourceBundleOutline extends ContentOutlinePage {
 	 * @param action   The action that has been toggled.
 	 */
 	private void update(ToggleAction action) {
-		getTreeViewer().getTree().setCursor(waitcursor);
+		int actioncode = 0;
 		if(action == filterincomplete) {
-			if(action.isChecked()) {
-				// we're setting a filter which uses the structural updater
-				tree.setUpdater(
-					new IncompletionUpdater(resourcemediator.getBundleGroup(), structuralupdater)
-				);
-	            if(structuralupdater instanceof GroupedKeyTreeUpdater) {
-					if(RBEPreferences.getKeyTreeExpanded()) {
-		                getTreeViewer().expandAll();
-		            }			
-	            }
-			} else {
-				// disabled, so we can reuse the structural updater
-				tree.setUpdater(structuralupdater);
-			}
+			actioncode = TreeViewerContributor.KT_INCOMPLETE;
 		} else if(action == flataction) {
-			hierarchical = false;
-			hierarchicalaction.setChecked(hierarchical);
-			structuralupdater = new FlatKeyTreeUpdater(); 
-			if(filterincomplete.isChecked()) {
-				// we need to activate the filter
-				tree.setUpdater(
-					new IncompletionUpdater(resourcemediator.getBundleGroup(), structuralupdater)
-				);				
-			} else {
-				tree.setUpdater(structuralupdater);
-			}
+			actioncode = TreeViewerContributor.KT_FLAT;
 		} else if(action == hierarchicalaction) {
-			hierarchical = true;
-			flataction.setChecked(!hierarchical);
-			structuralupdater = new GroupedKeyTreeUpdater(RBEPreferences.getKeyGroupSeparator()); 
-			if(filterincomplete.isChecked()) {
-				// we need to activate the filter
-				tree.setUpdater(
-					new IncompletionUpdater(resourcemediator.getBundleGroup(), structuralupdater)
-				);				
-			} else {
-				tree.setUpdater(structuralupdater);
-			}
-            if(RBEPreferences.getKeyTreeExpanded()) {
-                getTreeViewer().expandAll();
-            }			
+			actioncode = TreeViewerContributor.KT_HIERARCHICAL;
 		}
-        getTreeViewer().getTree().setCursor(defaultcursor);
+		contributor.update(actioncode, action.isChecked());
+		flataction.setChecked((contributor.getMode() & TreeViewerContributor.KT_HIERARCHICAL) == 0);
+		hierarchicalaction.setChecked((contributor.getMode() & TreeViewerContributor.KT_HIERARCHICAL) != 0);
 	}
 	
 	
