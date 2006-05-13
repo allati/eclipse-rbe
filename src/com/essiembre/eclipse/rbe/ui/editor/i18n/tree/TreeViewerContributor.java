@@ -30,6 +30,7 @@ import org.eclipse.jface.window.Window;
 
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Cursor;
 
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Composite;
@@ -42,6 +43,12 @@ import org.eclipse.swt.SWT;
 import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
 import com.essiembre.eclipse.rbe.model.tree.KeyTree;
+import com.essiembre.eclipse.rbe.model.tree.updater.FlatKeyTreeUpdater;
+import com.essiembre.eclipse.rbe.model.tree.updater.GroupedKeyTreeUpdater;
+import com.essiembre.eclipse.rbe.model.tree.updater.IncompletionUpdater;
+import com.essiembre.eclipse.rbe.model.tree.updater.KeyTreeUpdater;
+import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
+import com.essiembre.eclipse.rbe.ui.UIUtils;
 import com.essiembre.eclipse.rbe.RBEPlugin;
 
 import java.util.ArrayList;
@@ -56,6 +63,11 @@ import java.util.Iterator;
 public class TreeViewerContributor {
 
 	
+	public static final int KT_FLAT         = 0;  // 0th bit unset
+	public static final int KT_HIERARCHICAL = 1;  // 0th bit set
+	public static final int KT_INCOMPLETE   = 2;  // 1th bit set
+	
+	
 	public  static final int MENU_NEW       = 0 ;
 	public  static final int MENU_RENAME    = 1 ;
 	public  static final int MENU_DELETE    = 2 ;
@@ -67,10 +79,26 @@ public class TreeViewerContributor {
 	private static final int MENU_COUNT     = 8 ;
 	
 	
-	private KeyTree     tree          ;
-	private TreeViewer  treeviewer    ;
-    private MenuItem    separator     ;
-    private MenuItem[]  menuitems     ;
+	/** the tree which is controlled through this manager.    */
+	private KeyTree            tree;
+	
+	/** the component which displays the tree.                */
+	private TreeViewer         treeviewer;
+    
+	private MenuItem           separator;
+    
+	/** items for the context menu.                           */
+	private MenuItem[]         menuitems;
+    
+	/** the updater which is used for structural information. */
+	private KeyTreeUpdater     structuralupdater;
+	
+	/** holds the information about the current state.        */
+	private int                mode;
+
+	/** some cursors to indicate progress                     */
+    private Cursor             waitcursor;
+    private Cursor             defaultcursor;
     
 	
     /**
@@ -81,9 +109,17 @@ public class TreeViewerContributor {
      * @param viewer    The viewer used to display the supplied model.
      */
 	public TreeViewerContributor(KeyTree keytree, TreeViewer viewer) {
-		tree       = keytree;
-		treeviewer = viewer;
-		menuitems  = new MenuItem[MENU_COUNT];
+		tree              = keytree;
+		treeviewer        = viewer;
+		menuitems         = new MenuItem[MENU_COUNT];
+		mode              = KT_HIERARCHICAL;
+        waitcursor        = UIUtils.createCursor(SWT.CURSOR_WAIT);
+        defaultcursor     = UIUtils.createCursor(SWT.CURSOR_ARROW);
+		if(RBEPreferences.getKeyTreeHierarchical()) {
+			structuralupdater = new GroupedKeyTreeUpdater(RBEPreferences.getKeyGroupSeparator());
+		} else {
+			structuralupdater = new FlatKeyTreeUpdater();
+		}        
 	}
 
 
@@ -110,6 +146,8 @@ public class TreeViewerContributor {
 			menuitems[i].dispose();
 		}
 		separator.dispose();
+		waitcursor.dispose();
+		defaultcursor.dispose();		
 	}
 	
 	
@@ -386,5 +424,70 @@ public class TreeViewerContributor {
 		return(RBEPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell());
 	}
 
+	
+	/**
+	 * Modifies the current filter according to a selected activity.
+	 * 
+	 * @param action     One of the KT_??? constants declared above.
+	 * @param activate   true <=> Enable this activity.
+	 */
+	public void update(int action, boolean activate) {
+		treeviewer.getTree().setCursor(waitcursor);
+		if(action == KT_INCOMPLETE) {
+			if(activate) {
+				// we're setting a filter which uses the structural updater
+				tree.setUpdater(
+					new IncompletionUpdater(tree.getBundleGroup(), structuralupdater)
+				);
+	            mode = mode | KT_INCOMPLETE;
+			} else {
+				// disabled, so we can reuse the structural updater
+				tree.setUpdater(structuralupdater);
+				mode = mode & (~KT_INCOMPLETE);
+			}
+            if(structuralupdater instanceof GroupedKeyTreeUpdater) {
+				if(RBEPreferences.getKeyTreeExpanded()) {
+	                treeviewer.expandAll();
+	            }			
+            }
+		} else if(action == KT_FLAT) {
+			structuralupdater = new FlatKeyTreeUpdater(); 
+			if((mode & KT_INCOMPLETE) != 0) {
+				// we need to activate the filter
+				tree.setUpdater(
+					new IncompletionUpdater(tree.getBundleGroup(), structuralupdater)
+				);				
+			} else {
+				tree.setUpdater(structuralupdater);
+			}
+			mode = mode & (~KT_HIERARCHICAL);
+		} else if(action == KT_HIERARCHICAL) {
+			structuralupdater = new GroupedKeyTreeUpdater(RBEPreferences.getKeyGroupSeparator()); 
+			if((mode & KT_INCOMPLETE) != 0) {
+				// we need to activate the filter
+				tree.setUpdater(
+					new IncompletionUpdater(tree.getBundleGroup(), structuralupdater)
+				);				
+			} else {
+				tree.setUpdater(structuralupdater);
+			}
+            if(RBEPreferences.getKeyTreeExpanded()) {
+                treeviewer.expandAll();
+            }			
+            mode = mode | KT_HIERARCHICAL;
+		}
+        treeviewer.getTree().setCursor(defaultcursor);
+	}
+	
+
+	/**
+	 * Returns the currently used mode.
+	 * 
+	 * @return   The currently used mode.
+	 */
+	public int getMode() {
+		return(mode);
+	}
+	
 	
 } /* ENDCLASS */
