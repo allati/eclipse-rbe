@@ -128,7 +128,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
                 setPageImage(index, 
                         UIUtils.getImage(UIUtils.IMAGE_PROPERTIES_FILE));
             }
-            outline = new ResourceBundleOutline(resourceMediator);
+            outline = new ResourceBundleOutline(resourceMediator.getKeyTree());
         } catch (PartInitException e) {
             ErrorDialog.openError(getSite().getShell(), 
                 "Error creating text editor page.", //$NON-NLS-1$
