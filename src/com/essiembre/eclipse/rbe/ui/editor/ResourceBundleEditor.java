@@ -104,6 +104,14 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     }
     
     /**
+     * Gets the resource manager.
+     * @return the resource manager
+     */
+    public ResourceManager getResourceManager() {
+        return resourceMediator;
+    }
+    
+    /**
      * Creates the pages of the multi-page editor.
      */
     protected void createPages() {

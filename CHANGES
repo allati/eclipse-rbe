@@ -5,6 +5,8 @@ Release 0.?.? (200?-??-??)
 - New: Outline view of keys.
 - New: Option to hide key navigation in editor (in preferences).
 - New: Can now filter keys to show only missing translations.
+- New (feature 1487280):  Added getResourceManager()
+  to ResourceBundleEditor class.
 
 Release 0.7.5 (2006-04-22)
 --------------------------
