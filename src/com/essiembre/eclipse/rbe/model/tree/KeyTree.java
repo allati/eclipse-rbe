@@ -88,16 +88,25 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
      * Initializes the given bundle by adding propser listeners on it.
      * @param bundle the bundle to initialize
      */
-    protected void initBundle(Bundle bundle) {
+    protected void initBundle(final Bundle bundle) {
         bundle.addListener(new IDeltaListener() {
             public void add(DeltaEvent event) {
-                addKey(((BundleEntry) event.receiver()).getKey());
+                //TODO figure out how to filter event that do not add keys.
+                //Probably not necessary with plugin rewrite.
+                String key = ((BundleEntry) event.receiver()).getKey();
+                addKey(key);
             }
             public void remove(DeltaEvent event) {
-                removeKey(((BundleEntry) event.receiver()).getKey());
+                String key = ((BundleEntry) event.receiver()).getKey();
+                if (!bundleGroup.isKey(key)) {
+                    removeKey(((BundleEntry) event.receiver()).getKey());
+                }
             }
             public void modify(DeltaEvent event) {
-                modifyKey(((BundleEntry) event.receiver()).getKey());
+                //TODO figure out how to filter event that do not modify keys.
+                //Probably not necessary with plugin rewrite.
+                String key = ((BundleEntry) event.receiver()).getKey();
+                modifyKey(key);
             }
             public void select(DeltaEvent event) {
             }
