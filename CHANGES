@@ -2,11 +2,19 @@ Here is an overview of changes for each releases:
 
 Release 0.?.? (200?-??-??)
 --------------------------
+- New: Chinese plugin translation added.
+- New (feature #1333822): Added Preferences option not to save empty keys
+  (now default behaviour).
 - New: Outline view of keys.
 - New: Option to hide key navigation in editor (in preferences).
 - New: Can now filter keys to show only missing translations.
 - New (feature 1487280):  Added getResourceManager()
   to ResourceBundleEditor class.
+- New: Added Hong Kong country flag.
+- Fix: (bug #1538787): Trailing whitespaces in values are not longer trimmed
+  (leading spaces still are).
+- Fix: Removing a key in a properties file no longer removes it from main
+  key tree if the key exists in other files.
 
 Release 0.7.5 (2006-04-22)
 --------------------------
