@@ -76,6 +76,8 @@ public class RBEPreferenceInitializer extends
         prefs.setDefault(RBEPreferences.NEW_LINE_TYPE, 
                 RBEPreferences.NEW_LINE_UNIX);
 
+        prefs.setDefault(RBEPreferences.KEEP_EMPTY_FIELDS, false);
+        
         // Reporting/Performance
         prefs.setDefault(RBEPreferences.REPORT_MISSING_VALUES, true);
         prefs.setDefault(RBEPreferences.REPORT_DUPL_VALUES, true);

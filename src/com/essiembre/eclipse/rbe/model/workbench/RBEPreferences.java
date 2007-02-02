@@ -134,6 +134,10 @@ public final class RBEPreferences {
     /** Don't show the tree within the editor. */
     public static final String NO_TREE_IN_EDITOR =
     	    "noTreeInEditor"; //$NON-NLS-1$
+
+    /** Keep empty fields. */
+    public static final String KEEP_EMPTY_FIELDS = 
+            "keepEmptyFields"; //$NON-NLS-1$
     
     /** RBEPreferences. */
     private static final Preferences PREFS = 
@@ -389,4 +393,12 @@ public final class RBEPreferences {
         return PREFS.getBoolean(NO_TREE_IN_EDITOR);
     }
     
+    /**
+     * Gets whether to keep empty fields.
+     * @return <code>true</code> if empty fields are to be kept.
+     */
+    public static boolean getKeepEmptyFields() {
+        return PREFS.getBoolean(KEEP_EMPTY_FIELDS);
+    }
+
 }

@@ -64,6 +64,8 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
     
     private Button newLineTypeForce;
     private Button[] newLineTypes = new Button[3];
+
+    private Button keepEmptyFields;
     
     /**
      * Constructor.
@@ -266,6 +268,14 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         newLineTypes[prefs.getInt(
                 RBEPreferences.NEW_LINE_TYPE)].setSelection(true);
         
+        // Keep empty fields?
+        field = createFieldComposite(composite);
+        keepEmptyFields = new Button(field, SWT.CHECK);
+        keepEmptyFields.setSelection(prefs.getBoolean(
+                RBEPreferences.KEEP_EMPTY_FIELDS));
+        new Label(field, SWT.NONE).setText(
+                RBEPlugin.getString("prefs.keepEmptyFields"));//$NON-NLS-1$
+        
         refreshEnabledStatuses();
         
         return composite;
@@ -312,6 +322,8 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
                 prefs.setValue(RBEPreferences.NEW_LINE_TYPE, i);
             }
         }
+        prefs.setValue(RBEPreferences.KEEP_EMPTY_FIELDS,
+                keepEmptyFields.getSelection());
         refreshEnabledStatuses();
         return super.performOk();
     }
@@ -354,6 +366,8 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
                 prefs.getDefaultBoolean(RBEPreferences.FORCE_NEW_LINE_TYPE));
         newLineTypes[prefs.getDefaultInt(
                 RBEPreferences.NEW_LINE_TYPE)].setSelection(true);
+        keepEmptyFields.setSelection(
+                prefs.getDefaultBoolean(RBEPreferences.KEEP_EMPTY_FIELDS));
         refreshEnabledStatuses();
         super.performDefaults();
     }
