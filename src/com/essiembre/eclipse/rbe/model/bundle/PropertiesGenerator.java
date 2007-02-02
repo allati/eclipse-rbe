@@ -120,31 +120,33 @@ public final class PropertiesGenerator {
                 value = ""; //$NON-NLS-1$
             }
             
-            // handle group equal align and line break options
-            if (RBEPreferences.getGroupKeys()) {
-                String newGroup = getKeyGroup(key);
-                if (newGroup == null || !newGroup.equals(group)) {
-                    group = newGroup;
-                    equalIndex = getEqualIndex(key, group, bundle);
-                    for (int i = 0; i < numOfLineBreaks; i++) {
-                        text.append(lineBreak);
+            if (RBEPreferences.getKeepEmptyFields() || value.length() > 0) {
+                // handle group equal align and line break options
+                if (RBEPreferences.getGroupKeys()) {
+                    String newGroup = getKeyGroup(key);
+                    if (newGroup == null || !newGroup.equals(group)) {
+                        group = newGroup;
+                        equalIndex = getEqualIndex(key, group, bundle);
+                        for (int i = 0; i < numOfLineBreaks; i++) {
+                            text.append(lineBreak);
+                        }
                     }
+                } else {
+                    equalIndex = getEqualIndex(key, null, bundle);
                 }
-            } else {
-                equalIndex = getEqualIndex(key, null, bundle);
+                
+                // Build line
+                if (RBEPreferences.getConvertUnicodeToEncoded()) {
+                    key = PropertiesGenerator.convertUnicodeToEncoded(key);
+                    value = PropertiesGenerator.convertUnicodeToEncoded(value);
+                }
+                if (comment != null && comment.length() > 0) {
+                    text.append(comment);
+                }
+                appendKey(text, key, equalIndex, bundleEntry.isCommented());
+                appendValue(text, value, equalIndex, bundleEntry.isCommented());
+                text.append(lineBreak);
             }
-            
-            // Build line
-            if (RBEPreferences.getConvertUnicodeToEncoded()) {
-                key = PropertiesGenerator.convertUnicodeToEncoded(key);
-                value = PropertiesGenerator.convertUnicodeToEncoded(value);
-            }
-            if (comment != null && comment.length() > 0) {
-                text.append(comment);
-            }
-            appendKey(text, key, equalIndex, bundleEntry.isCommented());
-            appendValue(text, value, equalIndex, bundleEntry.isCommented());
-            text.append(lineBreak);
         }
         return text.toString();
     }
