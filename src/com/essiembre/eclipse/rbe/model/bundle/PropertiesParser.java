@@ -92,7 +92,9 @@ public final class PropertiesParser {
                             lineBreakPosition,
                             lineBreakPosition + 1, ""); //$NON-NLS-1$
                     if (++i < lines.length) {
-                        String wrappedLine = lines[i].trim();
+                        String wrappedLine = lines[i].replaceFirst(
+                                "^\\s*", ""); //$NON-NLS-1$ //$NON-NLS-2$
+//                        String wrappedLine = lines[i].trim();
                         if (isCommentedLine) {
                             lineBuf.append(wrappedLine.replaceFirst(
                                     "^##", "")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -104,7 +106,10 @@ public final class PropertiesParser {
                 String key = lineBuf.substring(0, equalPosition).trim();
                 key = unescapeKey(key);
                 
-                String value = lineBuf.substring(equalPosition + 1).trim();
+                String value = lineBuf.substring(
+                        equalPosition + 1).replaceFirst(
+                                "^\\s*", ""); //$NON-NLS-1$ //$NON-NLS-2$
+//                String value = lineBuf.substring(equalPosition + 1).trim();
                 // Unescape leading spaces
                 if (value.startsWith("\\ ")) { //$NON-NLS-1$
                     value = value.substring(1);
