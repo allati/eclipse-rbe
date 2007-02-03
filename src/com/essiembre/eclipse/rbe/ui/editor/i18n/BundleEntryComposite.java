@@ -20,8 +20,12 @@
  */
 package com.essiembre.eclipse.rbe.ui.editor.i18n;
 
+import java.awt.ComponentOrientation;
+import java.awt.GraphicsEnvironment;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -29,16 +33,20 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -96,6 +104,7 @@ public class BundleEntryComposite extends Composite {
         super(parent, SWT.NONE);
         this.resourceManager = resourceManager;
         this.locale = locale;
+        
         this.boldFont = UIUtils.createFont(this, SWT.BOLD, 0);
         this.smallFont = UIUtils.createFont(SWT.NONE, -1);
         
@@ -148,6 +157,13 @@ public class BundleEntryComposite extends Composite {
         super.dispose();
         boldFont.dispose();
         smallFont.dispose();
+        
+        //Addition by Eric Fettweis
+        for(Iterator it = swtFontCache.values().iterator();it.hasNext();){
+            Font font = (Font) it.next();
+            font.dispose();
+        }
+        swtFontCache.clear();
     }
 
     /**
@@ -182,7 +198,8 @@ public class BundleEntryComposite extends Composite {
                 commentedCheckbox.setSelection(false);
             } else {
                 commentedCheckbox.setSelection(bundleEntry.isCommented());
-                textBox.setText(bundleEntry.getValue());
+                String value = bundleEntry.getValue();
+                textBox.setText(value);
             }
             commentedCheckbox.setEnabled(!sourceEditor.isReadOnly());
             textBox.setEnabled(!sourceEditor.isReadOnly());
@@ -208,7 +225,7 @@ public class BundleEntryComposite extends Composite {
         }
         resetCommented();
     }
-        
+       
     private void findSimilar(BundleEntry bundleEntry) {
         ProximityAnalyzer analyzer;
         if (RBEPreferences.getReportSimilarValuesLevensthein()) {
@@ -260,7 +277,6 @@ public class BundleEntryComposite extends Composite {
         txtLabel.setText(" " +  //$NON-NLS-1$
                 UIUtils.getDisplayName(locale) + " "); //$NON-NLS-1$
         txtLabel.setFont(boldFont);
-
         GridData gridData = new GridData();
 
         // Similar button
@@ -364,7 +380,6 @@ public class BundleEntryComposite extends Composite {
         });
         gotoButton.setLayoutData(gridData);
     }
-    
     /**
      * Creates the text row.
      */
@@ -372,6 +387,10 @@ public class BundleEntryComposite extends Composite {
         textBox = new Text(this, SWT.MULTI | SWT.WRAP | 
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         textBox.setEnabled(false);
+        //Addition by Eric FETTWEIS
+        //Note that this does not seem to work... It would however be usefull for arabic and some other languages  
+        textBox.setOrientation(getOrientation(locale));
+        
         GridData gridData = new GridData();
         gridData.verticalAlignment = GridData.FILL;
         gridData.grabExcessVerticalSpace = true;
@@ -412,8 +431,23 @@ public class BundleEntryComposite extends Composite {
                         updateBundleOnChanges();
                         eventBox.setSelection(caretPosition);
                     }
+                    //autoDetectRequiredFont(eventBox.getText());
                 }
             }
+        });
+        // Eric Fettweis : new listener to automatically change the font 
+        textBox.addModifyListener(new ModifyListener() {
+        
+            public void modifyText(ModifyEvent e) {
+                String text = textBox.getText();
+                Font f = textBox.getFont();
+                String fontName = getBestFont(f.getFontData()[0].getName(), text);
+                if(fontName!=null){
+                    f = getSWTFont(f, fontName);
+                    textBox.setFont(f);
+                }
+            }
+        
         });
     }
     
@@ -452,4 +486,150 @@ public class BundleEntryComposite extends Composite {
             textBox.setForeground(null);
         }
     }
+    
+    
+    
+    /** Additions by Eric FETTWEIS */
+    /*private void autoDetectRequiredFont(String value) {
+    Font f = getFont();
+    FontData[] data = f.getFontData();
+    boolean resetFont = true;
+    for (int i = 0; i < data.length; i++) {
+        java.awt.Font test = new java.awt.Font(data[i].getName(), java.awt.Font.PLAIN, 12);
+        if(test.canDisplayUpTo(value)==-1){
+            resetFont = false;
+            break;
+        }
+    }
+    if(resetFont){
+        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        for (int i = 0; i < fonts.length; i++) {
+            java.awt.Font fnt = new java.awt.Font(fonts[i],java.awt.Font.PLAIN,12);
+            if(fnt.canDisplayUpTo(value)==-1){
+                textBox.setFont(createFont(fonts[i]));
+                break;
+            }
+        }
+    }
+}*/
+    /**
+     * Holds swt fonts used for the textBox. 
+     */
+    private Map swtFontCache = new HashMap();
+    
+    /**
+     * Gets a font by its name. The resulting font is build based on the baseFont parameter.
+     * The font is retrieved from the swtFontCache, or created if needed.
+     * @param baseFont the current font used to build the new one. 
+     * Only the name of the new font will differ fromm the original one. 
+     * @parama baseFont a font
+     * @param name the new font name
+     * @return a font with the same style and size as the original.
+     */
+    private Font getSWTFont(Font baseFont, String name){
+        Font font = (Font) swtFontCache.get(name);
+        if(font==null){
+            font = createFont(baseFont, getDisplay(), name);
+            swtFontCache.put(name, font);
+        }
+        return font;
+    }
+    /**
+     * Gets the name of the font which will be the best to display a String.
+     * All installed fonts are searched. If a font can display the entire string, then it is retuned immediately.
+     * Otherwise, the font returned is the one which can display properly the longest substring possible from the argument value. 
+     * @param baseFontName a font to be tested before any other. It will be the current font used by a widget.
+     * @param value the string to be displayed.
+     * @return a font name
+     */
+    private static String getBestFont(String baseFontName, String value){
+        if(canFullyDisplay(baseFontName, value)) return baseFontName;
+        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        String fontName=null;
+        int currentScore = 0;
+        for (int i = 0; i < fonts.length; i++) {
+            int score = canDisplayUpTo(fonts[i], value);
+            if(score==-1){//no need to loop further
+                fontName=fonts[i];
+                break;
+            }
+            if(score>currentScore){
+                fontName=fonts[i];
+                currentScore = score;
+            }
+        }
+        
+        return fontName;
+    }
+    
+    /**
+     * A cache holding an instance of every AWT font tested.
+     */
+    private static Map awtFontCache = new HashMap();
+    
+    /**
+     * Creates a variation from an original font, by changing the face name.
+     * @param baseFont the original font
+     * @param display the current display
+     * @param name the new font face name
+     * @return a new Font
+     */
+    private static Font createFont(Font baseFont, Display display, String name){
+        FontData[] fontData = baseFont.getFontData();
+        for (int i = 0; i < fontData.length; i++) {
+            fontData[i].setName(name);
+        }
+        return new Font(display, fontData);
+    }
+    /**
+     * Can a font display correctly an entire string ?
+     * @param fontName the font name
+     * @param value the string to be displayed
+     * @return 
+     */
+    private static boolean canFullyDisplay(String fontName, String value){
+        return canDisplayUpTo(fontName, value)==-1;
+    }
+    
+    /**
+     * Test the number of characters from a given String that a font can display correctly.
+     * @param fontName the name of the font
+     * @param value the value to be displayed
+     * @return the number of characters that can be displayed, or -1 if the entire string can be displayed successfuly.
+     * @see java.aw.Font#canDisplayUpTo(String)
+     */
+    private static int canDisplayUpTo(String fontName, String value){
+        java.awt.Font font = getAWTFont(fontName);
+        return font.canDisplayUpTo(value);
+    }
+    /**
+     * Returns a cached or new AWT font by its name.
+     * If the font needs to be created, its style will be Font.PLAIN and its size will be 12.
+     * @param name teh font name
+     * @return an AWT Font
+     */
+    private static java.awt.Font getAWTFont(String name){
+        java.awt.Font font = (java.awt.Font) awtFontCache.get(name);
+        if(font==null){
+            font = new java.awt.Font(name, java.awt.Font.PLAIN, 12);
+            awtFontCache.put(name, font);
+        }
+        return font;
+    }
+    /**
+     * Gets the orientation suited for a given locale.
+     * @param locale the locale
+     * @return <code>SWT.RIGHT_TO_LEFT</code> or <code>SWT.LEFT_TO_RIGHT</code>
+     */
+    private static int getOrientation(Locale locale){
+        if(locale!=null){
+            ComponentOrientation orientation = ComponentOrientation.getOrientation(locale);
+            if(orientation==ComponentOrientation.RIGHT_TO_LEFT){
+                return SWT.RIGHT_TO_LEFT;
+            }
+        }
+        return SWT.LEFT_TO_RIGHT;
+    }
 }
+
+         
