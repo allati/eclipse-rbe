@@ -53,18 +53,17 @@ public abstract class PropertiesFileCreator {
         IPath filePath = buildFilePath(locale);
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IFile file = root.getFile(filePath);
+        if (file.exists()) {
+            throw new IOException(
+                    "File already exists: " + file.getName()); //$NON-NLS-1$
+        }
         String contents = ""; //$NON-NLS-1$
         if (RBEPreferences.getShowGenerator()) {
             contents = PropertiesGenerator.GENERATED_BY;
         }
         InputStream stream = 
             new ByteArrayInputStream(contents.getBytes());
-        
-        if (file.exists()) {
-            file.setContents(stream, true, true, null);
-        } else {
-            file.create(stream, true, null);
-        }
+        file.create(stream, true, null);
         stream.close();
         return file;
     }
