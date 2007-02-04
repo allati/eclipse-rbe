@@ -14,6 +14,8 @@ Release 0.?.? (200?-??-??)
 - New: Added Hong Kong country flag.
 - New (patch #1601774): Automatically changes fonts to display Asian
   (and other) characters properly.
+- Fix (bug #1568674): creating a new locale file now throws proper exception
+  when the file already exists (as opposed to overwriting content.
 - Fix: (bug #1538787): Trailing whitespaces in values are not longer trimmed
   (leading spaces still are).
 - Fix: Removing a key in a properties file no longer removes it from main
