@@ -1,8 +1,7 @@
 Here is an overview of changes for each releases:
 
-Release 0.?.? (200?-??-??)
+Release 0.7.6 (2007-02-04)
 --------------------------
-
 - New: Chinese plugin translation added.
 - New (feature #1333822): Added Preferences option not to save empty keys
   (now default behaviour).
