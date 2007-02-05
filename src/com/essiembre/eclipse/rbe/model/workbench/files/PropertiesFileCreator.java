@@ -54,6 +54,7 @@ public abstract class PropertiesFileCreator {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IFile file = root.getFile(filePath);
         if (file.exists()) {
+            //TODO internationalize.
             throw new IOException(
                     "File already exists: " + file.getName()); //$NON-NLS-1$
         }
