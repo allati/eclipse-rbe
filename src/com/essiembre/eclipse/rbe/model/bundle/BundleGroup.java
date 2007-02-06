@@ -260,7 +260,9 @@ public class BundleGroup extends Model implements IBundleVisitable {
         for (Iterator iter = bundles.keySet().iterator(); iter.hasNext();) {
             Locale locale = (Locale) iter.next();
             BundleEntry entry = getBundleEntry(locale, key);
-            entries.add(entry);
+            if (entry != null) {
+                entries.add(entry);
+            }
         }
         return entries;
     }
