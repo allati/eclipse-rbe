@@ -1,5 +1,11 @@
 Here is an overview of changes for each releases:
 
+Release 0.7.7 (2007-02-??)
+--------------------------
+- Fix: Upon saving, the last tree selection is kept (the tree is otherwise
+  redrawn, which is something to be fixed in a future release).
+- Fix: Deleting a key now updates the tree properly.
+
 Release 0.7.6 (2007-02-04)
 --------------------------
 - New: Chinese plugin translation added.
