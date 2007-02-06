@@ -43,6 +43,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
+import com.essiembre.eclipse.rbe.model.tree.KeyTree;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
 import com.essiembre.eclipse.rbe.ui.editor.i18n.I18nPage;
 import com.essiembre.eclipse.rbe.ui.editor.locale.NewLocalePage;
@@ -170,9 +171,14 @@ public class ResourceBundleEditor extends MultiPageEditorPart
      * Saves the multi-page editor's document.
      */
     public void doSave(IProgressMonitor monitor) {
+        KeyTree keyTree = resourceMediator.getKeyTree();
+        String key = keyTree.getSelectedKey();
+
         i18nPage.refreshEditorOnChanges();
         resourceMediator.save(monitor);
-        resourceMediator.getKeyTree().setUpdater(resourceMediator.getKeyTree().getUpdater());
+        
+        keyTree.setUpdater(keyTree.getUpdater());
+        keyTree.selectKey(key);
     }
     
     /**
