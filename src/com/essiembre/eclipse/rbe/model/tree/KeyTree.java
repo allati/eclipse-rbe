@@ -20,6 +20,7 @@
  */
 package com.essiembre.eclipse.rbe.model.tree;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -98,7 +99,8 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
             }
             public void remove(DeltaEvent event) {
                 String key = ((BundleEntry) event.receiver()).getKey();
-                if (!bundleGroup.isKey(key)) {
+                Collection entries = bundleGroup.getBundleEntries(key);
+                if (entries.size() == 0) {
                     removeKey(((BundleEntry) event.receiver()).getKey());
                 }
             }
