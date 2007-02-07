@@ -1,6 +1,6 @@
 Here is an overview of changes for each releases:
 
-Release 0.7.7 (2007-02-??)
+Release 0.7.7 (2007-02-06)
 --------------------------
 - Fix: Upon saving, the last tree selection is kept (the tree is otherwise
   redrawn, which is something to be fixed in a future release).
