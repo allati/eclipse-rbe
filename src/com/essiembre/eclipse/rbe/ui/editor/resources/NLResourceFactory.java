@@ -94,7 +94,7 @@ public class NLResourceFactory extends ResourceFactory {
                             langFolder.findMember(filename),
                             new Locale(language));
                     if (sourceEditor != null) {
-                    	sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
+                        sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
                     }
 
                     // Load "country" matching files in "nl" tree.
@@ -110,7 +110,7 @@ public class NLResourceFactory extends ResourceFactory {
                                     cntryFolder.findMember(filename),
                                     new Locale(language, country));
                             if (sourceEditor != null) {
-                            	sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
+                                sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
                             }
                             
                             // Load "variant" matching files in "nl" tree.
@@ -125,7 +125,7 @@ public class NLResourceFactory extends ResourceFactory {
                                             new Locale(language, country,
                                                     vrntFolder.getName()));
                                     if (sourceEditor != null) {
-                                    	sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
+                                        sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
                                     }
                                 }
                             }
@@ -166,13 +166,13 @@ public class NLResourceFactory extends ResourceFactory {
         return fileCreator;
     }
 
-	@Override
-	public SourceEditor addResource(IResource resource, Locale locale) throws PartInitException {
-		if (sourceEditors.containsKey(locale))
-			throw new IllegalArgumentException("ResourceFactory already contains a resource for locale "+locale);
-		SourceEditor editor = createEditor(site, resource, locale);
-		sourceEditors.put(editor.getLocale(), editor);
-		return editor;
-	}
+    @Override
+    public SourceEditor addResource(IResource resource, Locale locale) throws PartInitException {
+        if (sourceEditors.containsKey(locale))
+            throw new IllegalArgumentException("ResourceFactory already contains a resource for locale "+locale);
+        SourceEditor editor = createEditor(site, resource, locale);
+        sourceEditors.put(editor.getLocale(), editor);
+        return editor;
+    }
 
 }

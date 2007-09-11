@@ -41,23 +41,23 @@ public class RBEPlugin extends AbstractUIPlugin {
             "com.essiembre.eclipse.i18n.resourcebundle"; //$NON-NLS-1$
     
     //The shared instance.
-	private static RBEPlugin plugin;
-	//Resource bundle.
-	private ResourceBundle resourceBundle;
-	
-	/**
-	 * The constructor.
-	 */
-	public RBEPlugin() {
-		super();
-		plugin = this;
-	}
+    private static RBEPlugin plugin;
+    //Resource bundle.
+    private ResourceBundle resourceBundle;
     
-	/**
-	 * This method is called upon plug-in activation
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
+    /**
+     * The constructor.
+     */
+    public RBEPlugin() {
+        super();
+        plugin = this;
+    }
+    
+    /**
+     * This method is called upon plug-in activation
+     */
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
         try {
             URL messagesUrl = 
                     find(new Path("$nl$/messages.properties")); //$NON-NLS-1$
@@ -68,38 +68,38 @@ public class RBEPlugin extends AbstractUIPlugin {
         } catch (IOException x) {
             resourceBundle = null;
         }
-	}
+    }
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-	}
+    /**
+     * This method is called when the plug-in is stopped
+     */
+    public void stop(BundleContext context) throws Exception {
+        super.stop(context);
+    }
 
-	/**
-	 * Returns the shared instance.
+    /**
+     * Returns the shared instance.
      * @return this plugin
-	 */
-	public static RBEPlugin getDefault() {
-		return plugin;
-	}
+     */
+    public static RBEPlugin getDefault() {
+        return plugin;
+    }
 
-	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
+    /**
+     * Returns the string from the plugin's resource bundle,
+     * or 'key' if not found.
      * @param key the key for which to fetch a localized text
      * @return localized string corresponding to key
-	 */
-	public static String getString(String key) {
-		ResourceBundle bundle = 
+     */
+    public static String getString(String key) {
+        ResourceBundle bundle = 
                 RBEPlugin.getDefault().getResourceBundle();
-		try {
-			return (bundle != null) ? bundle.getString(key) : key;
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
+        try {
+            return (bundle != null) ? bundle.getString(key) : key;
+        } catch (MissingResourceException e) {
+            return key;
+        }
+    }
 
     /**
      * Returns the string from the plugin's resource bundle,
@@ -138,13 +138,13 @@ public class RBEPlugin extends AbstractUIPlugin {
                 getString(key), new String[]{arg1, arg2, arg3});
     }
     
-	/**
-	 * Returns the plugin's resource bundle.
+    /**
+     * Returns the plugin's resource bundle.
      * @return resource bundle
-	 */
-	protected ResourceBundle getResourceBundle() {
-		return resourceBundle;
-	}
+     */
+    protected ResourceBundle getResourceBundle() {
+        return resourceBundle;
+    }
     
     /**
      * Gets an image descriptor.

@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.essiembre.eclipse.rbe.model.Model;
@@ -40,11 +41,11 @@ import com.essiembre.eclipse.rbe.model.Model;
 public class BundleGroup extends Model implements IBundleVisitable {
 
     /** Bundles forming the group (key=Locale; value=Bundle). */
-    private final Map bundles = new HashMap();
+    private final Map<Locale, Bundle> bundles = new HashMap();
     
     //TODO tentative:
-    private final Set keys = new TreeSet(); 
-    
+    private final SortedSet<String> keys = new TreeSet<String>();
+//	private final List<String> keys = new LinkedList<String>();
     
     /**
      * Constructor.
@@ -57,8 +58,7 @@ public class BundleGroup extends Model implements IBundleVisitable {
      * @see IBundleVisitable#accept(IBundleVisitor, Object)
      */
     public void accept(IBundleVisitor visitor, Object passAlongArgument) {
-        for (Iterator i = iterator(); i.hasNext();) {
-            Bundle bundle = (Bundle) i.next();
+        for (Bundle bundle : bundles.values()) {
             for (Iterator j = bundle.iterator(); j.hasNext();) {
                 visitor.visitBundleEntry(
                         (BundleEntry) j.next(), passAlongArgument);
@@ -279,7 +279,7 @@ public class BundleGroup extends Model implements IBundleVisitable {
             Locale locale = (Locale) iter.next();
             BundleEntry entry = getBundleEntry(locale, key);
             if (entry != null) {
-            	return (true);
+                return (true);
             }
         }
         return (false);
@@ -291,7 +291,7 @@ public class BundleGroup extends Model implements IBundleVisitable {
      * @return  The number of bundles currently registered with this group.
      */
     public int getBundleCount() {
-    	return (bundles.size());
+        return (bundles.size());
     }
 
     /**
@@ -306,7 +306,7 @@ public class BundleGroup extends Model implements IBundleVisitable {
      * Gets all resource bundle keys.
      * @return <code>List</code> of resource bundle keys.
      */
-    public Set getKeys() {
+    public SortedSet<String> getKeys() {
         return keys;
     }
 
@@ -315,7 +315,7 @@ public class BundleGroup extends Model implements IBundleVisitable {
      * @return <code>List</code> of resource bundle keys.
      */
 //    public Set getKeys() {
-    private Set refreshKeys() {
+    private Set<String> refreshKeys() {
         //Set keys = new TreeSet();
         keys.clear();
         for (Iterator iter = iterator(); iter.hasNext();) {
@@ -332,6 +332,36 @@ public class BundleGroup extends Model implements IBundleVisitable {
      */
     public boolean isKey(String key) {
         return getKeys().contains(key);
+    }
+    
+    public String getNextKey(String currentKey) {
+        boolean returnNextKey = false;
+        for (String key : keys) {
+            if (returnNextKey)
+                return key;
+            if (key.equals(currentKey))
+                returnNextKey = true;
+        }
+        return null;
+//		int index = keys.indexOf(key);
+//		if (index < keys.size()-1)
+//			return keys.get(++index);
+//		return null;
+    }
+    
+    public String getPreviousKey(String currentKey) {
+        String previousKey = null;
+        for (String key : keys) {
+            if (key.equals(currentKey))
+                return previousKey;
+            
+            previousKey = key;
+        }
+        return null;
+//		int index = keys.indexOf(key);
+//		if (index > 0)
+//			return keys.get(--index);
+//		return null;
     }
 
 }

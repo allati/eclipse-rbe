@@ -32,17 +32,17 @@ public interface IBundleVisitor {
      * @param group bundle group
      * @param passAlongArgument an optional argument
      */
-	public void visitBundleGroup(BundleGroup group, Object passAlongArgument);
+    public void visitBundleGroup(BundleGroup group, Object passAlongArgument);
     /**
      * Visits a bundle.
      * @param bundle bundle
      * @param passAlongArgument an optional argument
      */
-	public void visitBundle(Bundle bundle, Object passAlongArgument);
+    public void visitBundle(Bundle bundle, Object passAlongArgument);
     /**
      * Visits a bundle entry.
      * @param entry bundle entry
      * @param passAlongArgument an optional argument
      */
-	public void visitBundleEntry(BundleEntry entry, Object passAlongArgument);
+    public void visitBundleEntry(BundleEntry entry, Object passAlongArgument);
 }

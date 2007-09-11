@@ -133,7 +133,7 @@ public final class RBEPreferences {
     
     /** Don't show the tree within the editor. */
     public static final String NO_TREE_IN_EDITOR =
-    	    "noTreeInEditor"; //$NON-NLS-1$
+            "noTreeInEditor"; //$NON-NLS-1$
 
     /** Keep empty fields. */
     public static final String KEEP_EMPTY_FIELDS = 

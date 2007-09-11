@@ -153,41 +153,41 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     }
     
     public void addResource(IFile resource, Locale locale) {
-    	try {    		
-    		SourceEditor sourceEditor = resourceMediator.addSourceEditor(resource, locale);
-			int index = getPageCount() - 1;
-			addPage(index,
-					sourceEditor.getEditor(), 
-					sourceEditor.getEditor().getEditorInput());
-			setPageText(index, UIUtils.getDisplayName(
-					sourceEditor.getLocale()));
-			setPageImage(index, 
-					UIUtils.getImage(UIUtils.IMAGE_PROPERTIES_FILE));
-			i18nPage.refreshPage();
-			setActivePage(0);
-			sourceEditor.setContent(sourceEditor.getContent()); // re-set the content to trigger dirty state 
-		} catch (PartInitException e) {
+        try {    		
+            SourceEditor sourceEditor = resourceMediator.addSourceEditor(resource, locale);
+            int index = getPageCount() - 1;
+            addPage(index,
+                    sourceEditor.getEditor(), 
+                    sourceEditor.getEditor().getEditorInput());
+            setPageText(index, UIUtils.getDisplayName(
+                    sourceEditor.getLocale()));
+            setPageImage(index, 
+                    UIUtils.getImage(UIUtils.IMAGE_PROPERTIES_FILE));
+            i18nPage.refreshPage();
+            setActivePage(0);
+            sourceEditor.setContent(sourceEditor.getContent()); // re-set the content to trigger dirty state 
+        } catch (PartInitException e) {
             ErrorDialog.openError(getSite().getShell(), 
                     "Error creating resource mediaotr.", //$NON-NLS-1$
                     null, e.getStatus());
-		}
+        }
     }
 
     
     /**
-	 * {@inheritDoc}
-	 */
-	public Object getAdapter(Class adapter) {
-		Object obj = super.getAdapter(adapter);
-		if (obj == null) {
-			if (IContentOutlinePage.class.equals(adapter)) {
-				return (outline);
-			}
-		}
-		return (obj);
-	}
-	
-	
+     * {@inheritDoc}
+     */
+    public Object getAdapter(Class adapter) {
+        Object obj = super.getAdapter(adapter);
+        if (obj == null) {
+            if (IContentOutlinePage.class.equals(adapter)) {
+                return (outline);
+            }
+        }
+        return (obj);
+    }
+    
+    
     /**
      * Saves the multi-page editor's document.
      */
@@ -199,7 +199,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart
         resourceMediator.save(monitor);
         
         keyTree.setUpdater(keyTree.getUpdater());
-        keyTree.selectKey(key);
+        if (key != null)
+            keyTree.selectKey(key);
     }
     
     /**

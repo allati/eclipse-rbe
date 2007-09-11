@@ -416,4 +416,10 @@ public class KeyTreeComposite extends Composite {
             treeViewer.setSelection(new StructuredSelection(item), true);
         }
     }
+    
+//	public KeyTreeItem getNextKeyTreeItem() {
+//		// Either find the next sibbling
+//		KeyTreeItem currentItem = keyTree.getKeyTreeItem(keyTree.getSelectedKey());
+//		return currentItem.getNextLeaf();
+//	}
 }

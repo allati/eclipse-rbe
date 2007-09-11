@@ -30,12 +30,12 @@ public interface IDeltaListener {
      * Adds an "add" event to this listener.
      * @param event "add" event
      */
-	public void add(DeltaEvent event);
+    public void add(DeltaEvent event);
     /**
      * Adds an "remove" event to this listener.
      * @param event "remove" event
      */
-	public void remove(DeltaEvent event);
+    public void remove(DeltaEvent event);
     /**
      * Adds an "modify" event to this listener.
      * @param event "modify" event

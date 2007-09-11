@@ -190,7 +190,7 @@ public class ResourceManager {
     }
     
     public SourceEditor addSourceEditor(IFile resource, Locale locale) throws PartInitException {
-    	SourceEditor sourceEditor = resourcesFactory.addResource(resource, locale);
+        SourceEditor sourceEditor = resourcesFactory.addResource(resource, locale);
         sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
         locales.add(locale);
         bundleGroup.addBundle(

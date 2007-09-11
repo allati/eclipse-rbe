@@ -124,13 +124,13 @@ public class StandardResourceFactory extends ResourceFactory {
      *         #getSourceEditors()
      */
     public SourceEditor[] getSourceEditors() {
-    	// Java 5 would be better here
-    	SourceEditor[] editors = new SourceEditor[sourceEditors.size()];
-    	int i = 0;
-    	for (Iterator iter = sourceEditors.values().iterator(); iter.hasNext();) {
-			SourceEditor editor = (SourceEditor) iter.next();
-			editors[i++] = editor;
-		}
+        // Java 5 would be better here
+        SourceEditor[] editors = new SourceEditor[sourceEditors.size()];
+        int i = 0;
+        for (Iterator iter = sourceEditors.values().iterator(); iter.hasNext();) {
+            SourceEditor editor = (SourceEditor) iter.next();
+            editors[i++] = editor;
+        }
         return editors;
     }
 
@@ -164,12 +164,12 @@ public class StandardResourceFactory extends ResourceFactory {
         return (IResource[]) validResources.toArray(new IResource[]{});
     }
 
-	@Override
-	public SourceEditor addResource(IResource resource, Locale locale) throws PartInitException {
-		if (sourceEditors.containsKey(locale))
-			throw new IllegalArgumentException("ResourceFactory already contains a resource for locale "+locale);
-		SourceEditor editor = createEditor(site, resource, locale);
-		sourceEditors.put(editor.getLocale(), editor);
-		return editor;
-	}
+    @Override
+    public SourceEditor addResource(IResource resource, Locale locale) throws PartInitException {
+        if (sourceEditors.containsKey(locale))
+            throw new IllegalArgumentException("ResourceFactory already contains a resource for locale "+locale);
+        SourceEditor editor = createEditor(site, resource, locale);
+        sourceEditors.put(editor.getLocale(), editor);
+        return editor;
+    }
 }

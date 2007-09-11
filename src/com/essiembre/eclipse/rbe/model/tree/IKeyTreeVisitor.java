@@ -32,11 +32,11 @@ public interface IKeyTreeVisitor {
      * @param keyTree key tree to visit
      * @param passAlongArgument an optional argument
      */
-	public void visitKeyTree(KeyTree keyTree, Object passAlongArgument);
+    public void visitKeyTree(KeyTree keyTree, Object passAlongArgument);
     /**
      * Visits a key tree item.
      * @param item key tree item to visit
      * @param passAlongArgument an optional argument
      */
-	public void visitKeyTreeItem(KeyTreeItem item, Object passAlongArgument);
+    public void visitKeyTreeItem(KeyTreeItem item, Object passAlongArgument);
 }

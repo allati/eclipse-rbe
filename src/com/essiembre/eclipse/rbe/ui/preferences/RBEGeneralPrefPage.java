@@ -121,9 +121,9 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
         field = createFieldComposite(composite);
         noTreeInEditor = new Button(field, SWT.CHECK);
         noTreeInEditor.setSelection(
-        		prefs.getBoolean(RBEPreferences.NO_TREE_IN_EDITOR)); //$NON-NLS-1$
+                prefs.getBoolean(RBEPreferences.NO_TREE_IN_EDITOR)); //$NON-NLS-1$
         new Label(field, SWT.NONE).setText(
-        		RBEPlugin.getString("prefs.noTreeInEditor")); //$NON-NLS-1$
+                RBEPlugin.getString("prefs.noTreeInEditor")); //$NON-NLS-1$
         
         refreshEnabledStatuses();
         return composite;
@@ -146,7 +146,7 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
         prefs.setValue(RBEPreferences.FIELD_TAB_INSERTS,
                 fieldTabInserts.getSelection());
         prefs.setValue(RBEPreferences.NO_TREE_IN_EDITOR,
-        		noTreeInEditor.getSelection());
+                noTreeInEditor.getSelection());
         refreshEnabledStatuses();
         return super.performOk();
     }

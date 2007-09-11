@@ -62,10 +62,10 @@ public class KeyTreeLabelProvider
     private Font groupFontNoKey = UIUtils.createFont(SWT.BOLD | SWT.ITALIC);
 
     
-	/**
-	 * @see ILabelProvider#getImage(Object)
-	 */
-	public Image getImage(Object element) {
+    /**
+     * @see ILabelProvider#getImage(Object)
+     */
+    public Image getImage(Object element) {
         KeyTreeItem treeItem = ((KeyTreeItem) element);
         
         int iconFlags = 0;
@@ -95,22 +95,22 @@ public class KeyTreeLabelProvider
         }
 
         return generateImage(iconFlags);
-	}
+    }
 
-	/**
-	 * @see ILabelProvider#getText(Object)
-	 */
-	public String getText(Object element) {
+    /**
+     * @see ILabelProvider#getText(Object)
+     */
+    public String getText(Object element) {
         return ((KeyTreeItem) element).getName(); 
-	}
+    }
 
     /**
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
      */
-	public void dispose() {
+    public void dispose() {
         groupFontKey.dispose();
         groupFontNoKey.dispose();
-	}
+    }
 
     /**
      * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)

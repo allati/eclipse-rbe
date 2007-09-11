@@ -34,47 +34,47 @@ import java.util.Iterator;
  */
 public class IncompletionUpdater extends KeyTreeUpdater {
 
-	
-	private KeyTreeUpdater   delegation  ;
-	private BundleGroup      bundlegroup ;
-	
+    
+    private KeyTreeUpdater   delegation  ;
+    private BundleGroup      bundlegroup ;
+    
 
-	/**
-	 * Initialises this BundleGroup instance which allows to access
-	 * the bundles keeping the i18n information. 
-	 * 
-	 * @param group     A container for the i18n information.
-	 * @param delegate  The update which will be used for delegation. Mainly
-	 *                  intended for structural information.
-	 */
-	public IncompletionUpdater(BundleGroup group, KeyTreeUpdater delegate) {
-		delegation  = delegate;
-		bundlegroup = group;
-	}
-	
+    /**
+     * Initialises this BundleGroup instance which allows to access
+     * the bundles keeping the i18n information. 
+     * 
+     * @param group     A container for the i18n information.
+     * @param delegate  The update which will be used for delegation. Mainly
+     *                  intended for structural information.
+     */
+    public IncompletionUpdater(BundleGroup group, KeyTreeUpdater delegate) {
+        delegation  = delegate;
+        bundlegroup = group;
+    }
+    
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void addKey(KeyTree keytree, String key) {
-		Collection entries  = bundlegroup.getBundleEntries(key);
-		int        count    = 0;
-		Iterator   iterator = entries.iterator();
-		while(iterator.hasNext()) {
-			Object val = iterator.next();
-			if(val instanceof BundleEntry) {
-				BundleEntry entry = (BundleEntry) val;
-				String      value = entry.getValue();
-				if((value != null) && (value.length() > 0)) {
-					count++;
-				}
-			}
-		}
-		// we only delegate entries in case there are some incomplete ones
-		if (count < bundlegroup.getBundleCount()) {
-			delegation.addKey(keytree, key);
-		}
-	}
-	
-	
+    /**
+     * {@inheritDoc}
+     */
+    public void addKey(KeyTree keytree, String key) {
+        Collection entries  = bundlegroup.getBundleEntries(key);
+        int        count    = 0;
+        Iterator   iterator = entries.iterator();
+        while(iterator.hasNext()) {
+            Object val = iterator.next();
+            if(val instanceof BundleEntry) {
+                BundleEntry entry = (BundleEntry) val;
+                String      value = entry.getValue();
+                if((value != null) && (value.length() > 0)) {
+                    count++;
+                }
+            }
+        }
+        // we only delegate entries in case there are some incomplete ones
+        if (count < bundlegroup.getBundleCount()) {
+            delegation.addKey(keytree, key);
+        }
+    }
+    
+    
 } /* ENDCLASS */

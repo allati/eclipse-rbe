@@ -108,10 +108,10 @@ public class NewLocalePage extends Composite {
                         final IFile file = 
                                 resourceManager.createPropertiesFile(locale);
                         Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								editor.addResource(file, locale);
-							}
-						});
+                            public void run() {
+                                editor.addResource(file, locale);
+                            }
+                        });
 //                        
 //                        final IWorkbenchPage page = PlatformUI.getWorkbench()
 //                                .getActiveWorkbenchWindow().getActivePage();

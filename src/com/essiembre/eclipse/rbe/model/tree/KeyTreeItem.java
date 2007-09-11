@@ -20,8 +20,8 @@
  */
 package com.essiembre.eclipse.rbe.model.tree;
 
-import java.util.Iterator;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
@@ -30,7 +30,7 @@ import java.util.TreeSet;
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public class KeyTreeItem implements Comparable, IKeyTreeVisitable {
+public class KeyTreeItem implements Comparable<KeyTreeItem>, IKeyTreeVisitable {
 
     /** Parent key tree. */
     private KeyTree keyTree;
@@ -41,7 +41,7 @@ public class KeyTreeItem implements Comparable, IKeyTreeVisitable {
     /** Parent item. */
     private Object parent;
     /** Child items. */
-    private final Set children = new TreeSet();
+    private final SortedSet<KeyTreeItem> children = new TreeSet<KeyTreeItem>();
     
     /**
      * Constructor.
@@ -62,7 +62,7 @@ public class KeyTreeItem implements Comparable, IKeyTreeVisitable {
      * @return    true <=> This item is a leaf.
      */
     public boolean isLeaf() {
-    	return (children.isEmpty());
+        return (children.isEmpty());
     }
     
     /**
@@ -83,7 +83,7 @@ public class KeyTreeItem implements Comparable, IKeyTreeVisitable {
      * Gets the "children" attribute.
      * @return Returns the children.
      */
-    public Set getChildren() {
+    public SortedSet<KeyTreeItem> getChildren() {
         return children;
     }
     /**
@@ -112,11 +112,10 @@ public class KeyTreeItem implements Comparable, IKeyTreeVisitable {
      * Gets all children of this item, from all available level.
      * @return collection of <code>KeyTreeItem</code> objects
      */
-    public Set getNestedChildren() {
-        Set nestedChildren = new TreeSet();
+    public Set<KeyTreeItem> getNestedChildren() {
+        Set<KeyTreeItem> nestedChildren = new TreeSet<KeyTreeItem>();
         nestedChildren.addAll(children);
-        for (Iterator iter = children.iterator(); iter.hasNext();) {
-            KeyTreeItem item = (KeyTreeItem) iter.next();
+        for (KeyTreeItem item : children) {
             nestedChildren.addAll(item.getNestedChildren());
         } 
         return nestedChildren;
@@ -147,9 +146,9 @@ public class KeyTreeItem implements Comparable, IKeyTreeVisitable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object o) {
+    public int compareTo(KeyTreeItem o) {
         // TODO consider leaving this out to be configurable
-        return this.id.compareTo(((KeyTreeItem) o).getId());
+        return this.id.compareTo((o).getId());
     }
     
     /**
@@ -160,5 +159,31 @@ public class KeyTreeItem implements Comparable, IKeyTreeVisitable {
     public void accept(IKeyTreeVisitor visitor, Object passAlongArgument) {
         visitor.visitKeyTreeItem(this, passAlongArgument);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final KeyTreeItem other = (KeyTreeItem) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
     
 }

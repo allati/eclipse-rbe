@@ -22,8 +22,10 @@ package com.essiembre.eclipse.rbe.ui.editor.i18n;
 
 import java.awt.ComponentOrientation;
 import java.awt.GraphicsEnvironment;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
 
@@ -74,22 +76,36 @@ public class BundleEntryComposite extends Composite {
 
     /*default*/ final ResourceManager resourceManager;
     /*default*/ final Locale locale;
+    /*default*/ final I18nPage page;
     private final Font boldFont;
     private final Font smallFont;
-    
+
     /*default*/ Text textBox;
     private Button commentedCheckbox;
     private Button gotoButton;
     private Button duplButton;
     private Button simButton;
-    
+
     /*default*/ String activeKey;
     /*default*/ String textBeforeUpdate;
 
     /*default*/ DuplicateValuesVisitor duplVisitor;
     /*default*/ SimilarValuesVisitor similarVisitor;
     
-    
+    FocusListener internalFocusListener = new FocusListener() {
+        public void focusGained(FocusEvent e) {
+            e.widget = BundleEntryComposite.this;
+            for (FocusListener listener : focusListeners)
+                listener.focusGained(e);
+        }
+        public void focusLost(FocusEvent e) {
+            e.widget = BundleEntryComposite.this;
+            for (FocusListener listener : focusListeners)
+                listener.focusLost(e);
+        }
+    };
+
+
     /**
      * Constructor.
      * @param parent parent composite
@@ -99,15 +115,17 @@ public class BundleEntryComposite extends Composite {
     public BundleEntryComposite(
             final Composite parent, 
             final ResourceManager resourceManager, 
-            final Locale locale) {
+            final Locale locale,
+            final I18nPage page) {
 
         super(parent, SWT.NONE);
         this.resourceManager = resourceManager;
         this.locale = locale;
-        
+        this.page = page;
+
         this.boldFont = UIUtils.createFont(this, SWT.BOLD, 0);
         this.smallFont = UIUtils.createFont(SWT.NONE, -1);
-        
+
         GridLayout gridLayout = new GridLayout(1, false);        
         gridLayout.horizontalSpacing = 0;
         gridLayout.verticalSpacing = 2;
@@ -121,8 +139,6 @@ public class BundleEntryComposite extends Composite {
         GridData gd = new GridData(GridData.FILL_BOTH);
         gd.heightHint = 80;
         setLayoutData(gd);
-
-        
     }
 
     /**
@@ -134,9 +150,9 @@ public class BundleEntryComposite extends Composite {
             BundleEntry entry = bundleGroup.getBundleEntry(locale, activeKey);
             boolean commentedSelected = commentedCheckbox.getSelection();
             String textBoxValue = textBox.getText();
-            
+
             if (entry == null || !textBoxValue.equals(entry.getValue())
-                   || entry.isCommented() != commentedSelected) {
+                    || entry.isCommented() != commentedSelected) {
                 String comment = null;
                 if (entry != null) {
                     comment = entry.getComment();
@@ -149,7 +165,7 @@ public class BundleEntryComposite extends Composite {
             }
         }
     }
-    
+
     /**
      * @see org.eclipse.swt.widgets.Widget#dispose()
      */
@@ -157,7 +173,7 @@ public class BundleEntryComposite extends Composite {
         super.dispose();
         boldFont.dispose();
         smallFont.dispose();
-        
+
         //Addition by Eric Fettweis
         for(Iterator it = swtFontCache.values().iterator();it.hasNext();){
             Font font = (Font) it.next();
@@ -182,7 +198,7 @@ public class BundleEntryComposite extends Composite {
     public void setTextSelection(int start, int end) {
         textBox.setSelection(start, end);
     }
-    
+
     /**
      * Refreshes the text field value with value matching given key.
      * @param key key used to grab value
@@ -225,7 +241,7 @@ public class BundleEntryComposite extends Composite {
         }
         resetCommented();
     }
-       
+
     private void findSimilar(BundleEntry bundleEntry) {
         ProximityAnalyzer analyzer;
         if (RBEPreferences.getReportSimilarValuesLevensthein()) {
@@ -245,7 +261,7 @@ public class BundleEntryComposite extends Composite {
         }
         simButton.setVisible(similarVisitor.getSimilars().size() > 0);
     }
-    
+
     private void findDuplicates(BundleEntry bundleEntry) {
         BundleGroup bundleGroup = resourceManager.getBundleGroup();
         if (duplVisitor == null) {
@@ -255,8 +271,8 @@ public class BundleEntryComposite extends Composite {
         bundleGroup.getBundle(locale).accept(duplVisitor, bundleEntry);
         duplButton.setVisible(duplVisitor.getDuplicates().size() > 0);
     }
-    
-    
+
+
     /**
      * Creates the text field label, icon, and commented check box.
      */
@@ -298,10 +314,10 @@ public class BundleEntryComposite extends Composite {
                         UIUtils.getDisplayName(locale));
                 body += "\n\n"; //$NON-NLS-1$
                 for (Iterator iter = similarVisitor.getSimilars().iterator();
-                        iter.hasNext();) {
+                iter.hasNext();) {
                     body += "        " //$NON-NLS-1$
-                          + ((BundleEntry) iter.next()).getKey()
-                          + "\n"; //$NON-NLS-1$
+                        + ((BundleEntry) iter.next()).getKey()
+                        + "\n"; //$NON-NLS-1$
                 }
                 MessageDialog.openInformation(getShell(), head, body); 
             }
@@ -326,7 +342,7 @@ public class BundleEntryComposite extends Composite {
                         UIUtils.getDisplayName(locale));
                 body += "\n\n"; //$NON-NLS-1$
                 for (Iterator iter = duplVisitor.getDuplicates().iterator();
-                        iter.hasNext();) {
+                iter.hasNext();) {
                     body += "        " //$NON-NLS-1$
                         + ((BundleEntry) iter.next()).getKey()
                         + "\n"; //$NON-NLS-1$
@@ -334,7 +350,7 @@ public class BundleEntryComposite extends Composite {
                 MessageDialog.openInformation(getShell(), head, body); 
             }
         });
-        
+
         // Commented checkbox
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.END;
@@ -351,7 +367,7 @@ public class BundleEntryComposite extends Composite {
             }
         });
         commentedCheckbox.setEnabled(false);
-        
+
         // Country flag
         gridData = new GridData();
         gridData.horizontalAlignment = GridData.END;
@@ -372,13 +388,20 @@ public class BundleEntryComposite extends Composite {
                 ITextEditor editor = resourceManager.getSourceEditor(
                         locale).getEditor();
                 Object activeEditor = 
-                        editor.getSite().getPage().getActiveEditor();
+                    editor.getSite().getPage().getActiveEditor();
                 if (activeEditor instanceof ResourceBundleEditor) {
                     ((ResourceBundleEditor) activeEditor).setActivePage(locale);
                 }
             }
         });
         gotoButton.setLayoutData(gridData);
+    }
+    
+    private Collection<FocusListener> focusListeners = new LinkedList<FocusListener>();	
+    @Override
+    public void addFocusListener(FocusListener listener) {
+        if (!focusListeners.contains(listener))
+            focusListeners.add(listener);
     }
     /**
      * Creates the text row.
@@ -390,7 +413,7 @@ public class BundleEntryComposite extends Composite {
         //Addition by Eric FETTWEIS
         //Note that this does not seem to work... It would however be usefull for arabic and some other languages  
         textBox.setOrientation(getOrientation(locale));
-        
+
         GridData gridData = new GridData();
         gridData.verticalAlignment = GridData.FILL;
         gridData.grabExcessVerticalSpace = true;
@@ -409,10 +432,36 @@ public class BundleEntryComposite extends Composite {
         //TODO add a preference property listener and add/remove this listener
         textBox.addTraverseListener(new TraverseListener() {
             public void keyTraversed(TraverseEvent event) {
-                if (!RBEPreferences.getFieldTabInserts() 
-                        && event.character == SWT.TAB) {
+                if (event.character == SWT.TAB && !RBEPreferences.getFieldTabInserts()) {
                     event.doit = true;
+                    event.detail = SWT.TRAVERSE_NONE;
+                    if (event.stateMask == 0)
+                        page.focusNextBundleEntryComposite();
+                    else if (event.stateMask == SWT.SHIFT)
+                        page.focusPreviousBundleEntryComposite();
+                } else if (event.character == SWT.CR) {
+                    if (event.stateMask == SWT.CTRL) {
+                        event.doit = false;						
+                    } else if (event.stateMask == 0) {
+                        event.doit = true;
+                        event.detail = SWT.TRAVERSE_NONE;
+                        page.selectNextTreeEntry();
+                    } else if (event.stateMask == SWT.SHIFT) {
+                        event.doit = true;
+                        event.detail = SWT.TRAVERSE_NONE;
+                        page.selectPreviousTreeEntry();
+                    }
                 }
+//				} else if (event.keyCode == SWT.ARROW_DOWN && event.stateMask == SWT.CTRL) {
+//					event.doit = true;
+//					event.detail = SWT.TRAVERSE_NONE;
+//					page.selectNextTreeEntry();
+//				} else if (event.keyCode == SWT.ARROW_UP && event.stateMask == SWT.CTRL) {
+//					event.doit = true;
+//					event.detail = SWT.TRAVERSE_NONE;
+//					page.selectPreviousTreeEntry();
+//				} 
+
             }
         });
         textBox.addKeyListener(new KeyAdapter() {
@@ -437,7 +486,7 @@ public class BundleEntryComposite extends Composite {
         });
         // Eric Fettweis : new listener to automatically change the font 
         textBox.addModifyListener(new ModifyListener() {
-        
+
             public void modifyText(ModifyEvent e) {
                 String text = textBox.getText();
                 Font f = textBox.getFont();
@@ -447,11 +496,13 @@ public class BundleEntryComposite extends Composite {
                     textBox.setFont(f);
                 }
             }
-        
+
         });
+        
+        textBox.addFocusListener(internalFocusListener);
     }
-    
-    
+
+
     /**
      * Loads country icon based on locale country.
      * @param countryLocale the locale on which to grab the country
@@ -465,7 +516,7 @@ public class BundleEntryComposite extends Composite {
         }
         if (countryCode != null && countryCode.length() > 0) {
             String imageName = "countries/" + //$NON-NLS-1$
-                    countryCode.toLowerCase() + ".gif"; //$NON-NLS-1$
+            countryCode.toLowerCase() + ".gif"; //$NON-NLS-1$
             image = UIUtils.getImage(imageName);
         }
         if (image == null) {
@@ -473,22 +524,25 @@ public class BundleEntryComposite extends Composite {
         }
         return image;
     }
-    
+
     /*default*/ void resetCommented() {
         if (commentedCheckbox.getSelection()) {
             commentedCheckbox.setToolTipText(
-                   RBEPlugin.getString("value.uncomment.tooltip"));//$NON-NLS-1$
+                    RBEPlugin.getString("value.uncomment.tooltip"));//$NON-NLS-1$
             textBox.setForeground(
                     getDisplay().getSystemColor(SWT.COLOR_GRAY));
         } else {
             commentedCheckbox.setToolTipText(
-                   RBEPlugin.getString("value.comment.tooltip"));//$NON-NLS-1$
+                    RBEPlugin.getString("value.comment.tooltip"));//$NON-NLS-1$
             textBox.setForeground(null);
         }
     }
-    
-    
-    
+
+    public void focusTextBox() {
+        textBox.setFocus();
+        textBox.setSelection(0, textBox.getText().length());
+    }
+
     /** Additions by Eric FETTWEIS */
     /*private void autoDetectRequiredFont(String value) {
     Font f = getFont();
@@ -516,7 +570,7 @@ public class BundleEntryComposite extends Composite {
      * Holds swt fonts used for the textBox. 
      */
     private Map swtFontCache = new HashMap();
-    
+
     /**
      * Gets a font by its name. The resulting font is build based on the baseFont parameter.
      * The font is retrieved from the swtFontCache, or created if needed.
@@ -533,7 +587,7 @@ public class BundleEntryComposite extends Composite {
             swtFontCache.put(name, font);
         }
         return font;
-    }
+    }	
     /**
      * Gets the name of the font which will be the best to display a String.
      * All installed fonts are searched. If a font can display the entire string, then it is retuned immediately.
@@ -558,15 +612,15 @@ public class BundleEntryComposite extends Composite {
                 currentScore = score;
             }
         }
-        
+
         return fontName;
     }
-    
+
     /**
      * A cache holding an instance of every AWT font tested.
      */
     private static Map awtFontCache = new HashMap();
-    
+
     /**
      * Creates a variation from an original font, by changing the face name.
      * @param baseFont the original font
@@ -590,7 +644,7 @@ public class BundleEntryComposite extends Composite {
     private static boolean canFullyDisplay(String fontName, String value){
         return canDisplayUpTo(fontName, value)==-1;
     }
-    
+
     /**
      * Test the number of characters from a given String that a font can display correctly.
      * @param fontName the name of the font
@@ -632,4 +686,4 @@ public class BundleEntryComposite extends Composite {
     }
 }
 
-         
+

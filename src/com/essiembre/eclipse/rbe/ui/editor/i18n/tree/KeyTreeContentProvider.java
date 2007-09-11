@@ -68,9 +68,9 @@ public class KeyTreeContentProvider implements
      */
     public Object[] getChildren(Object parentElement) {
         if(parentElement instanceof KeyTree) {
-        	return ((KeyTree) parentElement).getRootKeyItems().toArray(); 
+            return ((KeyTree) parentElement).getRootKeyItems().toArray(); 
         } else if (parentElement instanceof KeyTreeItem) {
-        	return ((KeyTreeItem) parentElement).getChildren().toArray(); 
+            return ((KeyTreeItem) parentElement).getChildren().toArray(); 
         }
         return EMPTY_ARRAY;
     }
@@ -104,6 +104,7 @@ public class KeyTreeContentProvider implements
      */
     public void add(DeltaEvent event) {
         treeViewer.refresh(true);
+        
     }
 
     /**
@@ -119,11 +120,11 @@ public class KeyTreeContentProvider implements
     public void select(DeltaEvent event) {
         KeyTreeItem treeItem = (KeyTreeItem) event.receiver();
         if (treeItem != null) {
-        	KeyTreeItem currentSelection = getTreeSelection();
-        	if ((currentSelection == null) || (!treeItem.getId().endsWith(currentSelection.getId()))) {
-		        StructuredSelection selection = new StructuredSelection(treeItem);
-		    	treeViewer.setSelection(selection);
-        	}
+            KeyTreeItem currentSelection = getTreeSelection();
+            if ((currentSelection == null) || (!treeItem.getId().endsWith(currentSelection.getId()))) {
+                StructuredSelection selection = new StructuredSelection(treeItem);
+                treeViewer.setSelection(selection);
+            }
         }
     }
     
