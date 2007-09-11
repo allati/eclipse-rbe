@@ -30,7 +30,15 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.IUndoManager;
+import org.eclipse.jface.text.TextViewer;
+import org.eclipse.jface.text.TextViewerUndoManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -51,6 +59,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
@@ -80,7 +89,10 @@ public class BundleEntryComposite extends Composite {
     private final Font boldFont;
     private final Font smallFont;
 
-    /*default*/ Text textBox;
+//	/*default*/ Text textBox;
+    private ITextViewer textViewer;
+    private IUndoManager undoManager;
+    
     private Button commentedCheckbox;
     private Button gotoButton;
     private Button duplButton;
@@ -92,7 +104,7 @@ public class BundleEntryComposite extends Composite {
     /*default*/ DuplicateValuesVisitor duplVisitor;
     /*default*/ SimilarValuesVisitor similarVisitor;
     
-    FocusListener internalFocusListener = new FocusListener() {
+    private FocusListener internalFocusListener = new FocusListener() {
         public void focusGained(FocusEvent e) {
             e.widget = BundleEntryComposite.this;
             for (FocusListener listener : focusListeners)
@@ -102,6 +114,7 @@ public class BundleEntryComposite extends Composite {
             e.widget = BundleEntryComposite.this;
             for (FocusListener listener : focusListeners)
                 listener.focusLost(e);
+            textViewer.setSelectedRange(0, 0);
         }
     };
 
@@ -133,7 +146,8 @@ public class BundleEntryComposite extends Composite {
         gridLayout.marginHeight = 0;
 
         createLabelRow();
-        createTextRow();
+//		createTextRow();
+        createTextViewerRow();
 
         setLayout(gridLayout);
         GridData gd = new GridData(GridData.FILL_BOTH);
@@ -149,7 +163,7 @@ public class BundleEntryComposite extends Composite {
             BundleGroup bundleGroup = resourceManager.getBundleGroup();
             BundleEntry entry = bundleGroup.getBundleEntry(locale, activeKey);
             boolean commentedSelected = commentedCheckbox.getSelection();
-            String textBoxValue = textBox.getText();
+            String textBoxValue = textViewer.getDocument().get();
 
             if (entry == null || !textBoxValue.equals(entry.getValue())
                     || entry.isCommented() != commentedSelected) {
@@ -159,7 +173,7 @@ public class BundleEntryComposite extends Composite {
                 }
                 bundleGroup.addBundleEntry(locale, new BundleEntry(
                         activeKey, 
-                        textBox.getText(), 
+                        textViewer.getDocument().get(), 
                         comment, 
                         commentedSelected));
             }
@@ -196,7 +210,7 @@ public class BundleEntryComposite extends Composite {
      * @param end ending position to select
      */
     public void setTextSelection(int start, int end) {
-        textBox.setSelection(start, end);
+        textViewer.setSelectedRange(start, end-start);
     }
 
     /**
@@ -206,16 +220,20 @@ public class BundleEntryComposite extends Composite {
     public void refresh(String key) {
         activeKey = key;
         BundleGroup bundleGroup = resourceManager.getBundleGroup();
+        StyledText textBox = textViewer.getTextWidget();
+        
+        IDocument document = new Document();
+        
         if (key != null && bundleGroup.isKey(key)) {
             BundleEntry bundleEntry = bundleGroup.getBundleEntry(locale, key);
             SourceEditor sourceEditor = resourceManager.getSourceEditor(locale);
             if (bundleEntry == null) {
-                textBox.setText(""); //$NON-NLS-1$
+                document.set("");
                 commentedCheckbox.setSelection(false);
             } else {
                 commentedCheckbox.setSelection(bundleEntry.isCommented());
                 String value = bundleEntry.getValue();
-                textBox.setText(value);
+                document.set(value);
             }
             commentedCheckbox.setEnabled(!sourceEditor.isReadOnly());
             textBox.setEnabled(!sourceEditor.isReadOnly());
@@ -233,12 +251,14 @@ public class BundleEntryComposite extends Composite {
         } else {
             commentedCheckbox.setSelection(false);
             commentedCheckbox.setEnabled(false);
-            textBox.setText(""); //$NON-NLS-1$
+            document.set("");
             textBox.setEnabled(false);
             gotoButton.setEnabled(false);
             duplButton.setVisible(false);
             simButton.setVisible(false);
         }
+        
+        textViewer.setDocument(document);		
         resetCommented();
     }
 
@@ -403,12 +423,118 @@ public class BundleEntryComposite extends Composite {
         if (!focusListeners.contains(listener))
             focusListeners.add(listener);
     }
+//	/**
+//	 * Creates the text row.
+//	 */
+//	private void createTextRow() {
+//		textBox = new Text(this, SWT.MULTI | SWT.WRAP | 
+//				SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+//		textBox.setEnabled(false);
+//		//Addition by Eric FETTWEIS
+//		//Note that this does not seem to work... It would however be usefull for arabic and some other languages  
+//		textBox.setOrientation(getOrientation(locale));
+//
+//		GridData gridData = new GridData();
+//		gridData.verticalAlignment = GridData.FILL;
+//		gridData.grabExcessVerticalSpace = true;
+//		gridData.horizontalAlignment = GridData.FILL;
+//		gridData.grabExcessHorizontalSpace = true;
+//		gridData.heightHint = UIUtils.getHeightInChars(textBox, 3);
+//		textBox.setLayoutData(gridData);
+//		textBox.addFocusListener(new FocusListener() {
+//			public void focusGained(FocusEvent event) {
+//				textBeforeUpdate = textBox.getText();
+//			}
+//			public void focusLost(FocusEvent event) {
+//				updateBundleOnChanges();
+//			}
+//		});
+//		//TODO add a preference property listener and add/remove this listener
+//		textBox.addTraverseListener(new TraverseListener() {
+//			public void keyTraversed(TraverseEvent event) {
+//				if (event.character == SWT.TAB && !RBEPreferences.getFieldTabInserts()) {
+//					event.doit = true;
+//					event.detail = SWT.TRAVERSE_NONE;
+//					if (event.stateMask == 0)
+//						page.focusNextBundleEntryComposite();
+//					else if (event.stateMask == SWT.SHIFT)
+//						page.focusPreviousBundleEntryComposite();
+//				} else if (event.character == SWT.CR) {
+//					if (event.stateMask == SWT.CTRL) {
+//						event.doit = false;						
+//					} else if (event.stateMask == 0) {
+//						event.doit = true;
+//						event.detail = SWT.TRAVERSE_NONE;
+//						page.selectNextTreeEntry();
+//					} else if (event.stateMask == SWT.SHIFT) {
+//						event.doit = true;
+//						event.detail = SWT.TRAVERSE_NONE;
+//						page.selectPreviousTreeEntry();
+//					}
+//				}
+////				} else if (event.keyCode == SWT.ARROW_DOWN && event.stateMask == SWT.CTRL) {
+////					event.doit = true;
+////					event.detail = SWT.TRAVERSE_NONE;
+////					page.selectNextTreeEntry();
+////				} else if (event.keyCode == SWT.ARROW_UP && event.stateMask == SWT.CTRL) {
+////					event.doit = true;
+////					event.detail = SWT.TRAVERSE_NONE;
+////					page.selectPreviousTreeEntry();
+////				} 
+//
+//			}
+//		});
+//		textBox.addKeyListener(new KeyAdapter() {
+//			public void keyReleased(KeyEvent event) {
+//				Text eventBox = (Text) event.widget;
+//				final ITextEditor editor = resourceManager.getSourceEditor(
+//						locale).getEditor();
+//				// Text field has changed: make editor dirty if not already
+//				if (textBeforeUpdate != null 
+//						&& !textBeforeUpdate.equals(eventBox.getText())) {
+//					// Make the editor dirty if not already.  If it is, 
+//					// we wait until field focus lost (or save) to 
+//					// update it completely.
+//					if (!editor.isDirty()) {
+//						int caretPosition = eventBox.getCaretPosition();
+//						updateBundleOnChanges();
+//						eventBox.setSelection(caretPosition);
+//					}
+//					//autoDetectRequiredFont(eventBox.getText());
+//				}
+//			}
+//		});
+//		// Eric Fettweis : new listener to automatically change the font 
+//		textBox.addModifyListener(new ModifyListener() {
+//
+//			public void modifyText(ModifyEvent e) {
+//				String text = textBox.getText();
+//				Font f = textBox.getFont();
+//				String fontName = getBestFont(f.getFontData()[0].getName(), text);
+//				if(fontName!=null){
+//					f = getSWTFont(f, fontName);
+//					textBox.setFont(f);
+//				}
+//			}
+//
+//		});
+//		
+//		textBox.addFocusListener(internalFocusListener);
+//	}
+    
     /**
      * Creates the text row.
      */
-    private void createTextRow() {
-        textBox = new Text(this, SWT.MULTI | SWT.WRAP | 
+    private void createTextViewerRow() {
+        textViewer = new TextViewer(this, SWT.MULTI | SWT.WRAP | 
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        
+        textViewer.setDocument(new Document());
+        undoManager = new TextViewerUndoManager(20);
+        textViewer.setUndoManager(undoManager);
+        textViewer.activatePlugins();
+        final StyledText textBox = textViewer.getTextWidget();
+        
         textBox.setEnabled(false);
         //Addition by Eric FETTWEIS
         //Note that this does not seem to work... It would however be usefull for arabic and some other languages  
@@ -451,22 +577,21 @@ public class BundleEntryComposite extends Composite {
                         event.detail = SWT.TRAVERSE_NONE;
                         page.selectPreviousTreeEntry();
                     }
-                }
-//				} else if (event.keyCode == SWT.ARROW_DOWN && event.stateMask == SWT.CTRL) {
-//					event.doit = true;
-//					event.detail = SWT.TRAVERSE_NONE;
-//					page.selectNextTreeEntry();
-//				} else if (event.keyCode == SWT.ARROW_UP && event.stateMask == SWT.CTRL) {
-//					event.doit = true;
-//					event.detail = SWT.TRAVERSE_NONE;
-//					page.selectPreviousTreeEntry();
-//				} 
-
+                } 
             }
         });
+
         textBox.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent event) {
-                Text eventBox = (Text) event.widget;
+                if (isKeyCombination(event, SWT.CTRL, 'z')) {
+                    undoManager.undo();
+                } else if (isKeyCombination(event, SWT.CTRL, 'y')) {
+                    undoManager.redo();
+                } else if (isKeyCombination(event, SWT.CTRL, 'a')) {
+                    textViewer.setSelectedRange(0, textViewer.getDocument().getLength());
+                }
+                
+                StyledText eventBox = (StyledText) event.widget;
                 final ITextEditor editor = resourceManager.getSourceEditor(
                         locale).getEditor();
                 // Text field has changed: make editor dirty if not already
@@ -476,7 +601,7 @@ public class BundleEntryComposite extends Composite {
                     // we wait until field focus lost (or save) to 
                     // update it completely.
                     if (!editor.isDirty()) {
-                        int caretPosition = eventBox.getCaretPosition();
+                        int caretPosition = eventBox.getSelection().x;
                         updateBundleOnChanges();
                         eventBox.setSelection(caretPosition);
                     }
@@ -500,6 +625,14 @@ public class BundleEntryComposite extends Composite {
         });
         
         textBox.addFocusListener(internalFocusListener);
+    }
+    
+    private static boolean isKeyCombination(KeyEvent event, int modifier1, int keyCode) {
+        return (event.keyCode == keyCode && event.stateMask == modifier1);
+    }
+    
+    private static boolean isKeyCombination(KeyEvent event, int modifier1, int modifier2, int keyCode) {
+        return (event.keyCode == keyCode && event.stateMask == (modifier1 & modifier2));
     }
 
 
@@ -526,6 +659,7 @@ public class BundleEntryComposite extends Composite {
     }
 
     /*default*/ void resetCommented() {
+        final StyledText textBox = textViewer.getTextWidget();
         if (commentedCheckbox.getSelection()) {
             commentedCheckbox.setToolTipText(
                     RBEPlugin.getString("value.uncomment.tooltip"));//$NON-NLS-1$
@@ -539,8 +673,9 @@ public class BundleEntryComposite extends Composite {
     }
 
     public void focusTextBox() {
+        StyledText textBox = textViewer.getTextWidget();
         textBox.setFocus();
-        textBox.setSelection(0, textBox.getText().length());
+        textViewer.setSelectedRange(0, textViewer.getDocument().getLength());
     }
 
     /** Additions by Eric FETTWEIS */
