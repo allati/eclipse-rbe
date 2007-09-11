@@ -218,8 +218,8 @@ public class Bundle extends Model implements IBundleVisitable {
      * Gets sorted resource bundle keys for this bundle.
      * @return resource bundle keys
      */
-    public Set getKeys() {
-        Set keys = new TreeSet();
+    public Set<String> getKeys() {
+        Set<String> keys = new TreeSet<String>();
         keys.addAll(entries.keySet());
         return keys;
         //        return Collections.unmodifiableSet(keys);

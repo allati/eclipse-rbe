@@ -21,8 +21,12 @@
 package com.essiembre.eclipse.rbe.ui.editor.resources;
 
 import java.util.Locale;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -115,6 +119,37 @@ public class SourceEditor {
      */
     public boolean isReadOnly() {
         return ((TextEditor) editor).isEditorInputReadOnly();
+    }
+    
+    public void selectKey(String key) {
+        if (key != null) {				
+            ITextEditor textEditor = getEditor();
+            String editorContent = getContent();
+            Pattern pattern = Pattern.compile("^" + Pattern.quote(key) + ".*$", Pattern.MULTILINE);
+            Matcher matcher = pattern.matcher(editorContent);
+            if (matcher.find()) {
+                int start = matcher.start();
+                textEditor.selectAndReveal(start, 0);
+            }
+        }
+    }
+    
+    public String getCurrentKey() {
+        ITextEditor textEditor = getEditor();
+        if (textEditor.getSelectionProvider().getSelection() instanceof TextSelection) {
+            TextSelection selection = (TextSelection) textEditor.getSelectionProvider().getSelection();
+            int selectionStart = selection.getOffset();
+            String content = getContent();
+            int start = 0, end = 0;
+            
+            // Extract the bounds of the line containing the selection
+            for (start = selectionStart; start > 0 && content.charAt(start-1) != '\n'; start--);
+            for (end = start; end < content.length()-1 && content.charAt(end+1) != '=' && content.charAt(end+1) != '\n'; end++);
+            
+            String line = content.substring(start, end+1).trim();
+            return line;
+        }
+        return null;
     }
 
     //TODO add save and revertToSave here (spawning a thread)

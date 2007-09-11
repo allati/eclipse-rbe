@@ -26,12 +26,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.essiembre.eclipse.rbe.model.DeltaEvent;
 import com.essiembre.eclipse.rbe.model.IDeltaListener;
@@ -78,7 +82,7 @@ public class ResourceManager {
             sourceEditors.put(locale, sourceEditor);
             locales.add(locale);
             bundleGroup.addBundle(
-                    locale, PropertiesParser.parse(sourceEditor.getContent())); 
+                    locale, PropertiesParser.parse(sourceEditor.getContent()));			
         }
         bundleGroup.addListener(new IDeltaListener() {
             public void add(DeltaEvent event) {}    // do nothing
@@ -87,7 +91,8 @@ public class ResourceManager {
                 final Bundle bundle = (Bundle) event.receiver();
                 final SourceEditor editor = 
                         (SourceEditor) sourceEditors.get(bundle.getLocale());
-                editor.setContent(PropertiesGenerator.generate(bundle));
+                String editorContent = PropertiesGenerator.generate(bundle);
+                editor.setContent(editorContent);
             }
             public void select(DeltaEvent event) {
             }

@@ -168,12 +168,16 @@ public class I18nPage extends ScrolledComposite {
         int index = entryComposites.indexOf(activeEntry);
         if (index < entryComposites.size()-1)
             entryComposites.get(++index).focusTextBox();
+        else
+            entryComposites.get(0).focusTextBox();
     }
     
     public void focusPreviousBundleEntryComposite() {
         int index = entryComposites.indexOf(activeEntry);
         if (index > 0)
-            entryComposites.get(--index).focusTextBox();		
+            entryComposites.get(--index).focusTextBox();
+        else
+            entryComposites.get(entryComposites.size()-1).focusTextBox();
     }
     
     

@@ -1,6 +1,9 @@
 Here is an overview of changes for each releases:
 
 2007-09-11, nl_carnage:
+- Added selection synchronisation between source editors and bundle editor.
+
+2007-09-11, nl_carnage:
 - Added rudimentary keyboard support for I18nPage: ENTER (+Shift) goes to the next (previous) key,
   TAB (+Shift) goes to the next (previous) BundleEntryComposite
 
