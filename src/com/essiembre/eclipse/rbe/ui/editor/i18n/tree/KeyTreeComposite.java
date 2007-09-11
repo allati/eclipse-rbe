@@ -150,7 +150,7 @@ public class KeyTreeComposite extends Composite {
     public void dispose() {
         waitCursor.dispose();
         defaultCursor.dispose();
-        treeviewerContributor.dispose();
+//        treeviewerContributor.dispose();
         labelProvider.dispose();
         addTextBox.dispose();
         
@@ -239,8 +239,8 @@ public class KeyTreeComposite extends Composite {
                     setVisible(false);
                     keyTree.setUpdater(new GroupedKeyTreeUpdater(
                             RBEPreferences.getKeyGroupSeparator()));
-                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_EXPAND).setEnabled(true);
-                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_COLLAPSE).setEnabled(true);
+//                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_EXPAND).setEnabled(true);
+//                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_COLLAPSE).setEnabled(true);
                     if (RBEPreferences.getKeyTreeExpanded()) {
                         treeViewer.expandAll();
                     }
@@ -259,8 +259,8 @@ public class KeyTreeComposite extends Composite {
                     setCursor(waitCursor);
                     setVisible(false);
                     keyTree.setUpdater(new FlatKeyTreeUpdater());
-                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_EXPAND).setEnabled(false);
-                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_COLLAPSE).setEnabled(false);
+//                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_EXPAND).setEnabled(false);
+//                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_COLLAPSE).setEnabled(false);
                     selectKeyTreeItem(addTextBox.getText());
                     setVisible(true);
                     setCursor(defaultCursor);

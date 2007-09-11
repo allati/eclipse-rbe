@@ -31,6 +31,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
 
 import com.essiembre.eclipse.rbe.model.DeltaEvent;
 import com.essiembre.eclipse.rbe.model.IDeltaListener;
@@ -130,6 +131,7 @@ public class ResourceManager {
     public SourceEditor[] getSourceEditors() {
         return resourcesFactory.getSourceEditors();
     }
+    
     /**
      * Save all dirty editors.
      * @param monitor progress monitor
@@ -187,6 +189,14 @@ public class ResourceManager {
         return (SourceEditor) sourceEditors.get(locale);
     }
     
+    public SourceEditor addSourceEditor(IFile resource, Locale locale) throws PartInitException {
+    	SourceEditor sourceEditor = resourcesFactory.addResource(resource, locale);
+        sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
+        locales.add(locale);
+        bundleGroup.addBundle(
+                locale, PropertiesParser.parse(sourceEditor.getContent())); 
+        return sourceEditor;
+    }
     /**
      * Reloads the properties files (parse them).
      */

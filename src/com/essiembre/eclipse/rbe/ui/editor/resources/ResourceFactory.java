@@ -73,6 +73,14 @@ public abstract class ResourceFactory {
      * @return source editors
      */
     public abstract SourceEditor[] getSourceEditors();
+
+    /**
+     * Adds the given resource to the factory.
+     * 
+     * @param resource The resource to add.
+     * @param locale The locale of the resource.
+     */
+    public abstract SourceEditor addResource(IResource resource, Locale locale) throws PartInitException;
     
     /**
      * Gets a properties file creator.

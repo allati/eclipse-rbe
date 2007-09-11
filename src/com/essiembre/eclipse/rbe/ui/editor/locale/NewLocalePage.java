@@ -33,14 +33,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
+import com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditor;
 import com.essiembre.eclipse.rbe.ui.editor.resources.ResourceManager;
 import com.essiembre.eclipse.rbe.ui.widgets.LocaleSelector;
 
@@ -61,7 +59,8 @@ public class NewLocalePage extends Composite {
      */
     public NewLocalePage(
             final Composite parent, 
-            final ResourceManager resourceManager) {
+            final ResourceManager resourceManager,
+            final ResourceBundleEditor editor) {
         super(parent, SWT.NONE);
         
         setLayout(new GridLayout());
@@ -101,28 +100,34 @@ public class NewLocalePage extends Composite {
         createButton.setLayoutData(gridData);
         createButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
-                Locale locale = localeSelector.getSelectedLocale();
+                final Locale locale = localeSelector.getSelectedLocale();
                 try {
                     // Create the new file
                     try {
                         //TODO add "newPropertiesFile" method to seGroup.
                         final IFile file = 
                                 resourceManager.createPropertiesFile(locale);
-                        final IWorkbenchPage page = PlatformUI.getWorkbench()
-                                .getActiveWorkbenchWindow().getActivePage();
-                        // Open new editor with new locale
-                        getShell().getDisplay().asyncExec(new Runnable() {
-                            public void run() {
-                                try {
-                                    IDE.openEditor(page, file, true);
-                                } catch (PartInitException e) {
-                                    UIUtils.showErrorDialog(getShell(), e,
-                                     "error.newfile.cannotCreate");//$NON-NLS-1$
-                                }
-                            }
-                        });
-                        // Close active editor (prior adding locale)
-                        page.closeEditor(page.getActiveEditor(), true);
+                        Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								editor.addResource(file, locale);
+							}
+						});
+//                        
+//                        final IWorkbenchPage page = PlatformUI.getWorkbench()
+//                                .getActiveWorkbenchWindow().getActivePage();
+//                        // Open new editor with new locale
+//                        getShell().getDisplay().asyncExec(new Runnable() {
+//                            public void run() {
+//                                try {
+//                                    IDE.openEditor(page, file, true);
+//                                } catch (PartInitException e) {
+//                                    UIUtils.showErrorDialog(getShell(), e,
+//                                     "error.newfile.cannotCreate");//$NON-NLS-1$
+//                                }
+//                            }
+//                        });
+//                        // Close active editor (prior adding locale)
+//                        page.closeEditor(page.getActiveEditor(), true);
                     } catch (NullPointerException e) {
                         UIUtils.showErrorDialog(getShell(), e, 
                                 "error.newfile.cannotCreate"); //$NON-NLS-1$

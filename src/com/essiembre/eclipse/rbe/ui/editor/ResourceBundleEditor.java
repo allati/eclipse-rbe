@@ -90,7 +90,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
                 UIUtils.showErrorDialog(
                         getSite().getShell(), e, "error.init.ui"); //$NON-NLS-1$
             }
-                        
+//             resourceMediator.getKeyTree().a           
             setPartName(resourceMediator.getEditorDisplayName());
             setContentDescription(
                     RBEPlugin.getString("editor.content.desc") //$NON-NLS-1$
@@ -145,11 +145,32 @@ public class ResourceBundleEditor extends MultiPageEditorPart
         }
         
         // Add "new locale" page
-        newLocalePage = new NewLocalePage(getContainer(), resourceMediator);
+        newLocalePage = new NewLocalePage(getContainer(), resourceMediator, this);
         index = addPage(newLocalePage);
         setPageText(index, RBEPlugin.getString("editor.new.tab")); //$NON-NLS-1$
         setPageImage(
                 index, UIUtils.getImage(UIUtils.IMAGE_NEW_PROPERTIES_FILE));
+    }
+    
+    public void addResource(IFile resource, Locale locale) {
+    	try {    		
+    		SourceEditor sourceEditor = resourceMediator.addSourceEditor(resource, locale);
+			int index = getPageCount() - 1;
+			addPage(index,
+					sourceEditor.getEditor(), 
+					sourceEditor.getEditor().getEditorInput());
+			setPageText(index, UIUtils.getDisplayName(
+					sourceEditor.getLocale()));
+			setPageImage(index, 
+					UIUtils.getImage(UIUtils.IMAGE_PROPERTIES_FILE));
+			i18nPage.refreshPage();
+			setActivePage(0);
+			sourceEditor.setContent(sourceEditor.getContent()); // re-set the content to trigger dirty state 
+		} catch (PartInitException e) {
+            ErrorDialog.openError(getSite().getShell(), 
+                    "Error creating resource mediaotr.", //$NON-NLS-1$
+                    null, e.getStatus());
+		}
     }
 
     

@@ -22,8 +22,11 @@ package com.essiembre.eclipse.rbe.ui.editor.resources;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IFile;
@@ -43,9 +46,10 @@ import com.essiembre.eclipse.rbe.model.workbench.files.StandardPropertiesFileCre
  */
 public class StandardResourceFactory extends ResourceFactory {
 
-    private final SourceEditor[] sourceEditors;
+    private final Map sourceEditors;
     private final PropertiesFileCreator fileCreator;
     private final String displayName;
+    private final IEditorSite site;
 
     /**
      * Constructor.
@@ -56,7 +60,8 @@ public class StandardResourceFactory extends ResourceFactory {
     protected StandardResourceFactory(IEditorSite site, IFile file) 
              throws CoreException {
         super();
-        List editors = new ArrayList();
+        this.site = site;
+        sourceEditors = new HashMap();
         String bundleName = getBundleName(file);
         String regex = ResourceFactory.getPropertiesFileRegEx(file);
         IResource[] resources = StandardResourceFactory.getResources(file);
@@ -95,11 +100,9 @@ public class StandardResourceFactory extends ResourceFactory {
             SourceEditor sourceEditor = 
                     createEditor(site, resource, locale);
             if (sourceEditor != null) {
-                editors.add(sourceEditor);
+                sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
             }
         }
-        
-        sourceEditors = (SourceEditor[]) editors.toArray(new SourceEditor[] {});
         fileCreator = new StandardPropertiesFileCreator(
                 file.getParent().getFullPath().toString(),
                 bundleName,
@@ -121,7 +124,14 @@ public class StandardResourceFactory extends ResourceFactory {
      *         #getSourceEditors()
      */
     public SourceEditor[] getSourceEditors() {
-        return sourceEditors;
+    	// Java 5 would be better here
+    	SourceEditor[] editors = new SourceEditor[sourceEditors.size()];
+    	int i = 0;
+    	for (Iterator iter = sourceEditors.values().iterator(); iter.hasNext();) {
+			SourceEditor editor = (SourceEditor) iter.next();
+			editors[i++] = editor;
+		}
+        return editors;
     }
 
     /**
@@ -153,4 +163,13 @@ public class StandardResourceFactory extends ResourceFactory {
         }
         return (IResource[]) validResources.toArray(new IResource[]{});
     }
+
+	@Override
+	public SourceEditor addResource(IResource resource, Locale locale) throws PartInitException {
+		if (sourceEditors.containsKey(locale))
+			throw new IllegalArgumentException("ResourceFactory already contains a resource for locale "+locale);
+		SourceEditor editor = createEditor(site, resource, locale);
+		sourceEditors.put(editor.getLocale(), editor);
+		return editor;
+	}
 }

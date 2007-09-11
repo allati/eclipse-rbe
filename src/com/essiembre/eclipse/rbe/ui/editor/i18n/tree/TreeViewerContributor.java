@@ -21,39 +21,36 @@
 package com.essiembre.eclipse.rbe.ui.editor.i18n.tree;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-
-import org.eclipse.jface.dialogs.InputDialog;
-
 import org.eclipse.jface.window.Window;
-
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
-
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import org.eclipse.swt.SWT;
-
+import com.essiembre.eclipse.rbe.RBEPlugin;
 import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
-import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
 import com.essiembre.eclipse.rbe.model.tree.KeyTree;
+import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
 import com.essiembre.eclipse.rbe.model.tree.updater.FlatKeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.GroupedKeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.IncompletionUpdater;
 import com.essiembre.eclipse.rbe.model.tree.updater.KeyTreeUpdater;
 import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
-import com.essiembre.eclipse.rbe.RBEPlugin;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 
 /**
@@ -85,10 +82,10 @@ public class TreeViewerContributor {
 	/** the component which displays the tree.                */
 	private TreeViewer         treeviewer;
     
-	private MenuItem           separator;
+	private Separator          separator;
     
-	/** items for the context menu.                           */
-	private MenuItem[]         menuitems;
+	/** actions for the context menu.                           */
+	private Action[]           actions;
     
 	/** the updater which is used for structural information. */
 	private KeyTreeUpdater     structuralupdater;
@@ -111,7 +108,7 @@ public class TreeViewerContributor {
 	public TreeViewerContributor(KeyTree keytree, TreeViewer viewer) {
 		tree              = keytree;
 		treeviewer        = viewer;
-		menuitems         = new MenuItem[MENU_COUNT];
+		actions           = new Action[MENU_COUNT];
 		mode              = KT_HIERARCHICAL;
         waitcursor        = UIUtils.createCursor(SWT.CURSOR_WAIT);
         defaultcursor     = UIUtils.createCursor(SWT.CURSOR_ARROW);
@@ -121,35 +118,94 @@ public class TreeViewerContributor {
 			structuralupdater = new FlatKeyTreeUpdater();
 		}        
 	}
-
-
-	/**
-	 * Returns the menuitem which is associated with the supplied code.
-	 * 
-	 * @param code   One of the {@link #MENU_COLLAPSE ...} constants declared above.
-	 * 
-	 * @return   The menuitem instance or null in case of an invalid code.
-	 */
-	public MenuItem getMenuItem(int code) {
-		if((code >= 0) && (code < menuitems.length)) {
-			return(menuitems[code]);
-		}
-		return(null);
+	
+	private void buildActions() {
+		actions[MENU_NEW] = new Action () {
+			@Override
+			public void run() {
+				newKey();
+			}
+		};
+		actions[MENU_NEW].setText(RBEPlugin.getString("key.new")); //$NON-NLS-1$
+		
+        actions[MENU_RENAME] = new Action () {
+			@Override
+			public void run() {
+                renameKeyOrGroup();
+			}
+		};
+        actions[MENU_RENAME].setText(RBEPlugin.getString("key.rename")); //$NON-NLS-1$
+        
+        actions[MENU_DELETE] = new Action () {
+			@Override
+			public void run() {
+				deleteKeyOrGroup();
+			}
+		};
+        actions[MENU_DELETE].setText(RBEPlugin.getString("key.delete")); //$NON-NLS-1$
+        
+        actions[MENU_COPY] = new Action () {
+			@Override
+			public void run() {
+				copyKeyOrGroup();
+			}
+		};
+        actions[MENU_COPY].setText(RBEPlugin.getString("key.duplicate")); //$NON-NLS-1$
+        
+        actions[MENU_COMMENT] = new Action () {
+			@Override
+			public void run() {
+				commentKey();
+			}
+		};
+        actions[MENU_COMMENT].setText(RBEPlugin.getString("key.comment")); //$NON-NLS-1$
+        
+        actions[MENU_UNCOMMENT] = new Action () {
+			@Override
+			public void run() {
+				uncommentKey();
+			}
+		};
+        actions[MENU_UNCOMMENT].setText(
+                RBEPlugin.getString("key.uncomment")); //$NON-NLS-1$
+        
+        separator = new Separator();
+      
+        actions[MENU_EXPAND] = new Action () {
+			@Override
+			public void run() {
+				treeviewer.expandAll();
+			}
+		};
+        actions[MENU_EXPAND].setText(RBEPlugin.getString("key.expandAll")); //$NON-NLS-1$
+        
+        actions[MENU_COLLAPSE] = new Action () {
+			@Override
+			public void run() {
+        		treeviewer.collapseAll();
+			}
+		};
+        actions[MENU_COLLAPSE].setText(RBEPlugin.getString("key.collapseAll")); //$NON-NLS-1$
 	}
 	
-	
-	/**
-	 * Releases all associated resources.
-	 */
-	public void dispose() {
-		for(int i = 0; i < menuitems.length; i++) {
-			menuitems[i].dispose();
-		}
-		separator.dispose();
-		waitcursor.dispose();
-		defaultcursor.dispose();		
+	private void fillMenu(IMenuManager manager) {
+	    KeyTreeItem selectedItem = getSelection();
+		manager.add(actions[MENU_NEW]);
+		manager.add(actions[MENU_RENAME]);
+		actions[MENU_RENAME].setEnabled(selectedItem != null);
+		manager.add(actions[MENU_DELETE]);
+		actions[MENU_DELETE].setEnabled(selectedItem != null);
+		manager.add(actions[MENU_COPY]);
+		actions[MENU_COPY].setEnabled(selectedItem != null);
+		manager.add(actions[MENU_COMMENT]);
+		actions[MENU_COMMENT].setEnabled(selectedItem != null);
+		manager.add(actions[MENU_UNCOMMENT]);
+		actions[MENU_UNCOMMENT].setEnabled(selectedItem != null);
+		manager.add(separator);
+		manager.add(actions[MENU_EXPAND]);
+		manager.add(actions[MENU_COLLAPSE]);
+		
 	}
-	
 	
 	/**
 	 * Creates the menu contribution for the supplied parental component.
@@ -157,78 +213,16 @@ public class TreeViewerContributor {
 	 * @param parent   The component which is receiving the menu.
 	 */
 	public void createControl(Composite parent) {
-		
-        // Add popup menu
-        Menu menu = new Menu (parent);
-
-		menuitems[MENU_NEW] = new MenuItem (menu, SWT.PUSH);
-		menuitems[MENU_NEW].setText(RBEPlugin.getString("key.new")); //$NON-NLS-1$
-		menuitems[MENU_NEW].addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				newKey();
+		buildActions();
+        MenuManager menuManager = new MenuManager();
+        menuManager.setRemoveAllWhenShown(true);
+        menuManager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				fillMenu(manager);
 			}
-		});
-		
-        menuitems[MENU_RENAME] = new MenuItem (menu, SWT.PUSH);
-        menuitems[MENU_RENAME].setText(RBEPlugin.getString("key.rename")); //$NON-NLS-1$
-        menuitems[MENU_RENAME].addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                renameKeyOrGroup();
-            }
         });
         
-        menuitems[MENU_DELETE] = new MenuItem (menu, SWT.PUSH);
-        menuitems[MENU_DELETE].setText(RBEPlugin.getString("key.delete")); //$NON-NLS-1$
-        menuitems[MENU_DELETE].addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                deleteKeyOrGroup();
-            }
-        });
-        
-        menuitems[MENU_COPY] = new MenuItem (menu, SWT.PUSH);
-        menuitems[MENU_COPY].setText(RBEPlugin.getString("key.duplicate")); //$NON-NLS-1$
-        menuitems[MENU_COPY].addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                copyKeyOrGroup();
-            }
-        });
-        
-        menuitems[MENU_COMMENT] = new MenuItem (menu, SWT.PUSH);
-        menuitems[MENU_COMMENT].setText(RBEPlugin.getString("key.comment")); //$NON-NLS-1$
-        menuitems[MENU_COMMENT].addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                commentKey();
-            }
-        });
-        
-        menuitems[MENU_UNCOMMENT] = new MenuItem (menu, SWT.PUSH);
-        menuitems[MENU_UNCOMMENT].setText(
-                RBEPlugin.getString("key.uncomment")); //$NON-NLS-1$
-        menuitems[MENU_UNCOMMENT].addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                uncommentKey();
-            }
-        });	
-        
-        separator = new MenuItem(menu, SWT.SEPARATOR);
-      
-        menuitems[MENU_EXPAND] = new MenuItem (menu, SWT.PUSH);
-        menuitems[MENU_EXPAND].setText(RBEPlugin.getString("key.expandAll")); //$NON-NLS-1$
-        menuitems[MENU_EXPAND].addSelectionListener(new SelectionAdapter() {
-        	public void widgetSelected(SelectionEvent e) {
-        		treeviewer.expandAll();
-        	}
-        });
-        
-        menuitems[MENU_COLLAPSE] = new MenuItem (menu, SWT.PUSH);
-        menuitems[MENU_COLLAPSE].setText(RBEPlugin.getString("key.collapseAll")); //$NON-NLS-1$
-        menuitems[MENU_COLLAPSE].addSelectionListener(new SelectionAdapter() {
-        	public void widgetSelected(SelectionEvent e) {
-        		treeviewer.collapseAll();
-        	}
-        });
-
-        treeviewer.getTree().setMenu(menu);
+        treeviewer.getTree().setMenu(menuManager.createContextMenu(parent));
 		
 	}
 	
@@ -248,7 +242,7 @@ public class TreeViewerContributor {
 	 */
 	protected void newKey() {
 	    KeyTreeItem selectedItem = getSelection();
-	    String key = selectedItem.getId();
+	    String key = selectedItem != null ? selectedItem.getId() : "";
 	    String msgHead = RBEPlugin.getString("dialog.new.head"); //$NON-NLS-1$
 	    String msgBody = RBEPlugin.getString("dialog.new.body", key); //$NON-NLS-1$
 	    InputDialog dialog = new InputDialog(getShell(), msgHead, msgBody, key, null);

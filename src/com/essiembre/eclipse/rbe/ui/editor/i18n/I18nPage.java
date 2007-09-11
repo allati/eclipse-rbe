@@ -35,6 +35,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 import com.essiembre.eclipse.rbe.model.DeltaEvent;
 import com.essiembre.eclipse.rbe.model.IDeltaListener;
@@ -58,6 +59,7 @@ public class I18nPage extends ScrolledComposite {
     private final KeyTreeComposite keysComposite;
     private final Collection entryComposites = new ArrayList(); 
     private final LocalBehaviour localBehaviour = new LocalBehaviour();
+    private final ScrolledComposite editingComposite;
     
     /*default*/ BundleEntryComposite activeEntry;
     
@@ -75,7 +77,8 @@ public class I18nPage extends ScrolledComposite {
 
         if(RBEPreferences.getNoTreeInEditor()) {
         	keysComposite = null;
-        	createEditingPart(this);
+        	editingComposite = this;
+        	createEditingPart(this);        	
         } else {
         	        // Create screen        
 	        SashForm sashForm = new SashForm(this, SWT.NONE);
@@ -87,7 +90,8 @@ public class I18nPage extends ScrolledComposite {
 		                resourceMediator.getKeyTree());
 	        keysComposite.getTreeViewer().addSelectionChangedListener(localBehaviour);
 	        
-	        createSashRightSide(sashForm);
+	        editingComposite = new ScrolledComposite(sashForm, SWT.V_SCROLL | SWT.H_SCROLL);
+	        createSashRightSide();
 	                
 	        sashForm.setWeights(new int[]{25, 75});
 	        
@@ -115,13 +119,11 @@ public class I18nPage extends ScrolledComposite {
      * Creates right side of main sash form.
      * @param sashForm parent sash form
      */
-    private void createSashRightSide(SashForm sashForm) {
-        ScrolledComposite scrolledComposite =
-                new ScrolledComposite(sashForm, SWT.V_SCROLL | SWT.H_SCROLL);
-        scrolledComposite.setExpandHorizontal(true);
-        scrolledComposite.setExpandVertical(true);
-        scrolledComposite.setSize(SWT.DEFAULT, 100);
-        createEditingPart(scrolledComposite);
+    private void createSashRightSide() {
+        editingComposite.setExpandHorizontal(true);
+        editingComposite.setExpandVertical(true);
+        editingComposite.setSize(SWT.DEFAULT, 100);
+        createEditingPart(editingComposite);
     }
     
     
@@ -132,12 +134,17 @@ public class I18nPage extends ScrolledComposite {
      * @param parent   A container to collect the bundle entry editors.
      */
     private void createEditingPart(ScrolledComposite parent) {
+    	Control[] children = parent.getChildren();
+    	for (int i = 0; i < children.length; i++) {
+			children[i].dispose();
+		}
         Composite rightComposite = new Composite(parent, SWT.BORDER);
         parent.setContent(rightComposite);
         parent.setMinSize(rightComposite.computeSize(
                 SWT.DEFAULT,
                 resourceMediator.getLocales().size() * TEXT_MIN_HEIGHT));
         rightComposite.setLayout(new GridLayout(1, false));
+        entryComposites.clear();
         for (Iterator iter = resourceMediator.getLocales().iterator();
                 iter.hasNext();) {
             Locale locale = (Locale) iter.next();
@@ -169,6 +176,16 @@ public class I18nPage extends ScrolledComposite {
                     (BundleEntryComposite) iter.next();
             entryComposite.refresh(key);
         }
+    }
+    
+    /**
+     * Refreshes the tree and recreates the editing part.
+     */
+    public void refreshPage() {
+    	if (keysComposite != null)
+    		keysComposite.getTreeViewer().refresh(true);
+    	createEditingPart(editingComposite);
+    	editingComposite.layout(true, true);
     }
     
     

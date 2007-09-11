@@ -20,9 +20,9 @@
  */
 package com.essiembre.eclipse.rbe.ui.editor.resources;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.core.resources.IContainer;
@@ -31,6 +31,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
 
 import com.essiembre.eclipse.rbe.model.workbench.files.NLPropertiesFileCreator;
 import com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator;
@@ -43,9 +44,10 @@ import com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator;
  */
 public class NLResourceFactory extends ResourceFactory {
 
-    private final SourceEditor[] sourceEditors;
+    private final Map sourceEditors;
     private final PropertiesFileCreator fileCreator;
     private final String displayName;
+    private final IEditorSite site;
     
     /**
      * Constructor.
@@ -56,7 +58,8 @@ public class NLResourceFactory extends ResourceFactory {
     protected NLResourceFactory(IEditorSite site, IFile file) 
             throws CoreException {
         super();
-        List editors = new ArrayList();
+        this.site = site;
+        sourceEditors = new HashMap();
         String filename = file.getName();
         
         // Locate "nl" directory (if any)
@@ -75,7 +78,7 @@ public class NLResourceFactory extends ResourceFactory {
             IResource resource = nlDir.getParent().findMember(filename);
             SourceEditor sourceEditor = createEditor(site, resource, null);
             if (sourceEditor != null) {
-                editors.add(sourceEditor);
+                sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
             }
             
             // Load "language" matching files in "nl" tree.
@@ -91,7 +94,7 @@ public class NLResourceFactory extends ResourceFactory {
                             langFolder.findMember(filename),
                             new Locale(language));
                     if (sourceEditor != null) {
-                        editors.add(sourceEditor);
+                    	sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
                     }
 
                     // Load "country" matching files in "nl" tree.
@@ -107,7 +110,7 @@ public class NLResourceFactory extends ResourceFactory {
                                     cntryFolder.findMember(filename),
                                     new Locale(language, country));
                             if (sourceEditor != null) {
-                                editors.add(sourceEditor);
+                            	sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
                             }
                             
                             // Load "variant" matching files in "nl" tree.
@@ -122,21 +125,18 @@ public class NLResourceFactory extends ResourceFactory {
                                             new Locale(language, country,
                                                     vrntFolder.getName()));
                                     if (sourceEditor != null) {
-                                        editors.add(sourceEditor);
+                                    	sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
                                     }
                                 }
                             }
                         }
                     }                        
                 }
-            }
-            sourceEditors = 
-                (SourceEditor[]) editors.toArray(new SourceEditor[] {});
+            }            
             fileCreator = 
                 new NLPropertiesFileCreator(nlDir.toString(), filename);
             displayName = filename;
         } else {
-            sourceEditors = new SourceEditor[0];
             fileCreator = null;
             displayName = null;
         }
@@ -155,7 +155,7 @@ public class NLResourceFactory extends ResourceFactory {
      *         .ResourceFactory#getSourceEditors()
      */
     public SourceEditor[] getSourceEditors() {
-        return sourceEditors;
+        return (SourceEditor[]) sourceEditors.values().toArray();
     }
 
     /**
@@ -165,5 +165,14 @@ public class NLResourceFactory extends ResourceFactory {
     public PropertiesFileCreator getPropertiesFileCreator() {
         return fileCreator;
     }
+
+	@Override
+	public SourceEditor addResource(IResource resource, Locale locale) throws PartInitException {
+		if (sourceEditors.containsKey(locale))
+			throw new IllegalArgumentException("ResourceFactory already contains a resource for locale "+locale);
+		SourceEditor editor = createEditor(site, resource, locale);
+		sourceEditors.put(editor.getLocale(), editor);
+		return editor;
+	}
 
 }

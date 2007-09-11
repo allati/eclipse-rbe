@@ -113,7 +113,7 @@ public class ResourceBundleOutline extends ContentOutlinePage {
 	 * {@inheritDoc}
 	 */
 	public void dispose() {
-		contributor.dispose();
+//		contributor.dispose();
 		super.dispose();
 	}
 	
