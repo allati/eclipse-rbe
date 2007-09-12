@@ -352,7 +352,7 @@ public class KeyTreeComposite extends Composite {
 //                }
                 if (element instanceof KeyTreeItem) {
                     KeyTreeItem item = (KeyTreeItem) element;
-                    return item.isSelected();
+                    return item.isVisible();
                 }
                 return true;
 //                String text = filterTextBox.getText();

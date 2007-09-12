@@ -27,6 +27,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.eclipse.jface.viewers.ViewerFilter;
+
 import com.essiembre.eclipse.rbe.model.DeltaEvent;
 import com.essiembre.eclipse.rbe.model.IDeltaListener;
 import com.essiembre.eclipse.rbe.model.Model;
@@ -263,17 +265,29 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
     
     private String filter;
     
+    /**
+     * Returns the key filter that was applied using the last call to {@link #filterKeyItems(String)}
+     * @return The key filter that was applied using the last call to {@link #filterKeyItems(String)}
+     */
     private String getFilter() {
         return filter;
     }
     
+    /**
+     * Filters the key items by applying a substring-check for the given <code>filter</code> string. This information
+     * can be used later in {@link ViewerFilter}s to suppress filtered items. 
+     * @param filter The <code>filter</code> that should be applied to the key items.
+     */
     public void filterKeyItems(String filter) {
         this.filter = filter;
         for (KeyTreeItem item : rootKeyItems) {
-            item.filter(filter);
+            item.applyFilter(filter);
         }
     }
     
+    /**
+     * Resets the filter that is currently used, i.e. makes all key items visible again. 
+     */    
     public void resetFilter() {
         filterKeyItems("");
     }

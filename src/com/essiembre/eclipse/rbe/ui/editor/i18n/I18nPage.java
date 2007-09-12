@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Control;
 
 import com.essiembre.eclipse.rbe.model.DeltaEvent;
 import com.essiembre.eclipse.rbe.model.IDeltaListener;
+import com.essiembre.eclipse.rbe.model.tree.KeyTree;
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
 import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 import com.essiembre.eclipse.rbe.ui.editor.i18n.tree.KeyTreeComposite;
@@ -156,6 +157,11 @@ public class I18nPage extends ScrolledComposite {
         }
     }
     
+    /**
+     * This method focusses the {@link BundleEntryComposite} corresponding to the given {@link Locale}. If no such composite
+     * exists or the locale is null, nothing happens.
+     * @param locale The locale whose {@link BundleEntryComposite} is to be focussed.
+     */
     public void focusBundleEntryComposite(Locale locale) {
         for (BundleEntryComposite bec : entryComposites) {
             if ((bec.getLocale() == null) && (locale == null) || (locale != null && locale.equals(bec.getLocale()))) {
@@ -164,6 +170,9 @@ public class I18nPage extends ScrolledComposite {
         }
     }
     
+    /**
+     * Focusses the next {@link BundleEntryComposite}.
+     */
     public void focusNextBundleEntryComposite() {
         int index = entryComposites.indexOf(activeEntry);
         BundleEntryComposite nextComposite;
@@ -176,6 +185,9 @@ public class I18nPage extends ScrolledComposite {
             focusComposite(nextComposite);
     }
     
+    /**
+     * Focusses the previous {@link BundleEntryComposite}.
+     */
     public void focusPreviousBundleEntryComposite() {
         int index = entryComposites.indexOf(activeEntry);
         BundleEntryComposite nextComposite;
@@ -188,6 +200,11 @@ public class I18nPage extends ScrolledComposite {
             focusComposite(nextComposite);
     }
     
+    /**
+     * Focusses the given {@link BundleEntryComposite} and scrolls the surrounding {@link ScrolledComposite}
+     * in order to make it visible.
+     * @param comp The {@link BundleEntryComposite} to be focussed.
+     */
     private void focusComposite(BundleEntryComposite comp) {
         Point compPos = comp.getLocation();
         Point compSize = comp.getSize();
@@ -200,7 +217,9 @@ public class I18nPage extends ScrolledComposite {
         comp.focusTextBox();
     }
     
-    
+    /**
+     * Selects the next entry in the {@link KeyTree}.
+     */
     public void selectNextTreeEntry() {
         activeEntry.updateBundleOnChanges();
         String nextKey = resourceMediator.getBundleGroup().getNextKey(getSelectedKey());
@@ -212,6 +231,9 @@ public class I18nPage extends ScrolledComposite {
         focusBundleEntryComposite(currentLocale);
     }
     
+    /**
+     * Selects the previous entry in the {@link KeyTree}.
+     */
     public void selectPreviousTreeEntry() {
         activeEntry.updateBundleOnChanges();
         String prevKey = resourceMediator.getBundleGroup().getPreviousKey(getSelectedKey());

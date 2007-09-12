@@ -160,6 +160,9 @@ public class KeyTreeItem implements Comparable<KeyTreeItem>, IKeyTreeVisitable {
         visitor.visitKeyTreeItem(this, passAlongArgument);
     }
 
+    /**
+     * Returns a hash code of this node.
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -168,6 +171,9 @@ public class KeyTreeItem implements Comparable<KeyTreeItem>, IKeyTreeVisitable {
         return result;
     }
 
+    /**
+     * Returns whether this node is equal to the given object.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -185,33 +191,36 @@ public class KeyTreeItem implements Comparable<KeyTreeItem>, IKeyTreeVisitable {
         return true;
     }
     
-    private boolean selected = true;
-    public boolean filter(String filter) {
-//        if (id.indexOf(filter) != -1) {
-//            selected = true;
-//            return true;
-//        }
-//        for (KeyTreeItem child : children) {
-//            if (child.filter(filter)) {
-//                selected = true;
-//                return true;
-//            }
-//        }
-//        selected = false;
-//        return false;
-        selected = false;
+    private boolean visible = true;
+    
+    /**
+     * Returns whether this node while be visible under the given <code>filter</code> string. To determine this, 
+     * a simple substring-check on the id is applied.<br />
+     * A node is marked visible if either its <code>id</code> contains the filter string or at least one of its child
+     * nodes is visible. The visibility information is saved until the next call to {@link #applyFilter(String)} and can
+     * be retrieved using {@link #isVisible()}.
+     * 
+     * @param filter The string to be searched in the id. 
+     * @return A boolean indicating whether this node will be visible under the given filter.
+     */
+    public boolean applyFilter(String filter) {
+        visible = false;
         if (id.indexOf(filter) != -1) {
-            selected = true;
+            visible = true;
         }
         for (KeyTreeItem child : children) {
-            if (child.filter(filter)) {
-                selected = true;
+            if (child.applyFilter(filter)) {
+                visible = true;
             }
         }
-        return selected;
+        return visible;
     }
     
-    public boolean isSelected() {
-        return selected;
+    /**
+     * Returns whether this node is visible under the current filter, that was applied using {@link #applyFilter(String)}.
+     * @return A boolean indicating this node is visible under the current filter, that was applied using {@link #applyFilter(String)}.
+     */
+    public boolean isVisible() {
+        return visible;
     }
 }

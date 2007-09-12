@@ -51,7 +51,6 @@ import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -578,27 +577,6 @@ public class BundleEntryComposite extends Composite {
                         return;
                     }                        
                 }                
-                
-//                if (event.character == SWT.TAB && !RBEPreferences.getFieldTabInserts()) {
-//                    event.doit = true;
-//                    event.detail = SWT.TRAVERSE_NONE;
-//                    if (event.stateMask == 0)
-//                        page.focusNextBundleEntryComposite();
-//                    else if (event.stateMask == SWT.SHIFT)
-//                        page.focusPreviousBundleEntryComposite();
-//                } else if (event.character == SWT.CR) {
-//                    if (event.stateMask == SWT.CTRL) {
-//                        event.doit = false;						
-//                    } else if (event.stateMask == 0) {
-//                        event.doit = true;
-//                        event.detail = SWT.TRAVERSE_NONE;
-//                        page.selectNextTreeEntry();
-//                    } else if (event.stateMask == SWT.SHIFT) {
-//                        event.doit = true;
-//                        event.detail = SWT.TRAVERSE_NONE;
-//                        page.selectPreviousTreeEntry();
-//                    }
-//                } 
             }
         });
 
@@ -619,9 +597,7 @@ public class BundleEntryComposite extends Composite {
                         // we wait until field focus lost (or save) to 
                         // update it completely.
                         if (!editor.isDirty()) {
-//                            int caretPosition = eventBox.getSelection().x;
                             updateBundleOnChanges();
-//                            eventBox.setSelection(caretPosition);
                         }
                         //autoDetectRequiredFont(eventBox.getText());
                     }
@@ -650,11 +626,6 @@ public class BundleEntryComposite extends Composite {
         return (event.keyCode == keyCode && event.stateMask == modifier1);
     }
     
-    private static boolean isKeyCombination(KeyEvent event, int modifier1, int modifier2, int keyCode) {
-        return (event.keyCode == keyCode && event.stateMask == (modifier1 & modifier2));
-    }
-
-
     /**
      * Loads country icon based on locale country.
      * @param countryLocale the locale on which to grab the country
