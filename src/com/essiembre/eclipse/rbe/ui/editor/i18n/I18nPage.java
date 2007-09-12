@@ -159,7 +159,6 @@ public class I18nPage extends ScrolledComposite {
         for (BundleEntryComposite bec : entryComposites) {
             if ((bec.getLocale() == null) && (locale == null) || (locale != null && locale.equals(bec.getLocale()))) {
                 bec.focusTextBox();
-                return;
             }
         }
     }

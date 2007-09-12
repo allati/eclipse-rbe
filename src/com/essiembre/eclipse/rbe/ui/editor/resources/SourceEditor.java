@@ -21,7 +21,6 @@
 package com.essiembre.eclipse.rbe.ui.editor.resources;
 
 import java.util.Locale;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -38,7 +38,6 @@ import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.TextViewerUndoManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -58,8 +57,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
@@ -555,29 +552,52 @@ public class BundleEntryComposite extends Composite {
                 updateBundleOnChanges();
             }
         });
-        //TODO add a preference property listener and add/remove this listener
+
         textBox.addTraverseListener(new TraverseListener() {
             public void keyTraversed(TraverseEvent event) {
-                if (event.character == SWT.TAB && !RBEPreferences.getFieldTabInserts()) {
+                if (event.detail == SWT.TRAVERSE_TAB_NEXT) {
+                    page.focusNextBundleEntryComposite();
                     event.doit = true;
                     event.detail = SWT.TRAVERSE_NONE;
-                    if (event.stateMask == 0)
-                        page.focusNextBundleEntryComposite();
-                    else if (event.stateMask == SWT.SHIFT)
-                        page.focusPreviousBundleEntryComposite();
-                } else if (event.character == SWT.CR) {
-                    if (event.stateMask == SWT.CTRL) {
-                        event.doit = false;						
-                    } else if (event.stateMask == 0) {
-                        event.doit = true;
-                        event.detail = SWT.TRAVERSE_NONE;
+                } else if (event.detail == SWT.TRAVERSE_TAB_PREVIOUS) {
+                    page.focusPreviousBundleEntryComposite();
+                    event.doit = true;
+                    event.detail = SWT.TRAVERSE_NONE;
+                } else if (event.detail == SWT.TRAVERSE_RETURN) {
+                    if (event.stateMask == 0) {
                         page.selectNextTreeEntry();
-                    } else if (event.stateMask == SWT.SHIFT) {
                         event.doit = true;
                         event.detail = SWT.TRAVERSE_NONE;
+                    } else if (event.stateMask == SWT.SHIFT) {
                         page.selectPreviousTreeEntry();
-                    }
-                } 
+                        event.doit = true;
+                        event.detail = SWT.TRAVERSE_NONE;
+                    } else if (event.stateMask == SWT.CTRL) {
+                        event.doit = false;
+                        return;
+                    }                        
+                }                
+                
+//                if (event.character == SWT.TAB && !RBEPreferences.getFieldTabInserts()) {
+//                    event.doit = true;
+//                    event.detail = SWT.TRAVERSE_NONE;
+//                    if (event.stateMask == 0)
+//                        page.focusNextBundleEntryComposite();
+//                    else if (event.stateMask == SWT.SHIFT)
+//                        page.focusPreviousBundleEntryComposite();
+//                } else if (event.character == SWT.CR) {
+//                    if (event.stateMask == SWT.CTRL) {
+//                        event.doit = false;						
+//                    } else if (event.stateMask == 0) {
+//                        event.doit = true;
+//                        event.detail = SWT.TRAVERSE_NONE;
+//                        page.selectNextTreeEntry();
+//                    } else if (event.stateMask == SWT.SHIFT) {
+//                        event.doit = true;
+//                        event.detail = SWT.TRAVERSE_NONE;
+//                        page.selectPreviousTreeEntry();
+//                    }
+//                } 
             }
         });
 
@@ -589,23 +609,21 @@ public class BundleEntryComposite extends Composite {
                     undoManager.redo();
                 } else if (isKeyCombination(event, SWT.CTRL, 'a')) {
                     textViewer.setSelectedRange(0, textViewer.getDocument().getLength());
-                }
-                
-                StyledText eventBox = (StyledText) event.widget;
-                final ITextEditor editor = resourceManager.getSourceEditor(
-                        locale).getEditor();
-                // Text field has changed: make editor dirty if not already
-                if (textBeforeUpdate != null 
-                        && !textBeforeUpdate.equals(eventBox.getText())) {
-                    // Make the editor dirty if not already.  If it is, 
-                    // we wait until field focus lost (or save) to 
-                    // update it completely.
-                    if (!editor.isDirty()) {
-                        int caretPosition = eventBox.getSelection().x;
-                        updateBundleOnChanges();
-                        eventBox.setSelection(caretPosition);
+                } else {                    
+                    StyledText eventBox = (StyledText) event.widget;
+                    final ITextEditor editor = resourceManager.getSourceEditor(locale).getEditor();
+                    // Text field has changed: make editor dirty if not already
+                    if (textBeforeUpdate != null && !textBeforeUpdate.equals(eventBox.getText())) {
+                        // Make the editor dirty if not already.  If it is, 
+                        // we wait until field focus lost (or save) to 
+                        // update it completely.
+                        if (!editor.isDirty()) {
+//                            int caretPosition = eventBox.getSelection().x;
+                            updateBundleOnChanges();
+//                            eventBox.setSelection(caretPosition);
+                        }
+                        //autoDetectRequiredFont(eventBox.getText());
                     }
-                    //autoDetectRequiredFont(eventBox.getText());
                 }
             }
         });
