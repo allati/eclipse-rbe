@@ -29,6 +29,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -92,6 +94,8 @@ public class KeyTreeComposite extends Composite {
 
     /** Contributes menu items to the tree viewer. */
     private TreeViewerContributor  treeviewerContributor;
+    
+    private Text filterTextBox;
     
     /**
      * Constructor.
@@ -200,24 +204,43 @@ public class KeyTreeComposite extends Composite {
      */
     private void createTopSection() {
         Composite topComposite = new Composite(this, SWT.NONE);
-        GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
+        GridLayout gridLayout = new GridLayout(2, false);
         gridLayout.horizontalSpacing = 0;
         gridLayout.verticalSpacing = 0;
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
         topComposite.setLayout(gridLayout);
-        GridData gridData = new GridData();
-        gridData.horizontalAlignment = GridData.END;
-        gridData.verticalAlignment = GridData.CENTER;
-        gridData.grabExcessHorizontalSpace = true;
-        topComposite.setLayoutData(gridData);
+        topComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
-        final Button hierModeButton = new Button(topComposite, SWT.TOGGLE);
+        filterTextBox = new Text(topComposite, SWT.BORDER);
+//        filterTextBox.setText("");
+        filterTextBox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        filterTextBox.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                keyTree.filterKeyItems(filterTextBox.getText());
+                treeViewer.refresh();
+                treeViewer.expandAll();
+            }
+        });
+        
+        Composite topRightComposite = new Composite(topComposite, SWT.NONE);
+        gridLayout = new GridLayout(2, false);
+        gridLayout.horizontalSpacing = 0;
+        gridLayout.verticalSpacing = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.marginHeight = 0;
+        topRightComposite.setLayout(gridLayout);
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.horizontalAlignment = GridData.END;
+//        gridData.verticalAlignment = GridData.CENTER;
+//        gridData.grabExcessHorizontalSpace = true;
+        topRightComposite.setLayoutData(gridData);
+        
+        final Button hierModeButton = new Button(topRightComposite, SWT.TOGGLE);
         hierModeButton.setImage(treeToggleImage);
         hierModeButton.setToolTipText(
                 RBEPlugin.getString("key.layout.tree")); //$NON-NLS-1$
-        final Button flatModeButton = new Button(topComposite, SWT.TOGGLE);
+        final Button flatModeButton = new Button(topRightComposite, SWT.TOGGLE);
         flatModeButton.setImage(flatToggleImage);
         flatModeButton.setToolTipText(
                 RBEPlugin.getString("key.layout.flat")); //$NON-NLS-1$
@@ -237,8 +260,7 @@ public class KeyTreeComposite extends Composite {
                     hierModeButton.setEnabled(false);
                     setCursor(waitCursor);
                     setVisible(false);
-                    keyTree.setUpdater(new GroupedKeyTreeUpdater(
-                            RBEPreferences.getKeyGroupSeparator()));
+                    keyTree.setUpdater(new GroupedKeyTreeUpdater(RBEPreferences.getKeyGroupSeparator()));
 //                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_EXPAND).setEnabled(true);
 //                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_COLLAPSE).setEnabled(true);
                     if (RBEPreferences.getKeyTreeExpanded()) {
@@ -263,7 +285,7 @@ public class KeyTreeComposite extends Composite {
 //                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_COLLAPSE).setEnabled(false);
                     selectKeyTreeItem(addTextBox.getText());
                     setVisible(true);
-                    setCursor(defaultCursor);
+                    setCursor(defaultCursor);                    
                 }
             }
         });
@@ -280,8 +302,7 @@ public class KeyTreeComposite extends Composite {
         gridData.horizontalAlignment = GridData.FILL;
         gridData.grabExcessHorizontalSpace = true;
 
-        treeViewer = new TreeViewer(this,
-                SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+        treeViewer = new TreeViewer(this, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         treeViewer.setContentProvider(new KeyTreeContentProvider());
         labelProvider = new KeyTreeLabelProvider();
         treeViewer.setLabelProvider(labelProvider);
@@ -320,6 +341,30 @@ public class KeyTreeComposite extends Composite {
                 }
             }
         });
+        
+        ViewerFilter filter = new ViewerFilter() {
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+//                if (parentElement instanceof KeyTreeItem) {
+//                    KeyTreeItem parent = (KeyTreeItem) parentElement;
+//                    if (parent.isSelected())
+//                        return true;
+//                }
+                if (element instanceof KeyTreeItem) {
+                    KeyTreeItem item = (KeyTreeItem) element;
+                    return item.isSelected();
+                }
+                return true;
+//                String text = filterTextBox.getText();
+//                if (element instanceof KeyTreeItem) {
+//                    KeyTreeItem item = (KeyTreeItem) element;
+//                    if (item.getId().indexOf(text) != -1)
+//                        return true;
+//                }
+//                return true;
+            }
+        };
+        treeViewer.addFilter(filter);
         
         treeviewerContributor = new TreeViewerContributor(keyTree, treeViewer);
         treeviewerContributor.createControl(this);

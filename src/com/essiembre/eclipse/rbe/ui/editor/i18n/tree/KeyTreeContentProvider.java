@@ -104,7 +104,6 @@ public class KeyTreeContentProvider implements
      */
     public void add(DeltaEvent event) {
         treeViewer.refresh(true);
-        
     }
 
     /**

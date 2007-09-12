@@ -217,7 +217,7 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
         this.updater = updater;
         keyItemsCache.clear();
         rootKeyItems.clear();
-        load();
+        load();        
     }
 
     /**
@@ -255,6 +255,26 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
              */
             updater.addKey(this, (String) iter.next());
         }
+        if (getFilter() != null)
+            filterKeyItems(getFilter());
+        
         fireAdd(this);
+    }
+    
+    private String filter;
+    
+    private String getFilter() {
+        return filter;
+    }
+    
+    public void filterKeyItems(String filter) {
+        this.filter = filter;
+        for (KeyTreeItem item : rootKeyItems) {
+            item.filter(filter);
+        }
+    }
+    
+    public void resetFilter() {
+        filterKeyItems("");
     }
 }

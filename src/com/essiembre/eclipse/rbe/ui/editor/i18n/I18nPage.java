@@ -33,6 +33,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -165,18 +166,38 @@ public class I18nPage extends ScrolledComposite {
     
     public void focusNextBundleEntryComposite() {
         int index = entryComposites.indexOf(activeEntry);
+        BundleEntryComposite nextComposite;
         if (index < entryComposites.size()-1)
-            entryComposites.get(++index).focusTextBox();
+            nextComposite = entryComposites.get(++index);
         else
-            entryComposites.get(0).focusTextBox();
+            nextComposite = entryComposites.get(0);
+        
+        if (nextComposite != null)
+            focusComposite(nextComposite);
     }
     
     public void focusPreviousBundleEntryComposite() {
         int index = entryComposites.indexOf(activeEntry);
+        BundleEntryComposite nextComposite;
         if (index > 0)
-            entryComposites.get(--index).focusTextBox();
+            nextComposite = entryComposites.get(--index);
         else
-            entryComposites.get(entryComposites.size()-1).focusTextBox();
+            nextComposite = entryComposites.get(entryComposites.size()-1);
+        
+        if (nextComposite != null)
+            focusComposite(nextComposite);
+    }
+    
+    private void focusComposite(BundleEntryComposite comp) {
+        Point compPos = comp.getLocation();
+        Point compSize = comp.getSize();
+        Point size = editingComposite.getSize();
+        Point origin = editingComposite.getOrigin();
+        if (compPos.y + compSize.y > size.y + origin.y)
+            editingComposite.setOrigin(origin.x, origin.y + (compPos.y+compSize.y) - (origin.y+size.y) + 5);
+        else if (compPos.y < origin.y)
+            editingComposite.setOrigin(origin.x, compPos.y);
+        comp.focusTextBox();
     }
     
     

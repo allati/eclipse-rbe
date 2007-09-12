@@ -51,6 +51,7 @@ import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -695,7 +696,7 @@ public class BundleEntryComposite extends Composite {
         textBox.setFocus();
         textViewer.setSelectedRange(0, textViewer.getDocument().getLength());
     }
-
+    
     /** Additions by Eric FETTWEIS */
     /*private void autoDetectRequiredFont(String value) {
     Font f = getFont();

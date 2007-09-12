@@ -184,6 +184,34 @@ public class KeyTreeItem implements Comparable<KeyTreeItem>, IKeyTreeVisitable {
             return false;
         return true;
     }
-
     
+    private boolean selected = true;
+    public boolean filter(String filter) {
+//        if (id.indexOf(filter) != -1) {
+//            selected = true;
+//            return true;
+//        }
+//        for (KeyTreeItem child : children) {
+//            if (child.filter(filter)) {
+//                selected = true;
+//                return true;
+//            }
+//        }
+//        selected = false;
+//        return false;
+        selected = false;
+        if (id.indexOf(filter) != -1) {
+            selected = true;
+        }
+        for (KeyTreeItem child : children) {
+            if (child.filter(filter)) {
+                selected = true;
+            }
+        }
+        return selected;
+    }
+    
+    public boolean isSelected() {
+        return selected;
+    }
 }
