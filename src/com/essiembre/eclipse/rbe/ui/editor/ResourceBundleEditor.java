@@ -21,11 +21,7 @@
 package com.essiembre.eclipse.rbe.ui.editor;
 
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -34,6 +30,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -41,12 +38,9 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.MultiPageEditorPart;
-import org.eclipse.ui.part.Page;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
@@ -309,21 +303,27 @@ public class ResourceBundleEditor extends MultiPageEditorPart
         return resourceMediator.isResource(file);
     }
 
-    private void closeIfAreadyOpen(IEditorSite site, IFile file) {
-        IWorkbenchPage[] pages = site.getWorkbenchWindow().getPages();
-        for (int i = 0; i < pages.length; i++) {
-            IWorkbenchPage page = pages[i];
-            IEditorReference[] editors = page.getEditorReferences();
-            for (int j = 0; j < editors.length; j++) {
-                IEditorPart editor = editors[j].getEditor(false);
-                if (editor instanceof ResourceBundleEditor) {
-                    ResourceBundleEditor rbe = (ResourceBundleEditor) editor;
-                    if (rbe.isBundleMember(file)) {
-                        page.closeEditor(editor, true);
-                    }
-                }
-            }
-        }
+    private void closeIfAreadyOpen(final IEditorSite site, final IFile file) {
+    	IWorkbenchPage[] pages = site.getWorkbenchWindow().getPages();
+    	for (int i = 0; i < pages.length; i++) {
+    		final IWorkbenchPage page = pages[i];
+    		IEditorReference[] editors = page.getEditorReferences();
+    		for (int j = 0; j < editors.length; j++) {
+    			final IEditorPart editor = editors[j].getEditor(false);
+    			if (editor instanceof ResourceBundleEditor) {
+    				ResourceBundleEditor rbe = (ResourceBundleEditor) editor;
+    				if (rbe.isBundleMember(file)) {
+    					// putting the close operation into the queue
+    					// closing during opening caused errors.
+    					Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+		    					page.closeEditor(editor, true);
+							}
+						});
+    				}
+    			}
+    		}
+    	}
     }
 
     

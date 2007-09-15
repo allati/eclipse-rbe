@@ -53,6 +53,14 @@ public final class RBEPreferences {
     /** Should Eclipse "nl" directory structure be supported. */
     public static final String SUPPORT_NL = "supportNL"; //$NON-NLS-1$
 
+    /** Should resources also be loaded from fragments. */
+    public static final String SUPPORT_FRAGMENTS = "supportFragments"; //$NON-NLS-1$
+    /** 
+     * Load only fragment resources when loading from fragments.
+     * The default bundle is mostly located in the host plug-in. 
+     */
+    public static final String LOAD_ONLY_FRAGMENT_RESOURCES = "loadOnlyFragmentResources";
+    
     /** Should tab characters be inserted when tab key pressed on text field. */
     public static final String FIELD_TAB_INSERTS = 
             "fieldTabInserts"; //$NON-NLS-1$
@@ -245,6 +253,22 @@ public final class RBEPreferences {
      */
     public static boolean getSupportNL() {
         return PREFS.getBoolean(SUPPORT_NL);
+    }
+    
+    /**
+     * Gets whether to support resources found in fragments.
+     * @return <code>true</code> if supported
+     */
+    public static boolean getLoadOnlyFragmentResources() {
+        return PREFS.getBoolean(LOAD_ONLY_FRAGMENT_RESOURCES);
+    }
+    
+    /**
+     * Gets whether to support resources found in fragments.
+     * @return <code>true</code> if supported
+     */
+    public static boolean getSupportFragments() {
+        return PREFS.getBoolean(SUPPORT_FRAGMENTS);
     }
     
     /**

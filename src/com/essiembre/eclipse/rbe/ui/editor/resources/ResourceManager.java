@@ -57,7 +57,7 @@ import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
  */
 public class ResourceManager {
 
-    private ResourceFactory resourcesFactory;
+    private IResourceFactory resourcesFactory;
     private final BundleGroup bundleGroup;
     private final KeyTree keyTree;
     /** key=Locale;value=SourceEditor */

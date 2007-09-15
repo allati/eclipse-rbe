@@ -45,6 +45,8 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
     private Button convertEncodedToUnicode;
 
     private Button supportNL;
+    private Button supportFragments;
+    private Button loadOnlyFragmentResources;
     
     private Button keyTreeHierarchical;
     private Button keyTreeExpanded;
@@ -93,6 +95,20 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage  {
         supportNL.setSelection(prefs.getBoolean(RBEPreferences.SUPPORT_NL));
         new Label(field, SWT.NONE).setText(
                 RBEPlugin.getString("prefs.supportNL")); //$NON-NLS-1$
+
+        // Support loading resources from fragment 
+        field = createFieldComposite(composite);
+        supportFragments = new Button(field, SWT.CHECK);
+        supportFragments.setSelection(RBEPreferences.getSupportFragments());
+        new Label(field, SWT.NONE).setText(
+        		RBEPlugin.getString("prefs.supportFragments")); //$NON-NLS-1$
+        
+        // Support loading resources from fragment 
+        field = createFieldComposite(composite);
+        loadOnlyFragmentResources = new Button(field, SWT.CHECK);
+        loadOnlyFragmentResources.setSelection(RBEPreferences.getLoadOnlyFragmentResources());
+        new Label(field, SWT.NONE).setText(
+        		RBEPlugin.getString("prefs.loadOnlyFragmentResources")); //$NON-NLS-1$
         
         // Default key tree mode (tree vs flat)
         field = createFieldComposite(composite);

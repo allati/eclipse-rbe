@@ -53,6 +53,8 @@ public class RBEPreferenceInitializer extends
         prefs.setDefault(RBEPreferences.FIELD_TAB_INSERTS, true);
         prefs.setDefault(RBEPreferences.KEY_TREE_HIERARCHICAL, true);
         prefs.setDefault(RBEPreferences.KEY_TREE_EXPANDED, true);
+        prefs.setDefault(RBEPreferences.SUPPORT_FRAGMENTS, true);
+        prefs.setDefault(RBEPreferences.LOAD_ONLY_FRAGMENT_RESOURCES, false);
         
         //Formatting
         prefs.setDefault(RBEPreferences.CONVERT_UNICODE_TO_ENCODED, true);

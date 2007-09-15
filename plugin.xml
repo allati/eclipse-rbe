@@ -25,6 +25,8 @@
       <import plugin="org.eclipse.ui.views"/>
    </requires>
 
+   <extension-point id="resourceFactory" name="resourceFactory" schema="schema/resourceFactory.exsd"/>
+
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -88,6 +90,22 @@
       <initializer
             class="com.essiembre.eclipse.rbe.ui.preferences.RBEPreferenceInitializer">
       </initializer>
+   </extension>
+
+   <extension
+         point="com.essiembre.eclipse.i18n.resourcebundle.resourceFactory">
+      <factory
+            class="com.essiembre.eclipse.rbe.ui.editor.resources.StandardResourceFactory"
+            order="9999">
+      </factory>
+      <factory
+            class="com.essiembre.eclipse.rbe.ui.editor.resources.FragmentResourceFactory"
+            order="1">
+      </factory>
+      <factory
+            class="com.essiembre.eclipse.rbe.ui.editor.resources.NLResourceFactory"
+            order="2">
+      </factory>
    </extension>
 
 </plugin>

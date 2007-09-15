@@ -20,7 +20,15 @@
  */
 package com.essiembre.eclipse.rbe.ui.editor.resources;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.core.resources.IContainer;
@@ -40,10 +48,15 @@ import com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator;
 
 /**
  * Responsible for creating resources related to a given file structure.
+ * <p>
+ * This class is also the abstract base class for implementations of 
+ * a {@link ResourceFactory} as well as static entry point to access
+ * the responsible one.
+ * </p>
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-public abstract class ResourceFactory {
+public abstract class ResourceFactory implements IResourceFactory {
 
     /** Class name of Properties file editor (Eclipse 3.1). */
     protected static final String PROPERTIES_EDITOR_CLASS_NAME = 
@@ -62,46 +75,210 @@ public abstract class ResourceFactory {
           + "|(_[a-z]{2,3}_[A-Z]{2}_\\w*))?(\\." //$NON-NLS-1$
           + TOKEN_FILE_EXTENSION + ")$"; //$NON-NLS-1$
     
-    /**
-     * Gets the editor display name.
-     * @return editor display name
-     */
-    public abstract String getEditorDisplayName();
-    
-    /**
-     * Gets the source editors associated with this RBE.
-     * @return source editors
-     */
-    public abstract SourceEditor[] getSourceEditors();
 
-    /**
-     * Adds the given resource to the factory.
-     * 
-     * @param resource The resource to add.
-     * @param locale The locale of the resource.
+    /*
+     * Common members of ResourceFactories
      */
-    public abstract SourceEditor addResource(IResource resource, Locale locale) throws PartInitException;
     
     /**
-     * Gets a properties file creator.
-     * @return properties file creator
+     * A sorted map of {@link SourceEditor}s.
+     * Sorted by key (Locale).
      */
-    public abstract PropertiesFileCreator getPropertiesFileCreator();
+    private Map sourceEditors = new TreeMap(new Comparator() {
+		@Override
+		public int compare(Object obj1, Object obj2) {
+			if ((obj1 instanceof Locale) && (obj2 instanceof Locale)) {
+				return ((Locale) obj1).getDisplayName().compareTo(((Locale) obj2).getDisplayName());
+			}
+			return 1;
+		}
+    });
+    	
+    /**
+     * The {@link PropertiesFileCreator} used to create new files.
+     */
+    private PropertiesFileCreator propertiesFileCreator;
+    /**
+     * The associated editor site.
+     */
+    private IEditorSite site;
+    /**
+     * The displayname
+     */
+    private String displayName;
+    
+    /* (non-Javadoc)
+	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getEditorDisplayName()
+	 */
+    public String getEditorDisplayName() {
+    	return displayName;
+    }
+    /**
+     * Sets the editor display name of this factory.
+     * @param displayName The display name to set.
+     * @see #getEditorDisplayName()
+     */
+    protected void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+    
+    /* (non-Javadoc)
+	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getSourceEditors()
+	 */
+    public SourceEditor[] getSourceEditors() {
+    	SourceEditor[] editors = new SourceEditor[sourceEditors.values().size()];
+    	int i = 0;
+    	for (Iterator it = sourceEditors.values().iterator(); it.hasNext();) {
+			Object obj = it.next();
+			if (obj instanceof SourceEditor) {
+				editors[i] = (SourceEditor) obj;
+			}
+			i++;
+		}
+        return editors;
+    }
+
+    /* (non-Javadoc)
+	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#addResource(org.eclipse.core.resources.IResource, java.util.Locale)
+	 */
+    public SourceEditor addResource(IResource resource, Locale locale) throws PartInitException {
+        if (sourceEditors.containsKey(locale))
+            throw new IllegalArgumentException("ResourceFactory already contains a resource for locale "+locale);
+        SourceEditor editor = createEditor(site, resource, locale);
+        addSourceEditor(editor.getLocale(), editor);
+        return editor;
+    }
+    
+	protected void addSourceEditor(Locale locale, SourceEditor sourceEditor) {
+		sourceEditors.put(locale, sourceEditor);
+	}
+
+	protected void setSite(IEditorSite site) {
+		this.site = site;
+	}
+	protected IEditorSite getSite() {
+		return site;
+	}
+    /* (non-Javadoc)
+	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getPropertiesFileCreator()
+	 */
+    public PropertiesFileCreator getPropertiesFileCreator() {
+    	return propertiesFileCreator;
+    }
+    protected void setPropertiesFileCreator(PropertiesFileCreator fileCreator) {
+    	this.propertiesFileCreator = fileCreator;
+    }
+    
+    
+    /* (non-Javadoc)
+	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#isResponsible(org.eclipse.core.resources.IFile)
+	 */
+    public abstract boolean isResponsible(IFile file) throws CoreException;
+    
+    /* (non-Javadoc)
+	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#init(org.eclipse.ui.IEditorSite, org.eclipse.core.resources.IFile)
+	 */
+    public abstract void init(IEditorSite site, IFile file) throws CoreException;
+    
+    
+//    /**
+//     * Creates a resource factory based on given arguments.
+//     * @param site eclipse editor site
+//     * @param file file used to create factory
+//     * @return resource factory
+//     * @throws CoreException problem creating factory
+//     */
+//    public static ResourceFactory createFactory(IEditorSite site, IFile file)
+//            throws CoreException {
+//        if (isNLResource(file)) {
+//            return new NLResourceFactory(site, file);
+//        }
+//        return new StandardResourceFactory(site, file);
+//    }
+//
+    
     
     /**
      * Creates a resource factory based on given arguments.
      * @param site eclipse editor site
      * @param file file used to create factory
-     * @return resource factory
+     * @return An initialized resource factory, or <code>null</code> if no responsible one could be found
      * @throws CoreException problem creating factory
      */
-    public static ResourceFactory createFactory(IEditorSite site, IFile file)
+    public static IResourceFactory createFactory(IEditorSite site, IFile file)
             throws CoreException {
-        if (isNLResource(file)) {
-            return new NLResourceFactory(site, file);
-        }
-        return new StandardResourceFactory(site, file);
+    	IResourceFactory[] factories = ResourceFactoryDescriptor.getContributedResourceFactories();
+    	for (int i = 0; i < factories.length; i++) {
+    		IResourceFactory factory = factories[i];
+			if (factory.isResponsible(file)) {
+				factory.init(site, file);
+				return factory;
+			}
+		}
+        return null;
     }
+    
+    /**
+     * Creates a resource factory based on given arguments and excluding
+     * factories of the given class.
+     * <p>
+     * This might be used to get the {@link SourceEditor}s from 
+     * other factories while initializing an other factory.
+     * </p>
+     * @param site eclipse editor site
+     * @param file file used to create factory
+     * @param childFactoryClass The class of factory to exclude.
+     * @return An initialized resource factory, or <code>null</code> if no responsible one could be found
+     * @throws CoreException problem creating factory
+     */
+    public static IResourceFactory createParentFactory(IEditorSite site, IFile file, Class childFactoryClass)
+            throws CoreException {
+    	IResourceFactory[] factories = ResourceFactoryDescriptor.getContributedResourceFactories();
+    	for (int i = 0; i < factories.length; i++) {
+    		IResourceFactory factory = factories[i];
+			if (factory.isResponsible(file) && !factory.getClass().equals(childFactoryClass)) {
+				factory.init(site, file);
+				return factory;
+			}
+		}
+        return null;
+    }
+    
+	/**
+     * Parses the specified bundle name and returns the locale.
+     * @param resource the resource
+     * @return the locale or null if none
+     */
+	protected static Locale parseBundleName(IResource resource) {
+        // Build local title
+        String regex = ResourceFactory.getPropertiesFileRegEx(resource);
+        String localeText = resource.getName().replaceFirst(regex, "$2"); //$NON-NLS-1$
+        StringTokenizer tokens = new StringTokenizer(localeText, "_"); //$NON-NLS-1$
+		List localeSections = new ArrayList();
+		while (tokens.hasMoreTokens()) {
+		    localeSections.add(tokens.nextToken());
+		}
+		Locale locale = null;
+		switch (localeSections.size()) {
+		case 1:
+		    locale = new Locale((String) localeSections.get(0));
+		    break;
+		case 2:
+		    locale = new Locale(
+		            (String) localeSections.get(0),
+		            (String) localeSections.get(1));
+		    break;
+		case 3:
+		    locale = new Locale(
+		            (String) localeSections.get(0),
+		            (String) localeSections.get(1),
+		            (String) localeSections.get(2));
+		    break;
+		default:
+		    break;
+		}
+		return locale;
+	}
     
     protected SourceEditor createEditor(
             IEditorSite site, IResource resource, Locale locale)
@@ -173,7 +350,7 @@ public abstract class ResourceFactory {
         return true;
     }
     
-    protected static String getBundleName(IFile file) {
+    protected static String getBundleName(IResource file) {
         String name = file.getName();
         String regex = "^(.*?)" //$NON-NLS-1$
                 + "((_[a-z]{2,3})|(_[a-z]{2,3}_[A-Z]{2})" //$NON-NLS-1$
@@ -181,12 +358,41 @@ public abstract class ResourceFactory {
                 + file.getFileExtension() + ")$"; //$NON-NLS-1$
         return name.replaceFirst(regex, "$1"); //$NON-NLS-1$
     }
-    protected static String getPropertiesFileRegEx(IFile file) {
+    
+    protected static String getDisplayName(IResource file) {
+    	if (file instanceof IFile)
+    		return getBundleName(file) + "[...]." + file.getFileExtension();
+    	else
+    		return getBundleName(file);
+    }
+    
+    protected static String getPropertiesFileRegEx(IResource file) {
         String bundleName = getBundleName(file);
         return PROPERTIES_FILE_REGEX.replaceFirst(
                 TOKEN_BUNDLE_NAME, bundleName).replaceFirst(
                         TOKEN_FILE_EXTENSION, file.getFileExtension());
     }
 
-    
+	/**
+	 * Returns the resource bundle file resources that match the specified file name.
+	 *  
+	 * @param file the file to match
+	 * @return array of file resources, empty if none matches
+	 * @throws CoreException
+	 */
+	protected static IFile[] getResources(IFile file) throws CoreException {
+	    
+	    String regex = ResourceFactory.getPropertiesFileRegEx(file);
+	    IResource[] resources = file.getParent().members();
+	    Collection validResources = new ArrayList();
+	    for (int i = 0; i < resources.length; i++) {
+	        IResource resource = resources[i];
+	        String resourceName = resource.getName();
+	        if (resource instanceof IFile && resourceName.matches(regex)) {
+	            validResources.add(resource);
+	        }
+	    }
+	    return (IFile[]) validResources.toArray(new IFile[]{});
+	}
+	
 }

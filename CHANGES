@@ -1,5 +1,9 @@
 Here is an overview of changes for each releases:
 
+2007-09-14, fleque:
+- Included patch to support loading of resources from 
+  fragment plug-ins (normal + nl).    
+
 2007-09-12, nl_carnage:
 - Fixed a focus/selection-bug
 - Corrected german translations

@@ -24,10 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -46,20 +44,24 @@ import com.essiembre.eclipse.rbe.model.workbench.files.StandardPropertiesFileCre
  */
 public class StandardResourceFactory extends ResourceFactory {
 
-    private final Map sourceEditors;
-    private final PropertiesFileCreator fileCreator;
-    private final String displayName;
-    private final IEditorSite site;
+    private Map sourceEditors;
+    private PropertiesFileCreator fileCreator;
+    private String displayName;
+    private IEditorSite site;
 
+    @Override
+    public boolean isResponsible(IFile file) throws CoreException {
+    	return true;
+    }
+    
     /**
      * Constructor.
      * @param site editor site
      * @param file file used to open all related files
      * @throws CoreException problem creating factory
      */
-    protected StandardResourceFactory(IEditorSite site, IFile file) 
+    public void init(IEditorSite site, IFile file) 
              throws CoreException {
-        super();
         this.site = site;
         sourceEditors = new HashMap();
         String bundleName = getBundleName(file);
@@ -70,33 +72,7 @@ public class StandardResourceFactory extends ResourceFactory {
             IResource resource = resources[i];
             String resourceName = resource.getName();
             // Build local title
-            String localeText = 
-                    resourceName.replaceFirst(regex, "$2"); //$NON-NLS-1$
-            StringTokenizer tokens = 
-                new StringTokenizer(localeText, "_"); //$NON-NLS-1$
-            List localeSections = new ArrayList();
-            while (tokens.hasMoreTokens()) {
-                localeSections.add(tokens.nextToken());
-            }
-            Locale locale = null;
-            switch (localeSections.size()) {
-            case 1:
-                locale = new Locale((String) localeSections.get(0));
-                break;
-            case 2:
-                locale = new Locale(
-                        (String) localeSections.get(0),
-                        (String) localeSections.get(1));
-                break;
-            case 3:
-                locale = new Locale(
-                        (String) localeSections.get(0),
-                        (String) localeSections.get(1),
-                        (String) localeSections.get(2));
-                break;
-            default:
-                break;
-            }
+            Locale locale = parseBundleName(resource);            
             SourceEditor sourceEditor = 
                     createEditor(site, resource, locale);
             if (sourceEditor != null) {
@@ -107,8 +83,7 @@ public class StandardResourceFactory extends ResourceFactory {
                 file.getParent().getFullPath().toString(),
                 bundleName,
                 file.getFileExtension());
-        displayName = bundleName
-                + "[...]." + file.getFileExtension(); //$NON-NLS-1$
+		setDisplayName(getDisplayName(file));
     }
     
     /**
@@ -142,7 +117,7 @@ public class StandardResourceFactory extends ResourceFactory {
         return fileCreator;
     }
 
-    protected static IResource[] getResources(IFile file)
+    protected static IFile[] getResources(IFile file)
         throws PartInitException {
         
         String regex = ResourceFactory.getPropertiesFileRegEx(file);
@@ -161,7 +136,7 @@ public class StandardResourceFactory extends ResourceFactory {
                 validResources.add(resource);
             }
         }
-        return (IResource[]) validResources.toArray(new IResource[]{});
+        return (IFile[]) validResources.toArray(new IFile[]{});
     }
 
     @Override

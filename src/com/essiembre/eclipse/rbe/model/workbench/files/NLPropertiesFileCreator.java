@@ -96,6 +96,4 @@ public class NLPropertiesFileCreator extends PropertiesFileCreator {
         }
         return new Path(folderPath + fileName);
     }
-
-
 }
