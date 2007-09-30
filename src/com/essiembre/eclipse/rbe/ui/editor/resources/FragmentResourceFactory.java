@@ -32,7 +32,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorSite;
@@ -41,8 +40,8 @@ import org.eclipse.ui.PlatformUI;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
 import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
+import com.essiembre.eclipse.rbe.model.workbench.files.FragmentNLPropertiesFileCreator;
 import com.essiembre.eclipse.rbe.model.workbench.files.FragmentPropertiesFileCreator;
-import com.essiembre.eclipse.rbe.model.workbench.files.NLPropertiesFileCreator;
 
 /**
  * This is a resource factory responsible for creating editors from fragment
@@ -68,6 +67,7 @@ public class FragmentResourceFactory extends NLResourceFactory {
 
     protected void loadEditors(IEditorSite site, List editors, IFile file, IResource nlDir)
     		throws CoreException {
+    	
     	/*
     	 * check again and load the fragment
     	 */
@@ -98,34 +98,37 @@ public class FragmentResourceFactory extends NLResourceFactory {
     	List fragmentEditors = loadFragmentEditors(site, regex, folder);
 
 		// Load root file, if exists.
-		IProject hostProject = file.getProject().equals(fragment) ?
-        		PDEUtils.getFragmentHost(fragment) : null;
+    	IProject hostProject = PDEUtils.getFragmentHost(fragment);
         SourceEditor sourceEditor = null;
-		if (hostProject != null) {
-			IPath basePath = nlDir == null || resourceBundlePath.matchingFirstSegments(nlDir.getProjectRelativePath()) == 0 ?
-					resourceBundlePath.append(ResourceFactory.getBundleName(file))
-					: new Path(ResourceFactory.getBundleName(file));
-			IResource baseFile = hostProject.findMember(basePath.addFileExtension(file.getFileExtension()));
-		    sourceEditor = createEditor(site, baseFile, null);
-		} else {
+        if (hostProject == null) {
+        	// create root file only if no host could be found, otherwise the 
+        	// factory for the host should find it.
 		    sourceEditor = createEditor(site, file, null);
 		}
 	    if (sourceEditor != null) {
 	        editors.add(sourceEditor);
 	    }
 
-	    /*
-	     * if resource bundles have been found within both, the nl-folder and
-	     * the same folder as the base bundle folder, then ask how to handle that
-	     */
-	    if (nlEditors.size() > 1 && fragmentEditors.size() > 0) {
+	    if (nlEditors.size() > 0 && fragmentEditors.size() <= 1) {
+	    	// only nl-editors found, the one fragment editor is the file itself
+    		editors.addAll(nlEditors);
+    		setPropertiesFileCreator(new FragmentNLPropertiesFileCreator(fragment, file.getName()));
+	    } else if (nlEditors.size() > 0 && fragmentEditors.size() > 1) {
+		    /*
+		     * if resource bundles have been found within both, the nl-folder and
+		     * the same folder as the base bundle folder, then ask how to handle that
+		     */	    	
 	    	if (hostProject != null || hostProject == null && shouldNLCreatorBeUsed(fragment)) {
 	    		editors.addAll(nlEditors);
-	    		setPropertiesFileCreator(new NLPropertiesFileCreator(nlDir.getFullPath().toString(), file.getName()));
+	    		setPropertiesFileCreator(new FragmentNLPropertiesFileCreator(fragment, file.getName()));
 	    	}
 		}
 	    
 	    if (getPropertiesFileCreator() == null) {
+	    	/*
+	    	 * If the files creator is still null here, 
+	    	 * only resources in the same folder as the file could be found.
+	    	 */
 		    editors.addAll(fragmentEditors);
 			setPropertiesFileCreator(new FragmentPropertiesFileCreator(fragment, resourceBundlePath.toString(),
 					getBundleName(file), file.getFullPath().getFileExtension()));

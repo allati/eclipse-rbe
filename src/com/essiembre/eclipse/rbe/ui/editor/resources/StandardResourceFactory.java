@@ -22,10 +22,7 @@ package com.essiembre.eclipse.rbe.ui.editor.resources;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -44,9 +41,7 @@ import com.essiembre.eclipse.rbe.model.workbench.files.StandardPropertiesFileCre
  */
 public class StandardResourceFactory extends ResourceFactory {
 
-    private Map sourceEditors;
     private PropertiesFileCreator fileCreator;
-    private String displayName;
     private IEditorSite site;
 
     @Override
@@ -63,7 +58,6 @@ public class StandardResourceFactory extends ResourceFactory {
     public void init(IEditorSite site, IFile file) 
              throws CoreException {
         this.site = site;
-        sourceEditors = new HashMap();
         String bundleName = getBundleName(file);
         String regex = ResourceFactory.getPropertiesFileRegEx(file);
         IResource[] resources = StandardResourceFactory.getResources(file);
@@ -76,7 +70,7 @@ public class StandardResourceFactory extends ResourceFactory {
             SourceEditor sourceEditor = 
                     createEditor(site, resource, locale);
             if (sourceEditor != null) {
-                sourceEditors.put(sourceEditor.getLocale(), sourceEditor);
+            	addSourceEditor(sourceEditor.getLocale(), sourceEditor);
             }
         }
         fileCreator = new StandardPropertiesFileCreator(
@@ -86,29 +80,6 @@ public class StandardResourceFactory extends ResourceFactory {
 		setDisplayName(getDisplayName(file));
     }
     
-    /**
-     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory
-     *         #getEditorDisplayName()
-     */
-    public String getEditorDisplayName() {
-        return displayName;
-    }
-
-    /**
-     * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory
-     *         #getSourceEditors()
-     */
-    public SourceEditor[] getSourceEditors() {
-        // Java 5 would be better here
-        SourceEditor[] editors = new SourceEditor[sourceEditors.size()];
-        int i = 0;
-        for (Iterator iter = sourceEditors.values().iterator(); iter.hasNext();) {
-            SourceEditor editor = (SourceEditor) iter.next();
-            editors[i++] = editor;
-        }
-        return editors;
-    }
-
     /**
      * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory
      *         #getPropertiesFileCreator()
@@ -137,14 +108,5 @@ public class StandardResourceFactory extends ResourceFactory {
             }
         }
         return (IFile[]) validResources.toArray(new IFile[]{});
-    }
-
-    @Override
-    public SourceEditor addResource(IResource resource, Locale locale) throws PartInitException {
-        if (sourceEditors.containsKey(locale))
-            throw new IllegalArgumentException("ResourceFactory already contains a resource for locale "+locale);
-        SourceEditor editor = createEditor(site, resource, locale);
-        sourceEditors.put(editor.getLocale(), editor);
-        return editor;
     }
 }

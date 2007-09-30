@@ -53,6 +53,20 @@ public class NLPropertiesFileCreator extends PropertiesFileCreator {
     }
 
     /**
+     * @return The currently set nlDir.
+     */
+    protected String getNlDir() {
+    	return nlDir;
+    }
+    /**
+     * Set the nlDir.
+     * @param nlDir The nlDir to set.
+     */
+    protected void setNlDir(String nlDir) {
+		this.nlDir = nlDir;
+	}
+    
+    /**
      * @throws CoreException
      * @see com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator#buildFilePath(java.util.Locale)
      */
@@ -60,7 +74,7 @@ public class NLPropertiesFileCreator extends PropertiesFileCreator {
         String folderPath = ""; //$NON-NLS-1$
         IWorkspaceRoot root = 
                 ResourcesPlugin.getWorkspace().getRoot();
-        IResource resource = root.findMember(nlDir);
+        IResource resource = root.findMember(getNlDir());
         IContainer container = (IContainer) resource;
 
         if (locale != null) {
@@ -88,10 +102,10 @@ public class NLPropertiesFileCreator extends PropertiesFileCreator {
                     folder.create(true, true, null);
                 }
             }
-            folderPath = nlDir + "/" + folderPath; //$NON-NLS-1$
+            folderPath = getNlDir() + "/" + folderPath; //$NON-NLS-1$
         } else {
-            folderPath = nlDir.substring(
-                    0, nlDir.length() - "/nl".length()) //$NON-NLS-1$
+            folderPath = getNlDir().substring(
+                    0, getNlDir().length() - "/nl".length()) //$NON-NLS-1$
                   + "/" + folderPath; //$NON-NLS-1$
         }
         return new Path(folderPath + fileName);

@@ -83,13 +83,15 @@ public class ResourceBundleEditor extends MultiPageEditorPart
      */
     public void init(IEditorSite site, IEditorInput editorInput)
         throws PartInitException {
+        super.init(site, editorInput);
         if (editorInput instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput) editorInput).getFile();
             try {
                 resourceMediator = new ResourceManager(site, file);
             } catch (CoreException e) {
                 UIUtils.showErrorDialog(
-                        getSite().getShell(), e, "error.init.ui"); //$NON-NLS-1$
+                        site.getShell(), e, "error.init.ui"); //$NON-NLS-1$
+                return;
             }
 //             resourceMediator.getKeyTree().a           
             setPartName(resourceMediator.getEditorDisplayName());
@@ -98,7 +100,6 @@ public class ResourceBundleEditor extends MultiPageEditorPart
                   + resourceMediator.getEditorDisplayName() + ".");//$NON-NLS-1$
             setTitleImage(UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
             closeIfAreadyOpen(site, file);
-            super.init(site, editorInput);
         } else {
             throw new PartInitException(
                     "Invalid Input: Must be IFileEditorInput"); //$NON-NLS-1$

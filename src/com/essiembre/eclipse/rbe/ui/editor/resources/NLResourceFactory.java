@@ -170,10 +170,20 @@ public class NLResourceFactory extends ResourceFactory {
          * Ensure that there are no other files which could make a standard
          * resource bundle.
          */
-        if (ResourceFactory.getResources(file).length > 1) {
+        if (file.exists() && ResourceFactory.getResources(file).length > 1) {
              return false;
         }
-        return true;
+        /*
+         * Ensure file is wihtin nl-structure
+         */
+        if (
+        		file.getFullPath().toString().startsWith(
+        				file.getProject().findMember("nl").getFullPath().toString()
+        		)
+        	)
+        	return true;
+        else
+        	return false;
     }
     
     
@@ -264,7 +274,7 @@ public class NLResourceFactory extends ResourceFactory {
 		}
 	}
     
-	protected IResource lookupNLDir(IResource resource) {
+	public static IResource lookupNLDir(IResource resource) {
 		// Locate "nl" directory (if any)
         IContainer container = resource instanceof IContainer ?
         		(IContainer) resource : resource.getParent();

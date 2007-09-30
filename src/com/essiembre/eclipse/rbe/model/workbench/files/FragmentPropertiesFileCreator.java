@@ -71,7 +71,7 @@ public class FragmentPropertiesFileCreator extends PropertiesFileCreator {
 		 * Check where to create the file
 		 */
 		IProject project = null;
-		if (!shouldFileBeCreatedInFragment()) {
+		if (!shouldFileBeCreatedInFragment(fragment)) {
 			project = PDEUtils.getFragmentHost(fragment);
 		}
 		if (project == null) {
@@ -111,7 +111,10 @@ public class FragmentPropertiesFileCreator extends PropertiesFileCreator {
 	 * the fragment or the host plugin.
 	 * @return Whether the user decided to create the file in the fragment.
 	 */
-	public static boolean shouldFileBeCreatedInFragment() {
+	public static boolean shouldFileBeCreatedInFragment(IProject fragment) {
+		if (PDEUtils.getFragmentHost(fragment) == null) {
+			return true; // there is no host plugin, can not create something there
+		}
 		if (RBEPreferences.getLoadOnlyFragmentResources())
 			return true;
 		// TODO externalize/translate this messages

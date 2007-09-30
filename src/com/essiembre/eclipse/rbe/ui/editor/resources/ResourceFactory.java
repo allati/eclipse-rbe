@@ -236,7 +236,7 @@ public abstract class ResourceFactory implements IResourceFactory {
     	IResourceFactory[] factories = ResourceFactoryDescriptor.getContributedResourceFactories();
     	for (int i = 0; i < factories.length; i++) {
     		IResourceFactory factory = factories[i];
-			if (factory.isResponsible(file) && !factory.getClass().equals(childFactoryClass)) {
+			if (!factory.getClass().equals(childFactoryClass) && factory.isResponsible(file)) {
 				factory.init(site, file);
 				return factory;
 			}
