@@ -21,25 +21,40 @@
 package com.essiembre.eclipse.rbe.ui.editor.i18n;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.FindReplaceDocumentAdapter;
+import org.eclipse.jface.text.IFindReplaceTarget;
+import org.eclipse.jface.text.IFindReplaceTargetExtension3;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import sun.awt.image.PixelConverter.Bgrx;
+
 import com.essiembre.eclipse.rbe.model.DeltaEvent;
 import com.essiembre.eclipse.rbe.model.IDeltaListener;
+import com.essiembre.eclipse.rbe.model.bundle.Bundle;
+import com.essiembre.eclipse.rbe.model.bundle.BundleEntry;
+import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
 import com.essiembre.eclipse.rbe.model.tree.KeyTree;
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
 import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
@@ -54,9 +69,6 @@ import com.essiembre.eclipse.rbe.ui.editor.resources.ResourceManager;
  */
 public class I18nPage extends ScrolledComposite {
 
-    /** Minimum height of text fields. */
-    private static final int TEXT_MIN_HEIGHT = 90;
-
     private final ResourceManager resourceMediator;
     private final KeyTreeComposite keysComposite;
     private final List<BundleEntryComposite> entryComposites = new ArrayList<BundleEntryComposite>(); 
@@ -64,8 +76,11 @@ public class I18nPage extends ScrolledComposite {
     private final ScrolledComposite editingComposite;
     
     /*default*/ BundleEntryComposite activeEntry;
+    /*default*/ BundleEntryComposite lastActiveEntry; 
     
+    private AutoMouseWheelAdapter _autoMouseWheelAdapter;
     boolean _autoAdjustNeeded;
+    private Composite _rightComposite;
     
     /**
      * Constructor.
@@ -82,7 +97,7 @@ public class I18nPage extends ScrolledComposite {
         if(RBEPreferences.getNoTreeInEditor()) {
             keysComposite = null;
             editingComposite = this;
-            createEditingPart(this);        	
+            createEditingPart(this);            
         } else {
                     // Create screen        
             SashForm sashForm = new SashForm(this, SWT.NONE);
@@ -95,6 +110,9 @@ public class I18nPage extends ScrolledComposite {
             keysComposite.getTreeViewer().addSelectionChangedListener(localBehaviour);
             
             editingComposite = new ScrolledComposite(sashForm, SWT.V_SCROLL | SWT.H_SCROLL);
+            editingComposite.getVerticalBar().setIncrement(10);
+            editingComposite.getVerticalBar().setPageIncrement(100);
+            editingComposite.setShowFocusedControl(true);
             createSashRightSide();
                     
             sashForm.setWeights(new int[]{25, 75});
@@ -107,6 +125,27 @@ public class I18nPage extends ScrolledComposite {
         
         resourceMediator.getKeyTree().addListener(localBehaviour);
         
+        _autoMouseWheelAdapter = new AutoMouseWheelAdapter(parent); 
+        
+        if(RBEPreferences.getAutoAdjust()) {
+           // performance optimization: we only auto-adjust every 50 ms
+           getShell().getDisplay().timerExec(50, new Runnable() {
+            
+              @Override
+              public void run() {
+               
+                 if(_autoAdjustNeeded) {
+                    _autoAdjustNeeded = false;
+                    Point newMinSize = _rightComposite.computeSize(editingComposite.getClientArea().width, SWT.DEFAULT);
+                    editingComposite.setMinSize(newMinSize);
+                    editingComposite.layout();
+                 }
+               
+                 if(!isDisposed())
+                    getShell().getDisplay().timerExec(50,this);
+                 }
+           });
+        }
     }
     
     
@@ -142,18 +181,18 @@ public class I18nPage extends ScrolledComposite {
         for (int i = 0; i < children.length; i++) {
             children[i].dispose();
         }
-        Composite rightComposite = new Composite(parent, SWT.BORDER);
-        parent.setContent(rightComposite);
-        parent.setMinSize(rightComposite.computeSize(
-                SWT.DEFAULT,
-                resourceMediator.getLocales().size() * TEXT_MIN_HEIGHT));
-        rightComposite.setLayout(new GridLayout(1, false));
+        _rightComposite = new Composite(parent, SWT.BORDER);
+        parent.setContent(_rightComposite);
+        if ( !RBEPreferences.getAutoAdjust() ) {
+           parent.setMinSize(_rightComposite.computeSize(SWT.DEFAULT, resourceMediator.getLocales().size() * RBEPreferences.getMinHeight()));
+        }
+        _rightComposite.setLayout(new GridLayout(1, false));
         entryComposites.clear();
         for (Iterator iter = resourceMediator.getLocales().iterator();
                 iter.hasNext();) {
             Locale locale = (Locale) iter.next();
             BundleEntryComposite entryComposite = new BundleEntryComposite(
-                    rightComposite, resourceMediator, locale, this);
+                    _rightComposite, resourceMediator, locale, this);
             entryComposite.addFocusListener(localBehaviour);
             entryComposites.add(entryComposite);
         }
@@ -218,7 +257,7 @@ public class I18nPage extends ScrolledComposite {
             editingComposite.setOrigin(origin.x, compPos.y);
         comp.focusTextBox();
     }
-    
+
     /**
      * Selects the next entry in the {@link KeyTree}.
      */
@@ -280,7 +319,6 @@ public class I18nPage extends ScrolledComposite {
         editingComposite.layout(true, true);
     }
     
-    
     /**
      * @see org.eclipse.swt.widgets.Widget#dispose()
      */
@@ -291,12 +329,20 @@ public class I18nPage extends ScrolledComposite {
         for (Iterator iter = entryComposites.iterator(); iter.hasNext();) {
             ((BundleEntryComposite) iter.next()).dispose();
         }
+        _autoMouseWheelAdapter.dispose();
         super.dispose();
     }
     
     void setAutoAdjustNeeded( boolean b ) {
        _autoAdjustNeeded = b;
     }
+    
+    void findActionStart() {
+       if(!keysComposite.getFilter().isEmpty()) {
+          keysComposite.setFilter("");
+       }
+    }
+
     
     /**
      * Implementation of custom behaviour.
@@ -307,7 +353,8 @@ public class I18nPage extends ScrolledComposite {
          * {@inheritDoc}
          */
         public void focusGained(FocusEvent event) {
-            activeEntry = (BundleEntryComposite) event.widget;
+           activeEntry = (BundleEntryComposite) event.widget;
+           lastActiveEntry = activeEntry;
         }
 
         /**
@@ -361,4 +408,5 @@ public class I18nPage extends ScrolledComposite {
         }
         
     } /* ENDCLASS */
+    
 }
