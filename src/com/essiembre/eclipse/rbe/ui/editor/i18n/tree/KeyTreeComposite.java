@@ -125,6 +125,13 @@ public class KeyTreeComposite extends Composite {
         return treeViewer;
     }
     
+    public void setFilter(String filter) {
+       filterTextBox.setText(filter);
+    }
+    public String getFilter() {
+       return filterTextBox.getText();
+    }
+    
     /**
      * Gets the selected key tree item.
      * @return key tree item
@@ -152,13 +159,15 @@ public class KeyTreeComposite extends Composite {
      * @see org.eclipse.swt.widgets.Widget#dispose()
      */
     public void dispose() {
-        waitCursor.dispose();
-        defaultCursor.dispose();
-//        treeviewerContributor.dispose();
-        labelProvider.dispose();
-        addTextBox.dispose();
-        
-        super.dispose();
+       super.dispose();
+
+       waitCursor.dispose();
+       defaultCursor.dispose();
+       //        treeviewerContributor.dispose();
+       labelProvider.dispose();
+       addTextBox.dispose();
+
+       keyTree = null;
     }
     
 
@@ -218,8 +227,11 @@ public class KeyTreeComposite extends Composite {
         filterTextBox.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 keyTree.filterKeyItems(filterTextBox.getText());
+                treeViewer.getControl().setRedraw(false);
                 treeViewer.refresh();
-                treeViewer.expandAll();
+                if(!filterTextBox.getText().isEmpty())
+                   treeViewer.expandAll();
+                treeViewer.getControl().setRedraw(true);
             }
         });
         
@@ -264,7 +276,9 @@ public class KeyTreeComposite extends Composite {
 //                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_EXPAND).setEnabled(true);
 //                    treeviewerContributor.getMenuItem(TreeViewerContributor.MENU_COLLAPSE).setEnabled(true);
                     if (RBEPreferences.getKeyTreeExpanded()) {
-                        treeViewer.expandAll();
+                       treeViewer.getControl().setRedraw(false);
+                       treeViewer.expandAll();
+                       treeViewer.getControl().setRedraw(true);    
                     }
                     selectKeyTreeItem(addTextBox.getText());
                     setVisible(true);
@@ -407,20 +421,11 @@ public class KeyTreeComposite extends Composite {
         });
 
         addTextBox.addKeyListener(new KeyAdapter() {
-            public void keyReleased(KeyEvent event) {
-                String key = addTextBox.getText();
-                if (event.character == SWT.CR) {
-                    addKey();
-                } else if (key.length() > 0){
-                    KeysStartingWithVisitor visitor = new KeysStartingWithVisitor();
-                    keyTree.accept(visitor, key);
-                    KeyTreeItem item = visitor.getKeyTreeItem();
-                    if (item != null) {
-                        syncAddTextBox = false;
-                        selectKeyTreeItem(item);
-                    }
-                }
-            }
+           public void keyReleased( KeyEvent event ) {
+              if ( event.character == SWT.CR ) {
+                 addKey();
+              }  
+           }
         });
         addTextBox.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent event) {
@@ -431,6 +436,19 @@ public class KeyTreeComposite extends Composite {
                 } else {
                     addButton.setEnabled(true);
                 }
+                if ( key.length() > 0 && !key.equals(getSelectedKey()) ) {
+                   KeysStartingWithVisitor visitor = new KeysStartingWithVisitor();
+                   keyTree.accept(visitor, key);
+                   KeyTreeItem item = visitor.getKeyTreeItem();
+                   if ( item != null ) {
+                      syncAddTextBox = false;
+                      selectKeyTreeItem(item);
+     
+                      if ( key.equals(getSelectedKey()) ) {
+                         keyTree.selectKey(getSelectedKey());
+                      }
+                   }
+                }                
             }
         });
     }
@@ -448,7 +466,7 @@ public class KeyTreeComposite extends Composite {
      * Selected the key tree item matching given key.
      * @param key key to select
      */
-    /*default*/ void selectKeyTreeItem(String key) {
+    public void selectKeyTreeItem(String key) { 
         selectKeyTreeItem(keyTree.getKeyTreeItem(key));
     }
     
