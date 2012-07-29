@@ -181,6 +181,8 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
      * @param key  key to select.
      */
     public void selectKey(String key) {
+        if(key == null) return;
+        
         Object item = keyItemsCache.get(key);
         if ((selectedKey == null) || (!selectedKey.equals(key))) {
             selectedKey = key;
