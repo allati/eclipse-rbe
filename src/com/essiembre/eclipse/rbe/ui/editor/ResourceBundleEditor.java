@@ -21,6 +21,9 @@
 package com.essiembre.eclipse.rbe.ui.editor;
 
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
@@ -30,6 +33,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -41,12 +45,15 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
 import com.essiembre.eclipse.rbe.model.tree.KeyTree;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
 import com.essiembre.eclipse.rbe.ui.editor.i18n.I18nPage;
+import com.essiembre.eclipse.rbe.ui.editor.i18n.I18nPageEditor;
 import com.essiembre.eclipse.rbe.ui.editor.locale.NewLocalePage;
 import com.essiembre.eclipse.rbe.ui.editor.resources.ResourceManager;
 import com.essiembre.eclipse.rbe.ui.editor.resources.SourceEditor;
@@ -119,12 +126,18 @@ public class ResourceBundleEditor extends MultiPageEditorPart
      */
     protected void createPages() {
         // Create I18N page
-        i18nPage = new I18nPage(
-                getContainer(), SWT.NONE, resourceMediator);
-        int index = addPage(i18nPage);
-        setPageText(index, RBEPlugin.getString(
-                "editor.properties")); //$NON-NLS-1$
-        setPageImage(index, UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
+        int index;
+        try {
+           I18nPageEditor i18PageEditor = new I18nPageEditor(resourceMediator);
+           index = addPage(i18PageEditor, null);
+           i18nPage = i18PageEditor.getI18nPage();
+           setPageText(index, RBEPlugin.getString("editor.properties")); //$NON-NLS-1$
+           setPageImage(index, UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
+        }
+        catch ( PartInitException argh ) {
+           ErrorDialog.openError(getSite().getShell(), "Error creating i18PageEditor page.", //$NON-NLS-1$
+              null, argh.getStatus());
+        }
         
         // Create text editor pages for each locales
         try {
@@ -132,8 +145,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart
             for (int i = 0; i < sourceEditors.length; i++) {
                 SourceEditor sourceEditor = sourceEditors[i];
                 index = addPage(
-                        sourceEditor.getEditor(), 
-                        sourceEditor.getEditor().getEditorInput());
+                   sourceEditor.getEditor(), 
+                   sourceEditor.getEditor().getEditorInput());
                 setPageText(index, UIUtils.getDisplayName(
                         sourceEditor.getLocale()));
                 setPageImage(index, 
@@ -262,7 +275,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     }
     
     private SourceEditor lastEditor;
-    
+
     /**
      * Calculates the contents of page GUI page when it is activated.
      */
@@ -333,8 +346,19 @@ public class ResourceBundleEditor extends MultiPageEditorPart
      * @see org.eclipse.ui.IWorkbenchPart#dispose()
      */
     public void dispose() {
+       
         i18nPage.dispose();
         newLocalePage.dispose();
+        
+        /* fix for a weird memory leak: unless we remove the selectionProvider from our editor, 
+         * nothing get's GCed. */
+        getSite().setSelectionProvider(null);
+        SourceEditor[] sourceEditors = resourceMediator.getSourceEditors();
+        for ( int i = 0; i < sourceEditors.length; i++ ) {
+           SourceEditor editor = sourceEditors[i];
+           editor.getEditor().getSite().setSelectionProvider(null);
+        }
+
         super.dispose();
     }
 }

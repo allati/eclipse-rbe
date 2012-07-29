@@ -30,6 +30,9 @@ import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
+
+import com.essiembre.eclipse.rbe.ui.editor.i18n.I18nPageEditor;
 
 /**
  * Manages the installation/deinstallation of global actions for multi-page 
@@ -57,6 +60,11 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
         return (editor == null ? null : editor.getAction(actionID));
     }
 
+   @Override
+   public void dispose() {
+      activeEditorPart = null;
+   }
+
     /**
      * @see MultiPageEditorActionBarContributor
      *         #setActivePage(org.eclipse.ui.IEditorPart)
@@ -72,6 +80,19 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
 
             ITextEditor editor = (part instanceof ITextEditor) 
                                ? (ITextEditor) part : null;
+                               
+             if(editor instanceof I18nPageEditor) {
+                actionBars.setGlobalActionHandler(
+                   ActionFactory.FIND.getId(),
+                   ((I18nPageEditor)editor).getFindReplaceAction());
+                actionBars.setGlobalActionHandler(
+                   IWorkbenchActionDefinitionIds.FIND_NEXT,
+                   ((I18nPageEditor)editor).getFindNextAction());
+                actionBars.setGlobalActionHandler(
+                   IWorkbenchActionDefinitionIds.FIND_PREVIOUS,
+                   ((I18nPageEditor)editor).getFindPreviousAction()); 
+                return;
+             }
 
             actionBars.setGlobalActionHandler(
                 ActionFactory.DELETE.getId(),

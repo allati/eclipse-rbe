@@ -142,7 +142,7 @@ public class RBEPlugin extends AbstractUIPlugin {
      * Returns the plugin's resource bundle.
      * @return resource bundle
      */
-    protected ResourceBundle getResourceBundle() {
+    public ResourceBundle getResourceBundle() {
         return resourceBundle;
     }
     

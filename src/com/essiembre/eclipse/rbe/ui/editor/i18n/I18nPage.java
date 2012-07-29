@@ -258,6 +258,10 @@ public class I18nPage extends ScrolledComposite {
         comp.focusTextBox();
     }
 
+    public IFindReplaceTarget getReplaceTarget() {
+       return new FindReplaceTarget();
+    }
+    
     /**
      * Selects the next entry in the {@link KeyTree}.
      */
@@ -409,4 +413,99 @@ public class I18nPage extends ScrolledComposite {
         
     } /* ENDCLASS */
     
+    private class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTargetExtension3{
+       
+       @Override
+       public int findAndSelect( int widgetOffset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord ) {
+          // replaced by findAndSelect(.,.)
+          return -1;
+       }
+
+      @Override
+      public int findAndSelect( int offset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord, boolean regExSearch ) {
+            if ( lastActiveEntry != null ) {
+               StyledText textWidget = lastActiveEntry.getTextViewer().getTextWidget();
+               String text = textWidget.getText();
+               IRegion region = find(text, findString, textWidget.getSelection().x+(searchForward?1:-1), searchForward, caseSensitive, wholeWord, regExSearch);
+               if ( region != null ) {
+                  focusBundleEntryComposite(lastActiveEntry.locale);
+                  textWidget.setSelection(region.getOffset(), region.getOffset() + region.getLength());
+                  return region.getOffset();
+               }
+            }
+            BundleGroup bundleGroup = resourceMediator.getBundleGroup();
+            ArrayList<String> keys = new ArrayList<String>(bundleGroup.getKeys());
+            String activeKey = lastActiveEntry != null ? lastActiveEntry.activeKey : keys.get(0);
+            int activeKeyIndex = Math.max(keys.indexOf(activeKey), 0);
+
+            List<Locale> locales = (List)resourceMediator.getLocales();
+            Locale activeLocale = lastActiveEntry != null ? lastActiveEntry.locale : locales.get(0);
+            int activeLocaleIndex = locales.indexOf(activeLocale) + (searchForward?1:-1);
+
+            for ( int i = 0, length = keys.size(); i < length; i++ ) {
+               String key = keys.get((activeKeyIndex + (searchForward?i:-i)) % length);
+               int j = (i==0?activeLocaleIndex:(searchForward?0:locales.size()-1));
+               while(j<locales.size() && j>= 0) {
+                  Locale locale = locales.get(j);
+                  Bundle bundle = bundleGroup.getBundle(locale);
+                  BundleEntry value = bundle.getEntry(key);
+                  if ( value != null && value.getValue() != null ) {
+                     IRegion region = find(value.getValue(), findString, searchForward?0:value.getValue().length()-1, searchForward, caseSensitive, wholeWord, regExSearch);
+                     if ( region != null ) {
+                        keysComposite.selectKeyTreeItem(key);
+                        focusBundleEntryComposite(locale);
+                        StyledText textWidget = activeEntry.getTextViewer().getTextWidget();
+                        textWidget.setSelection(region.getOffset(), region.getOffset() + region.getLength());
+                        return region.getOffset();
+                     }
+                  }
+                  if(searchForward) ++j; 
+                  else --j;
+               }
+            }
+            return -1;
+      }
+
+      private IRegion find( String text, String findString, int offset, boolean searchForward, boolean caseSensitive, boolean wholeWord, boolean regExSearch ) {
+         Document document = new Document(text);
+         FindReplaceDocumentAdapter documentAdapter = new FindReplaceDocumentAdapter(document);
+         try {
+            return documentAdapter.find(offset, findString, searchForward, caseSensitive, wholeWord, regExSearch);
+         }
+         catch ( BadLocationException argh ) {
+            return null;
+         }
+      }
+       
+       @Override
+       public void replaceSelection( String text ) {
+          // replaced by replaceSelection(.,.)
+       }
+       @Override
+       public void replaceSelection( String text, boolean regExReplace ) {
+          
+       }
+
+       @Override
+       public boolean isEditable() {
+          return false;
+       }
+
+       @Override
+       public String getSelectionText() {
+          return activeEntry!=null?activeEntry.getTextViewer().getTextWidget().getSelectionText():"";
+       }
+
+       @Override
+       public Point getSelection() {
+          return activeEntry!=null?activeEntry.getTextViewer().getSelectedRange():new Point(0,0);
+       }
+
+       @Override
+       public boolean canPerformFind() {
+          return true;
+       }
+
+ 
+    }
 }
