@@ -147,8 +147,8 @@ public final class RBEPreferences {
     public static final String KEEP_EMPTY_FIELDS = 
             "keepEmptyFields"; //$NON-NLS-1$
     
-    public static final String       MIN_HEIGHT                       = "minHeight";                                  //$NON-NLS-1$
-    public static final String       AUTO_ADJUST                      = "autoAdjust";                                 //$NON-NLS-1$
+    public static final String       MIN_HEIGHT                       = "minHeight";    //$NON-NLS-1$                               //$NON-NLS-1$
+    public static final String       AUTO_ADJUST                      = "autoAdjust";   //$NON-NLS-1$                              //$NON-NLS-1$
 
     
     /** RBEPreferences. */

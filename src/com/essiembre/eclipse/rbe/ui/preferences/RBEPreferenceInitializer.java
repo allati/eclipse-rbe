@@ -89,7 +89,7 @@ public class RBEPreferenceInitializer extends AbstractPreferenceInitializer {
       prefs.setDefault(RBEPreferences.NO_TREE_IN_EDITOR, false);
 
       prefs.setDefault(RBEPreferences.MIN_HEIGHT, 80);
-      prefs.setDefault(RBEPreferences.AUTO_ADJUST, false);
+      prefs.setDefault(RBEPreferences.AUTO_ADJUST, true);
 
    }
 
