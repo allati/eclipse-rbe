@@ -131,8 +131,8 @@ public final class PropertiesParser {
                 bundle.addEntry(
                         new BundleEntry(key, value, comment, isCommentedLine));
             // parse comment line
-            } else if (lineBuf.charAt(0) == '#' || lineBuf.charAt(0) == '!') {
-                if (!doneWithFileComment) {
+            } else if (lineBuf.length()>0 && (lineBuf.charAt(0) == '#' || lineBuf.charAt(0) == '!')) {
+               if (!doneWithFileComment) {
                     fileComment.append(lineBuf);
                     fileComment.append(SYSTEM_LINE_SEPARATOR);
                 } else {
