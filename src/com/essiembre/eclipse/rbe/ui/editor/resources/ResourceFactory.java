@@ -20,6 +20,8 @@
  */
 package com.essiembre.eclipse.rbe.ui.editor.resources;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -36,15 +38,18 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.internal.ui.propertiesfileeditor.PropertiesFileEditor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 import com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator;
+import com.essiembre.eclipse.rbe.ui.UIUtils;
 
 /**
  * Responsible for creating resources related to a given file structure.
@@ -88,7 +93,9 @@ public abstract class ResourceFactory implements IResourceFactory {
 		@Override
 		public int compare(Object obj1, Object obj2) {
 			if ((obj1 instanceof Locale) && (obj2 instanceof Locale)) {
-				return ((Locale) obj1).getDisplayName().compareTo(((Locale) obj2).getDisplayName());
+               String displayName1 = UIUtils.getDisplayName((Locale)obj1);
+               String displayName2 = UIUtils.getDisplayName((Locale)obj2);
+               return displayName1.compareToIgnoreCase(displayName2);
 			}
 			return 1;
 		}
@@ -288,7 +295,6 @@ public abstract class ResourceFactory implements IResourceFactory {
         if (resource != null && resource instanceof IFile) {
             IEditorInput newEditorInput = 
                     new FileEditorInput((IFile) resource);
-            textEditor = null;
             try {
                 // Use PropertiesFileEditor if available
                 textEditor = (TextEditor) Class.forName(
@@ -298,6 +304,23 @@ public abstract class ResourceFactory implements IResourceFactory {
                 textEditor = new TextEditor();
             }
             textEditor.init(site, newEditorInput);
+            
+            try {
+               /* ugly fix for a memory leak: 
+                * ITextEditor.init(.) Javadoc states: "Clients must not call this method."
+                * but we do in ResourceFactory.createEditor(.), and the way we set-up everything, we have to.
+                * Since duplicate calls to init(.) create a memory leak, due to a zombie ActivationListener registered in 
+                * AbstractTextEditor, we dispose the first ActivationListener we just unintentionally created */
+               Field field = AbstractTextEditor.class.getDeclaredField("fActivationListener");
+               field.setAccessible(true); // enable access to the method - ...hackity hack
+               Object activationListener = field.get(textEditor);
+               Method disposeMethod = activationListener.getClass().getMethod("dispose");
+               disposeMethod.setAccessible(true);
+               disposeMethod.invoke(activationListener);
+            }
+            catch(Exception e) {
+               System.err.println("Failed to apply memory leak work around");
+            }
         }
         if (textEditor != null) {
             return new SourceEditor(textEditor, locale, (IFile) resource);
