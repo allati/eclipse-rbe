@@ -147,6 +147,10 @@ public final class RBEPreferences {
     public static final String KEEP_EMPTY_FIELDS = 
             "keepEmptyFields"; //$NON-NLS-1$
     
+    public static final String       MIN_HEIGHT                       = "minHeight";                                  //$NON-NLS-1$
+    public static final String       AUTO_ADJUST                      = "autoAdjust";                                 //$NON-NLS-1$
+
+    
     /** RBEPreferences. */
     private static final Preferences PREFS = 
             RBEPlugin.getDefault().getPluginPreferences();
@@ -423,6 +427,15 @@ public final class RBEPreferences {
      */
     public static boolean getKeepEmptyFields() {
         return PREFS.getBoolean(KEEP_EMPTY_FIELDS);
+    }
+
+    
+    public static boolean getAutoAdjust() {
+       return PREFS.getBoolean(AUTO_ADJUST);
+    }
+ 
+    public static int getMinHeight() {
+       return PREFS.getInt(MIN_HEIGHT);
     }
 
 }
