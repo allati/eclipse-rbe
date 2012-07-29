@@ -20,6 +20,8 @@
  */
 package com.essiembre.eclipse.rbe.model.bundle;
 
+import java.util.regex.Pattern;
+
 import com.essiembre.eclipse.rbe.RBEPlugin;
 import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 
@@ -36,6 +38,14 @@ public final class PropertiesParser {
     
     /** Characters accepted as key value separators. */
     private static final String KEY_VALUE_SEPARATORS = "=:"; //$NON-NLS-1$
+    
+    private static final Pattern PATTERN_LINE_BREAK = Pattern.compile("\r\n|\r|\n"); //$NON-NLS-1$
+    private static final Pattern PATTERN_IS_REGULAR_LINE = Pattern.compile("^[^#!].*"); //$NON-NLS-1$
+    private static final Pattern PATTERN_IS_COMMENTED_LINE = Pattern.compile("^##[^#].*"); //$NON-NLS-1$
+    private static final Pattern PATTERN_LEADING_SPACE = Pattern.compile("^\\s*"); //$NON-NLS-1$
+    private static final Pattern PATTERN_COMMENT_START = Pattern.compile("^##"); //$NON-NLS-1$
+    private static final Pattern PATTERN_BACKSLASH_R = Pattern.compile("\\\\r"); //$NON-NLS-1$
+    private static final Pattern PATTERN_BACKSLASH_N = Pattern.compile("\\\\n"); //$NON-NLS-1$
 
     
     /**
@@ -54,9 +64,8 @@ public final class PropertiesParser {
      * @return a new bundle
      */
     public static Bundle parse(String properties) {
-
         Bundle bundle = new Bundle();
-        String[] lines = properties.split("\r\n|\r|\n"); //$NON-NLS-1$
+        String[] lines = PATTERN_LINE_BREAK.split(properties);
         
         boolean doneWithFileComment = false;
         StringBuffer fileComment = new StringBuffer();
@@ -68,9 +77,9 @@ public final class PropertiesParser {
             lineBuf.append(line);
         
             int equalPosition = findKeyValueSeparator(line);
-            boolean isRegularLine = line.matches("^[^#].*"); //$NON-NLS-1$
+            boolean isRegularLine = PATTERN_IS_REGULAR_LINE.matcher(line).matches();
             boolean isCommentedLine = doneWithFileComment 
-                    && line.matches("^##[^#].*"); //$NON-NLS-1$
+                    && PATTERN_IS_COMMENTED_LINE.matcher(line).matches();
             
             // parse regular and commented lines
             if (equalPosition >= 1 && (isRegularLine || isCommentedLine)) {
@@ -92,12 +101,10 @@ public final class PropertiesParser {
                             lineBreakPosition,
                             lineBreakPosition + 1, ""); //$NON-NLS-1$
                     if (++i < lines.length) {
-                        String wrappedLine = lines[i].replaceFirst(
-                                "^\\s*", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                        String wrappedLine = PATTERN_LEADING_SPACE.matcher( lines[i] ).replaceFirst(""); //$NON-NLS-1$
 //                        String wrappedLine = lines[i].trim();
                         if (isCommentedLine) {
-                            lineBuf.append(wrappedLine.replaceFirst(
-                                    "^##", "")); //$NON-NLS-1$ //$NON-NLS-2$
+                            lineBuf.append(PATTERN_COMMENT_START.matcher(wrappedLine).replaceFirst("")); //$NON-NLS-1$
                         } else {
                             lineBuf.append(wrappedLine);
                         }
@@ -106,9 +113,8 @@ public final class PropertiesParser {
                 String key = lineBuf.substring(0, equalPosition).trim();
                 key = unescapeKey(key);
                 
-                String value = lineBuf.substring(
-                        equalPosition + 1).replaceFirst(
-                                "^\\s*", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                String value = PATTERN_LEADING_SPACE.matcher( lineBuf.substring(equalPosition + 1) )
+                      .replaceFirst(""); //$NON-NLS-1$
 //                String value = lineBuf.substring(equalPosition + 1).trim();
                 // Unescape leading spaces
                 if (value.startsWith("\\ ")) { //$NON-NLS-1$
@@ -119,15 +125,13 @@ public final class PropertiesParser {
                     key = PropertiesParser.convertEncodedToUnicode(key);
                     value = PropertiesParser.convertEncodedToUnicode(value);
                 } else {
-                    value = value.replaceAll(
-                            "\\\\r", "\r"); //$NON-NLS-1$ //$NON-NLS-2$
-                    value = value.replaceAll(
-                            "\\\\n", "\n");  //$NON-NLS-1$//$NON-NLS-2$
+                    value = PATTERN_BACKSLASH_R.matcher(value).replaceAll("\r"); //$NON-NLS-1$
+                    value = PATTERN_BACKSLASH_N.matcher(value).replaceAll("\n"); //$NON-NLS-1$
                 }
                 bundle.addEntry(
                         new BundleEntry(key, value, comment, isCommentedLine));
             // parse comment line
-            } else if (lineBuf.indexOf("#") == 0) { //$NON-NLS-1$
+            } else if (lineBuf.charAt(0) == '#' || lineBuf.charAt(0) == '!') {
                 if (!doneWithFileComment) {
                     fileComment.append(lineBuf);
                     fileComment.append(SYSTEM_LINE_SEPARATOR);
@@ -141,6 +145,7 @@ public final class PropertiesParser {
             }
         }
         bundle.setComment(fileComment.toString());
+        
         return bundle;
     }
     
