@@ -22,7 +22,10 @@ package com.essiembre.eclipse.rbe.ui.editor.i18n;
 
 import java.awt.ComponentOrientation;
 import java.awt.GraphicsEnvironment;
+import java.awt.font.FontRenderContext;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,20 +33,22 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.IUndoManager;
+import org.eclipse.jface.text.TextEvent;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.TextViewerUndoManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
@@ -51,12 +56,14 @@ import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
@@ -80,7 +87,7 @@ import com.essiembre.eclipse.rbe.ui.editor.resources.SourceEditor;
  */
 public class BundleEntryComposite extends Composite {
 
-    /*default*/ final ResourceManager resourceManager;
+   /*default*/ final ResourceManager resourceManager;
     /*default*/ final Locale locale;
     /*default*/ final I18nPage page;
     private final Font boldFont;
@@ -101,6 +108,7 @@ public class BundleEntryComposite extends Composite {
     /*default*/ DuplicateValuesVisitor duplVisitor;
     /*default*/ SimilarValuesVisitor similarVisitor;
     
+   
     private FocusListener internalFocusListener = new FocusListener() {
         public void focusGained(FocusEvent e) {
             e.widget = BundleEntryComposite.this;
@@ -111,7 +119,7 @@ public class BundleEntryComposite extends Composite {
             e.widget = BundleEntryComposite.this;
             for (FocusListener listener : focusListeners)
                 listener.focusLost(e);
-            textViewer.setSelectedRange(0, 0);
+            //textViewer.setSelectedRange(0, 0);
         }
     };
 
@@ -148,7 +156,6 @@ public class BundleEntryComposite extends Composite {
 
         setLayout(gridLayout);
         GridData gd = new GridData(GridData.FILL_BOTH);
-        gd.heightHint = 80;
         setLayoutData(gd);
     }
 
@@ -209,6 +216,11 @@ public class BundleEntryComposite extends Composite {
     public void setTextSelection(int start, int end) {
         textViewer.setSelectedRange(start, end-start);
     }
+    
+    
+   public ITextViewer getTextViewer() {
+      return textViewer;
+   }
 
     /**
      * Refreshes the text field value with value matching given key.
@@ -414,7 +426,7 @@ public class BundleEntryComposite extends Composite {
         gotoButton.setLayoutData(gridData);
     }
     
-    private Collection<FocusListener> focusListeners = new LinkedList<FocusListener>();	
+    private Collection<FocusListener> focusListeners = new LinkedList<FocusListener>();
     @Override
     public void addFocusListener(FocusListener listener) {
         if (!focusListeners.contains(listener))
@@ -523,9 +535,9 @@ public class BundleEntryComposite extends Composite {
      * Creates the text row.
      */
     private void createTextViewerRow() {
-        textViewer = new TextViewer(this, SWT.MULTI | SWT.WRAP | 
-                SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        
+       int vscroll = RBEPreferences.getAutoAdjust() ? 0 : SWT.V_SCROLL;
+       textViewer = new TextViewer(this, SWT.MULTI | SWT.WRAP | SWT.H_SCROLL | vscroll | SWT.BORDER);
+
         textViewer.setDocument(new Document());
         undoManager = new TextViewerUndoManager(20);
         textViewer.setUndoManager(undoManager);
@@ -536,13 +548,18 @@ public class BundleEntryComposite extends Composite {
         //Addition by Eric FETTWEIS
         //Note that this does not seem to work... It would however be usefull for arabic and some other languages  
         textBox.setOrientation(getOrientation(locale));
-
+        
+        FontRegistry fontRegistry = Workbench.getInstance().getThemeManager().getCurrentTheme().getFontRegistry();
+        Font font = fontRegistry.get("com.essiembre.eclipse.rbe.ui.preferences.fontDefinition");
+        if ( font != null ) {
+           textBox.setFont(font);
+        }
+        
         GridData gridData = new GridData();
         gridData.verticalAlignment = GridData.FILL;
         gridData.grabExcessVerticalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
         gridData.grabExcessHorizontalSpace = true;
-        gridData.heightHint = UIUtils.getHeightInChars(textBox, 3);
         textBox.setLayoutData(gridData);
         textBox.addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent event) {
@@ -605,18 +622,29 @@ public class BundleEntryComposite extends Composite {
             }
         });
         // Eric Fettweis : new listener to automatically change the font 
-        textBox.addModifyListener(new ModifyListener() {
+        textViewer.addTextListener(new ITextListener() {
+           
+           String _oldText=null;
 
-            public void modifyText(ModifyEvent e) {
-                String text = textBox.getText();
-                Font f = textBox.getFont();
-                String fontName = getBestFont(f.getFontData()[0].getName(), text);
-                if(fontName!=null){
-                    f = getSWTFont(f, fontName);
-                    textBox.setFont(f);
-                }
-            }
+           @Override
+           public void textChanged( TextEvent event ) {
+              String text = textBox.getText();
+              if(text.equals(_oldText)) return;
+              _oldText=text;
+              
+              Font f = textBox.getFont();
+              String fontName = getBestFont(f.getFontData()[0].getName(), text);
+              if ( fontName != null ) {
+                 f = getSWTFont(f, fontName);
+                 textBox.setFont(f);
+              }
 
+              ScrolledComposite scrolledComposite = (ScrolledComposite)getParent().getParent();
+              Point newMinSize = getParent().computeSize(scrolledComposite.getClientArea().width, SWT.DEFAULT);
+              if ( !newMinSize.equals(new Point(scrolledComposite.getMinWidth(), scrolledComposite.getMinHeight())) ) {
+                 page.setAutoAdjustNeeded(true);
+              }
+           }
         });
         
         textBox.addFocusListener(internalFocusListener);
@@ -723,7 +751,7 @@ public class BundleEntryComposite extends Composite {
      */
     private static String getBestFont(String baseFontName, String value){
         if(canFullyDisplay(baseFontName, value)) return baseFontName;
-        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        String[] fonts = getAvailableFontNames();
         String fontName=null;
         int currentScore = 0;
         for (int i = 0; i < fonts.length; i++) {
@@ -741,10 +769,19 @@ public class BundleEntryComposite extends Composite {
         return fontName;
     }
 
-    /**
+   private static String[] getAvailableFontNames() {
+      if ( _fontFamilyNames == null ) {
+         String[] fontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+         _fontFamilyNames = fontFamilyNames;
+      }
+      return _fontFamilyNames;
+   }
+
+   /**
      * A cache holding an instance of every AWT font tested.
      */
     private static Map awtFontCache = new HashMap();
+    private static String[] _fontFamilyNames;
 
     /**
      * Creates a variation from an original font, by changing the face name.
@@ -795,6 +832,7 @@ public class BundleEntryComposite extends Composite {
         }
         return font;
     }
+
     /**
      * Gets the orientation suited for a given locale.
      * @param locale the locale

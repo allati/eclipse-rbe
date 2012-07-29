@@ -65,6 +65,8 @@ public class I18nPage extends ScrolledComposite {
     
     /*default*/ BundleEntryComposite activeEntry;
     
+    boolean _autoAdjustNeeded;
+    
     /**
      * Constructor.
      * @param parent parent component.
@@ -290,6 +292,10 @@ public class I18nPage extends ScrolledComposite {
             ((BundleEntryComposite) iter.next()).dispose();
         }
         super.dispose();
+    }
+    
+    void setAutoAdjustNeeded( boolean b ) {
+       _autoAdjustNeeded = b;
     }
     
     /**
