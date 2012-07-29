@@ -57,6 +57,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Tree;
 
 
 /**
@@ -99,7 +100,9 @@ public class ResourceBundleOutline extends ContentOutlinePage {
         getTreeViewer().setUseHashlookup(true);
         getTreeViewer().setInput(tree);
         if (RBEPreferences.getKeyTreeExpanded()) {
-            getTreeViewer().expandAll();
+           ((Tree)getTreeViewer().getControl()).setRedraw(false);
+           getTreeViewer().expandAll();
+           ((Tree)getTreeViewer().getControl()).setRedraw(true);
         }
         contributor = new TreeViewerContributor(tree, getTreeViewer());
         contributor.createControl(parent);
