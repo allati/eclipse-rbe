@@ -82,6 +82,8 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
                                ? (ITextEditor) part : null;
                                
              if(editor instanceof I18nPageEditor) {
+                actionBars.clearGlobalActionHandlers();
+                
                 actionBars.setGlobalActionHandler(
                    ActionFactory.FIND.getId(),
                    ((I18nPageEditor)editor).getFindReplaceAction());
@@ -90,7 +92,9 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
                    ((I18nPageEditor)editor).getFindNextAction());
                 actionBars.setGlobalActionHandler(
                    IWorkbenchActionDefinitionIds.FIND_PREVIOUS,
-                   ((I18nPageEditor)editor).getFindPreviousAction()); 
+                   ((I18nPageEditor)editor).getFindPreviousAction());
+                   
+                actionBars.updateActionBars();
                 return;
              }
 
