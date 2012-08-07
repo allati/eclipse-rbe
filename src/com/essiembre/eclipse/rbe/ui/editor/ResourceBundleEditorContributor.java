@@ -120,8 +120,14 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
                 ActionFactory.SELECT_ALL.getId(),
                 getAction(editor, ITextEditorActionConstants.SELECT_ALL));
             actionBars.setGlobalActionHandler(
-                ActionFactory.FIND.getId(),
-                getAction(editor, ITextEditorActionConstants.FIND));
+               ActionFactory.FIND.getId(),
+               getAction(editor, ITextEditorActionConstants.FIND));
+            actionBars.setGlobalActionHandler(
+               IWorkbenchActionDefinitionIds.FIND_NEXT,
+               getAction(editor, ITextEditorActionConstants.FIND_NEXT));
+            actionBars.setGlobalActionHandler(
+               IWorkbenchActionDefinitionIds.FIND_PREVIOUS,
+               getAction(editor, ITextEditorActionConstants.FIND_PREVIOUS));
             actionBars.setGlobalActionHandler(
                 IDEActionFactory.BOOKMARK.getId(),
                 getAction(editor, IDEActionFactory.BOOKMARK.getId()));
