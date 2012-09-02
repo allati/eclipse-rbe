@@ -21,19 +21,22 @@
 package com.essiembre.eclipse.rbe.ui.editor;
 
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -45,8 +48,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.MultiPageEditorPart;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
@@ -77,6 +78,10 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     /** the outline which additionally allows to navigate through the keys. */
     private ResourceBundleOutline outline;
     
+    private ResourceChangeListener resourceChangeListener = new ResourceChangeListener();
+    private List<IPath> _paths = new ArrayList<IPath>();
+    
+    
     /**
      * Creates a multi-page editor example.
      */
@@ -100,6 +105,9 @@ public class ResourceBundleEditor extends MultiPageEditorPart
                         site.getShell(), e, "error.init.ui"); //$NON-NLS-1$
                 return;
             }
+            
+            ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
+
 //             resourceMediator.getKeyTree().a           
             setPartName(resourceMediator.getEditorDisplayName());
             setContentDescription(
@@ -125,7 +133,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
      * Creates the pages of the multi-page editor.
      */
     protected void createPages() {
-        // Create I18N page
+       // Create I18N page
         int index;
         try {
            I18nPageEditor i18PageEditor = new I18nPageEditor(resourceMediator);
@@ -151,6 +159,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart
                         sourceEditor.getLocale()));
                 setPageImage(index, 
                         UIUtils.getImage(UIUtils.IMAGE_PROPERTIES_FILE));
+                
+                _paths.add( sourceEditor.getFile().getFullPath() );
             }
             outline = new ResourceBundleOutline(resourceMediator.getKeyTree());
             
@@ -185,7 +195,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
             sourceEditor.setContent(sourceEditor.getContent()); // re-set the content to trigger dirty state 
         } catch (PartInitException e) {
             ErrorDialog.openError(getSite().getShell(), 
-                    "Error creating resource mediaotr.", //$NON-NLS-1$
+                    "Error creating resource mediator.", //$NON-NLS-1$
                     null, e.getStatus());
         }
     }
@@ -359,6 +369,25 @@ public class ResourceBundleEditor extends MultiPageEditorPart
            editor.getEditor().getSite().setSelectionProvider(null);
         }
 
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceChangeListener);
+
         super.dispose();
     }
+    
+
+   private class ResourceChangeListener implements IResourceChangeListener {
+
+      @Override
+      public void resourceChanged( IResourceChangeEvent event ) {
+         boolean deltaFound = false;
+         for ( IPath path : _paths ) {
+            IResourceDelta delta = event.getDelta().findMember(path);
+            deltaFound |= delta!= null;
+         }
+         if ( deltaFound ) {
+            resourceMediator.reloadProperties();
+            i18nPage.refreshTextBoxes();
+         }
+      }
+   }
 }
