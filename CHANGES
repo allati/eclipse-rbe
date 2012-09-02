@@ -1,5 +1,30 @@
 Here is an overview of changes for each release:
 
+2012-07 - 2012-09, cuhiodtick:
+- Fix: weird memory leak in ResourceBundleEditor by removing a selectionProvider
+  on dispose we never registered ourselves...
+- Fix: memory leak in ResourceFactory
+- Fix: Bugs 2986394 and 1967702: reload editor content on external changes
+- Fix: Bug 1777814: plugin does not respect the actual properties file syntax
+- Fix: bug 1711869: Error message 'Save Failed:null' when saving
+- Fix: PropertiesParser: huge performance improvement by reusing Patterns instead
+  of re-compiling them all the time
+- Fix: caching of font family names
+- Fix: improved drawing performance of tree expand operation
+
+- New: implemented find action
+- New: registered find next and find previous actions
+- New: added two preference options: auto-adjust height and minimum editor height,
+  made auto-adjust true by default
+- New: editor font configurable
+- New: improve vertical scrolling with the mouse wheel on win32
+- New: selection is not cleared anymore on lost focus
+- New: set increment and page increment for vertical scrollbar to sensible values
+- New: if the user types or pasted an existing key into the "add text" box, the key
+  is selected in the tree and its values are loaded
+- New: sort order of locales based on display name of the locale
+
+
 2007-09-30, fleque:
 - Fixes for patch to support loading of resources from fragments.
       
