@@ -6,7 +6,8 @@ Here is an overview of changes for each release:
 - Fix: memory leak in ResourceFactory
 - Fix: Bugs 2986394 and 1967702: reload editor content on external changes
 - Fix: Bug 1777814: plugin does not respect the actual properties file syntax
-- Fix: bug 1711869: Error message 'Save Failed:null' when saving
+- Fix: Bug 1711869: Error message 'Save Failed:null' when saving
+- Fix: Bug 3563327: Unnecessary removing of a value of existing key
 - Fix: PropertiesParser: huge performance improvement by reusing Patterns instead
   of re-compiling them all the time
 - Fix: caching of font family names

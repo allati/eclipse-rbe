@@ -422,7 +422,7 @@ public class KeyTreeComposite extends Composite {
 
         addTextBox.addKeyListener(new KeyAdapter() {
            public void keyReleased( KeyEvent event ) {
-              if ( event.character == SWT.CR ) {
+              if ( event.character == SWT.CR  && addButton.isEnabled() ) {
                  addKey();
               }  
            }
