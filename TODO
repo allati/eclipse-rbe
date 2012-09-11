@@ -1,5 +1,5 @@
 - Add support for detecting text [to be translated].
-- Add ResourceBundle search page/result.
+- Add replace capabilities to Find/Replace dialog.
 - Consider threading what happens on focust lost to improve UI response.
 - Display internationalized tooltips for most components
 - Consider merging the 2 tree providers and caching some visitor results
