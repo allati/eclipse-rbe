@@ -1,5 +1,7 @@
 Here is an overview of changes for each release:
 
+Release 0.8.0 (2012-09-11)
+--------------------------
 2012-07 - 2012-09, cuhiodtick:
 - Fix: weird memory leak in ResourceBundleEditor by removing a selectionProvider
   on dispose we never registered ourselves...
