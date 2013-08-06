@@ -20,6 +20,7 @@
  */
 package com.essiembre.eclipse.rbe;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.*;
@@ -61,7 +62,7 @@ public class RBEPlugin extends AbstractUIPlugin {
         super.start(context);
         try {
             URL messagesUrl = 
-                    find(new Path("$nl$/messages.properties")); //$NON-NLS-1$
+                    FileLocator.find(context.getBundle(), new Path("$nl$/messages.properties"), null); //$NON-NLS-1$
             if(messagesUrl != null) {
                 resourceBundle = new PropertyResourceBundle(
                         messagesUrl.openStream());
