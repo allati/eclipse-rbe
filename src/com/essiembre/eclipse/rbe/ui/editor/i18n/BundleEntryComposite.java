@@ -59,7 +59,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.internal.Workbench;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
@@ -547,7 +547,7 @@ public class BundleEntryComposite extends Composite {
         //Note that this does not seem to work... It would however be usefull for arabic and some other languages  
         textBox.setOrientation(getOrientation(locale));
         
-        FontRegistry fontRegistry = Workbench.getInstance().getThemeManager().getCurrentTheme().getFontRegistry();
+        FontRegistry fontRegistry = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme().getFontRegistry();
         Font font = fontRegistry.get("com.essiembre.eclipse.rbe.ui.preferences.fontDefinition");
         if ( font != null ) {
            textBox.setFont(font);
