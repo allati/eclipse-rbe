@@ -63,6 +63,7 @@ public class I18nPageEditor extends AbstractTextEditor {
    }
    
    @Override
+   @SuppressWarnings("rawtypes")
    public Object getAdapter( Class required ) {
       if ( required.equals(IFindReplaceTarget.class) ) {
          return _i18nPage.getReplaceTarget();

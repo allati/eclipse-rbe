@@ -49,8 +49,9 @@ public class GroupedKeyTreeUpdater extends KeyTreeUpdater {
      * @see com.essiembre.eclipse.rbe.model.tree.updater.KeyTreeUpdater#addKey(
      *         com.essiembre.eclipse.rbe.model.tree.KeyTree, java.lang.String)
      */
+    @Override
     public void addKey(KeyTree keyTree, String key) {
-        Map keyCache = keyTree.getKeyItemsCache();
+        Map<String, KeyTreeItem> keyCache = keyTree.getKeyItemsCache();
         if (!keyCache.containsKey(key)) {
             StringBuffer idBuf = new StringBuffer();
             Object parent = keyTree;

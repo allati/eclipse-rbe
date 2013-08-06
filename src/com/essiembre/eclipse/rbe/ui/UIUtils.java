@@ -101,9 +101,9 @@ public final class UIUtils {
     public static Font createFont(Control control, int style, int relSize) {
         //TODO consider dropping in favor of control-less version?
         FontData[] fontData = control.getFont().getFontData();
-        for (int i = 0; i < fontData.length; i++) {
-            fontData[i].setHeight(fontData[i].getHeight() + relSize);
-            fontData[i].setStyle(style);
+        for (FontData element : fontData) {
+            element.setHeight(element.getHeight() + relSize);
+            element.setStyle(style);
         }
         return new Font(control.getDisplay(), fontData);
     }
@@ -128,9 +128,9 @@ public final class UIUtils {
     public static Font createFont(int style, int relSize) {
         Display display = RBEPlugin.getDefault().getWorkbench().getDisplay();
         FontData[] fontData = display.getSystemFont().getFontData();
-        for (int i = 0; i < fontData.length; i++) {
-            fontData[i].setHeight(fontData[i].getHeight() + relSize);
-            fontData[i].setStyle(style);
+        for (FontData element : fontData) {
+            element.setHeight(element.getHeight() + relSize);
+            element.setStyle(style);
         }
         return new Font(display, fontData);
     }

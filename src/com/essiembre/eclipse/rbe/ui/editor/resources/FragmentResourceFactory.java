@@ -21,7 +21,6 @@
 package com.essiembre.eclipse.rbe.ui.editor.resources;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,18 +53,19 @@ public class FragmentResourceFactory extends NLResourceFactory {
 	/**
 	 * {@inheritDoc}}
 	 */
+    @Override
     public void init(IEditorSite site, IFile file) throws CoreException {
     	setSite(site);
-        List editors = new ArrayList();
+        List<SourceEditor> editors = new ArrayList<SourceEditor>();
     	loadEditors(site, editors, file, null);
-    	for (Iterator it = editors.iterator(); it.hasNext();) {
-			SourceEditor editor = (SourceEditor) it.next();
+    	for (SourceEditor editor : editors) {
 			addSourceEditor(editor.getLocale(), editor);
 		}
     	setDisplayName(getDisplayName(file));
 	}
 
-    protected void loadEditors(IEditorSite site, List editors, IFile file, IResource nlDir)
+    @Override
+    protected void loadEditors(IEditorSite site, List<SourceEditor> editors, IFile file, IResource nlDir)
     		throws CoreException {
     	
     	/*
@@ -90,12 +90,12 @@ public class FragmentResourceFactory extends NLResourceFactory {
 
 		 // load editors from the nl-folder, if present
 		nlDir = lookupNLDir(fragment);
-		List nlEditors = new ArrayList();
+		List<SourceEditor> nlEditors = new ArrayList<SourceEditor>();
 		if (nlDir != null && nlDir.exists())
 			super.loadEditors(site, nlEditors, file, nlDir);
 
 		// load editors from the same folder as the base file
-    	List fragmentEditors = loadFragmentEditors(site, regex, folder);
+    	List<SourceEditor> fragmentEditors = loadFragmentEditors(site, regex, folder);
 
 		// Load root file, if exists.
     	IProject hostProject = PDEUtils.getFragmentHost(fragment);
@@ -144,9 +144,9 @@ public class FragmentResourceFactory extends NLResourceFactory {
 						site, hostProject.getFile(file.getProjectRelativePath()), this.getClass());
 				if (parentFactory != null) {
 					SourceEditor[] parentEditors = parentFactory.getSourceEditors();					
-					for (int i = 0; i < parentEditors.length; i++) {
-						if (parentEditors[i].getLocale() != null) {
-							editors.add(parentEditors[i]);
+					for (SourceEditor parentEditor : parentEditors) {
+						if (parentEditor.getLocale() != null) {
+							editors.add(parentEditor);
 						}
 					}
 				}
@@ -154,13 +154,13 @@ public class FragmentResourceFactory extends NLResourceFactory {
 		}
 	}
 
-	private List loadFragmentEditors(IEditorSite site, final String regex,
+	private List<SourceEditor> loadFragmentEditors(IEditorSite site, final String regex,
 			IResource folder) throws CoreException, PartInitException {
-		List fragmentEditors = new ArrayList();
+		List<SourceEditor> fragmentEditors = new ArrayList<SourceEditor>();
 		if (folder.exists()) {
 			IResource[] members = ((IContainer) folder).members();
-			for (int j = 0; j < members.length; j++) {
-				IResource resource = members[j];
+			for (IResource member : members) {
+				IResource resource = member;
 				if (!(resource instanceof IFile)
 						|| !resource.getName().matches(regex))
 					continue;
@@ -191,6 +191,7 @@ public class FragmentResourceFactory extends NLResourceFactory {
 	 * This method will return true
 	 * </p>
 	 */
+	@Override
 	public boolean isResponsible(IFile file) {
         /*
          * Check if NL is supported.

@@ -53,7 +53,7 @@ public class ResourceFactoryDescriptor {
 	 */
 	public static IResourceFactory[] getContributedResourceFactories() throws CoreException {
 		ResourceFactoryDescriptor[] descriptors = getContributedResourceFactoryDescriptors();
-		SortedMap factories = new TreeMap();
+		SortedMap<Integer, Object> factories = new TreeMap<Integer, Object>();
 		for (int i = 0, lastOrder = 0; i < descriptors.length; i++) {
 			Object factory = descriptors[i].fElement.createExecutableExtension("class"); //$NON-NLS-1$
 			String attribute = descriptors[i].fElement.getAttribute("order"); //$NON-NLS-1$
@@ -67,7 +67,7 @@ public class ResourceFactoryDescriptor {
 				order = new Integer(lastOrder = order.intValue());
 			factories.put(order, factory);
 		}
-		return (IResourceFactory[]) factories.values().toArray(new IResourceFactory[factories.values().size()]);
+		return factories.values().toArray(new IResourceFactory[factories.values().size()]);
 	}
 
 	private static ResourceFactoryDescriptor[] getContributedResourceFactoryDescriptors() {
@@ -77,15 +77,14 @@ public class ResourceFactoryDescriptor {
 	}
 
 	private static ResourceFactoryDescriptor[] createDescriptors(IConfigurationElement[] elements) {
-		List list = new ArrayList(elements.length);
-		for (int i = 0; i < elements.length; i++) {
-			IConfigurationElement element = elements[i];
+		List<ResourceFactoryDescriptor> list = new ArrayList<ResourceFactoryDescriptor>(elements.length);
+		for (IConfigurationElement element : elements) {
 			if (TAG_FACTORY.equals(element.getName())) {
 				ResourceFactoryDescriptor descriptor = new ResourceFactoryDescriptor(element);
 				list.add(descriptor);
 			}
 		}
-		return (ResourceFactoryDescriptor[]) list.toArray(new ResourceFactoryDescriptor[list.size()]);
+		return list.toArray(new ResourceFactoryDescriptor[list.size()]);
 	}
 
 }

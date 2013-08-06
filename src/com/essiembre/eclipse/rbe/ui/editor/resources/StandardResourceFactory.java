@@ -42,7 +42,6 @@ import com.essiembre.eclipse.rbe.model.workbench.files.StandardPropertiesFileCre
 public class StandardResourceFactory extends ResourceFactory {
 
     private PropertiesFileCreator fileCreator;
-    private IEditorSite site;
 
     @Override
     public boolean isResponsible(IFile file) throws CoreException {
@@ -55,16 +54,13 @@ public class StandardResourceFactory extends ResourceFactory {
      * @param file file used to open all related files
      * @throws CoreException problem creating factory
      */
+    @Override
     public void init(IEditorSite site, IFile file) 
              throws CoreException {
-        this.site = site;
         String bundleName = getBundleName(file);
-        String regex = ResourceFactory.getPropertiesFileRegEx(file);
         IResource[] resources = StandardResourceFactory.getResources(file);
 
-        for (int i = 0; i < resources.length; i++) {
-            IResource resource = resources[i];
-            String resourceName = resource.getName();
+        for (IResource resource : resources) {
             // Build local title
             Locale locale = parseBundleName(resource);            
             SourceEditor sourceEditor = 
@@ -84,6 +80,7 @@ public class StandardResourceFactory extends ResourceFactory {
      * @see com.essiembre.eclipse.rbe.ui.editor.resources.ResourceFactory
      *         #getPropertiesFileCreator()
      */
+    @Override
     public PropertiesFileCreator getPropertiesFileCreator() {
         return fileCreator;
     }
@@ -99,14 +96,13 @@ public class StandardResourceFactory extends ResourceFactory {
             throw new PartInitException(
                    "Can't initialize resource bundle editor.", e); //$NON-NLS-1$
         }
-        Collection validResources = new ArrayList();
-        for (int i = 0; i < resources.length; i++) {
-            IResource resource = resources[i];
+        Collection<IResource> validResources = new ArrayList<IResource>();
+        for (IResource resource : resources) {
             String resourceName = resource.getName();
             if (resource instanceof IFile && resourceName.matches(regex)) {
                 validResources.add(resource);
             }
         }
-        return (IFile[]) validResources.toArray(new IFile[]{});
+        return validResources.toArray(new IFile[]{});
     }
 }

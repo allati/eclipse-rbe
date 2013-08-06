@@ -56,10 +56,11 @@ public class IncompletionUpdater extends KeyTreeUpdater {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addKey(KeyTree keytree, String key) {
-        Collection entries  = bundlegroup.getBundleEntries(key);
+        Collection<BundleEntry> entries  = bundlegroup.getBundleEntries(key);
         int        count    = 0;
-        Iterator   iterator = entries.iterator();
+        Iterator<BundleEntry>   iterator = entries.iterator();
         while(iterator.hasNext()) {
             Object val = iterator.next();
             if(val instanceof BundleEntry) {

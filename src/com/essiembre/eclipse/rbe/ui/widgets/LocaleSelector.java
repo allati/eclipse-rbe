@@ -72,11 +72,11 @@ public class LocaleSelector extends Composite {
 
         // Init available locales
         availableLocales = Locale.getAvailableLocales();
-        Arrays.sort(availableLocales, new Comparator() {
-            public int compare(Object locale1, Object locale2) {
+        Arrays.sort(availableLocales, new Comparator<Locale>() {
+            public int compare(Locale locale1, Locale locale2) {
                 return Collator.getInstance().compare(
-                        ((Locale) locale1).getDisplayName(),
-                        ((Locale) locale2).getDisplayName());
+                        locale1.getDisplayName(),
+                        locale2.getDisplayName());
             }
         });
         
@@ -99,10 +99,11 @@ public class LocaleSelector extends Composite {
         localesCombo = new Combo(selectionGroup, SWT.READ_ONLY);
         localesCombo.setLayoutData(gd);
         localesCombo.add(DEFAULT_LOCALE);
-        for (int i = 0; i < availableLocales.length; i++) {
-            localesCombo.add(availableLocales[i].getDisplayName());
+        for (Locale availableLocale : availableLocales) {
+            localesCombo.add(availableLocale.getDisplayName());
         }
         localesCombo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 int index = localesCombo.getSelectionIndex();
                 if (index == 0) { // default
@@ -124,6 +125,7 @@ public class LocaleSelector extends Composite {
         gd.widthHint = UIUtils.getWidthInChars(langText, 4);
         langText.setLayoutData(gd);
         langText.addFocusListener(new FocusAdapter() {
+            @Override
             public void focusLost(FocusEvent e) {
                 langText.setText(langText.getText().toLowerCase());
                 setLocaleOnlocalesCombo();
@@ -137,6 +139,7 @@ public class LocaleSelector extends Composite {
         gd.widthHint = UIUtils.getWidthInChars(countryText, 4);
         countryText.setLayoutData(gd);
         countryText.addFocusListener(new FocusAdapter() {
+            @Override
             public void focusLost(FocusEvent e) {
                 countryText.setText(
                         countryText.getText().toUpperCase());
@@ -150,6 +153,7 @@ public class LocaleSelector extends Composite {
         gd.widthHint = UIUtils.getWidthInChars(variantText, 4);
         variantText.setLayoutData(gd);
         variantText.addFocusListener(new FocusAdapter() {
+            @Override
             public void focusLost(FocusEvent e) {
                 setLocaleOnlocalesCombo();
             }

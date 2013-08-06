@@ -21,11 +21,8 @@
 package com.essiembre.eclipse.rbe.ui.editor.i18n;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -43,12 +40,9 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import sun.awt.image.PixelConverter.Bgrx;
 
 import com.essiembre.eclipse.rbe.model.DeltaEvent;
 import com.essiembre.eclipse.rbe.model.IDeltaListener;
@@ -178,8 +172,8 @@ public class I18nPage extends ScrolledComposite {
      */
     private void createEditingPart(ScrolledComposite parent) {
         Control[] children = parent.getChildren();
-        for (int i = 0; i < children.length; i++) {
-            children[i].dispose();
+        for (Control element : children) {
+            element.dispose();
         }
         _rightComposite = new Composite(parent, SWT.BORDER);
         parent.setContent(_rightComposite);
@@ -188,9 +182,7 @@ public class I18nPage extends ScrolledComposite {
         }
         _rightComposite.setLayout(new GridLayout(1, false));
         entryComposites.clear();
-        for (Iterator iter = resourceMediator.getLocales().iterator();
-                iter.hasNext();) {
-            Locale locale = (Locale) iter.next();
+        for (Locale locale : resourceMediator.getLocales()) {
             BundleEntryComposite entryComposite = new BundleEntryComposite(
                     _rightComposite, resourceMediator, locale, this);
             entryComposite.addFocusListener(localBehaviour);
@@ -306,9 +298,7 @@ public class I18nPage extends ScrolledComposite {
      */
     public void refreshTextBoxes() {
         String key = getSelectedKey();
-        for (Iterator iter = entryComposites.iterator(); iter.hasNext();) {
-            BundleEntryComposite entryComposite = 
-                    (BundleEntryComposite) iter.next();
+        for (BundleEntryComposite entryComposite : entryComposites) {
             entryComposite.refresh(key);
         }
     }
@@ -326,12 +316,13 @@ public class I18nPage extends ScrolledComposite {
     /**
      * @see org.eclipse.swt.widgets.Widget#dispose()
      */
+    @Override
     public void dispose() {
         if(keysComposite != null) {
             keysComposite.dispose();
         }
-        for (Iterator iter = entryComposites.iterator(); iter.hasNext();) {
-            ((BundleEntryComposite) iter.next()).dispose();
+        for (BundleEntryComposite bundleEntryComposite : entryComposites) {
+            bundleEntryComposite.dispose();
         }
         _autoMouseWheelAdapter.dispose();
         super.dispose();
@@ -438,7 +429,7 @@ public class I18nPage extends ScrolledComposite {
             String activeKey = lastActiveEntry != null ? lastActiveEntry.activeKey : keys.get(0);
             int activeKeyIndex = Math.max(keys.indexOf(activeKey), 0);
 
-            List<Locale> locales = (List)resourceMediator.getLocales();
+            List<Locale> locales = resourceMediator.getLocales();
             Locale activeLocale = lastActiveEntry != null ? lastActiveEntry.locale : locales.get(0);
             int activeLocaleIndex = locales.indexOf(activeLocale) + (searchForward?1:-1);
 

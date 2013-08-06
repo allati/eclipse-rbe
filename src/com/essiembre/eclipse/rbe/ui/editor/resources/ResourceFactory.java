@@ -25,20 +25,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import org.eclipse.core.internal.resources.Folder;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.internal.ui.propertiesfileeditor.PropertiesFileEditor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -47,7 +42,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.essiembre.eclipse.rbe.model.workbench.RBEPreferences;
 import com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
 
@@ -89,15 +83,12 @@ public abstract class ResourceFactory implements IResourceFactory {
      * A sorted map of {@link SourceEditor}s.
      * Sorted by key (Locale).
      */
-    private Map sourceEditors = new TreeMap(new Comparator() {
+    private Map<Locale, SourceEditor> sourceEditors = new TreeMap<Locale, SourceEditor>(new Comparator<Locale>() {
 		@Override
-		public int compare(Object obj1, Object obj2) {
-			if ((obj1 instanceof Locale) && (obj2 instanceof Locale)) {
-               String displayName1 = UIUtils.getDisplayName((Locale)obj1);
-               String displayName2 = UIUtils.getDisplayName((Locale)obj2);
-               return displayName1.compareToIgnoreCase(displayName2);
-			}
-			return 1;
+		public int compare(Locale obj1, Locale obj2) {
+           String displayName1 = UIUtils.getDisplayName(obj1);
+           String displayName2 = UIUtils.getDisplayName(obj2);
+           return displayName1.compareToIgnoreCase(displayName2);
 		}
     });
     	
@@ -135,8 +126,8 @@ public abstract class ResourceFactory implements IResourceFactory {
     public SourceEditor[] getSourceEditors() {
     	SourceEditor[] editors = new SourceEditor[sourceEditors.values().size()];
     	int i = 0;
-    	for (Iterator it = sourceEditors.values().iterator(); it.hasNext();) {
-			Object obj = it.next();
+    	for (SourceEditor sourceEditor : sourceEditors.values()) {
+			Object obj = sourceEditor;
 			if (obj instanceof SourceEditor) {
 				editors[i] = (SourceEditor) obj;
 			}
@@ -215,9 +206,8 @@ public abstract class ResourceFactory implements IResourceFactory {
     public static IResourceFactory createFactory(IEditorSite site, IFile file)
             throws CoreException {
     	IResourceFactory[] factories = ResourceFactoryDescriptor.getContributedResourceFactories();
-    	for (int i = 0; i < factories.length; i++) {
-    		IResourceFactory factory = factories[i];
-			if (factory.isResponsible(file)) {
+    	for (IResourceFactory factory : factories) {
+    		if (factory.isResponsible(file)) {
 				factory.init(site, file);
 				return factory;
 			}
@@ -238,11 +228,11 @@ public abstract class ResourceFactory implements IResourceFactory {
      * @return An initialized resource factory, or <code>null</code> if no responsible one could be found
      * @throws CoreException problem creating factory
      */
-    public static IResourceFactory createParentFactory(IEditorSite site, IFile file, Class childFactoryClass)
+    public static IResourceFactory createParentFactory(IEditorSite site, IFile file, Class<? extends IResourceFactory> childFactoryClass)
             throws CoreException {
     	IResourceFactory[] factories = ResourceFactoryDescriptor.getContributedResourceFactories();
-    	for (int i = 0; i < factories.length; i++) {
-    		IResourceFactory factory = factories[i];
+    	for (IResourceFactory factorie : factories) {
+    		IResourceFactory factory = factorie;
 			if (!factory.getClass().equals(childFactoryClass) && factory.isResponsible(file)) {
 				factory.init(site, file);
 				return factory;
@@ -261,25 +251,25 @@ public abstract class ResourceFactory implements IResourceFactory {
         String regex = ResourceFactory.getPropertiesFileRegEx(resource);
         String localeText = resource.getName().replaceFirst(regex, "$2"); //$NON-NLS-1$
         StringTokenizer tokens = new StringTokenizer(localeText, "_"); //$NON-NLS-1$
-		List localeSections = new ArrayList();
+		List<String> localeSections = new ArrayList<String>();
 		while (tokens.hasMoreTokens()) {
 		    localeSections.add(tokens.nextToken());
 		}
 		Locale locale = null;
 		switch (localeSections.size()) {
 		case 1:
-		    locale = new Locale((String) localeSections.get(0));
+		    locale = new Locale(localeSections.get(0));
 		    break;
 		case 2:
 		    locale = new Locale(
-		            (String) localeSections.get(0),
-		            (String) localeSections.get(1));
+		            localeSections.get(0),
+		            localeSections.get(1));
 		    break;
 		case 3:
 		    locale = new Locale(
-		            (String) localeSections.get(0),
-		            (String) localeSections.get(1),
-		            (String) localeSections.get(2));
+		            localeSections.get(0),
+		            localeSections.get(1),
+		            localeSections.get(2));
 		    break;
 		default:
 		    break;
@@ -328,51 +318,6 @@ public abstract class ResourceFactory implements IResourceFactory {
         return null;
     }
 
-    
-    private static boolean isNLResource(IFile file) 
-            throws PartInitException {
-        /*
-         * Check if NL is supported.
-         */
-        if (!RBEPreferences.getSupportNL()) {
-            return false;
-        }
-
-        /*
-         * Check if there is an NL directory
-         */
-        IContainer container = file.getParent();
-        IResource nlDir = null;
-        while (container != null 
-                && (nlDir == null || !(nlDir instanceof Folder))) {
-            nlDir = container.findMember("nl"); //$NON-NLS-1$
-            container = container.getParent();
-        }
-        if (nlDir == null || !(nlDir instanceof Folder)) {
-            return false;
-        }
-
-        /*
-         * Ensures NL directory is part of file path, or that file dir
-         * is parent of NL directory.
-         */
-        IPath filePath = file.getFullPath();
-        IPath nlDirPath = nlDir.getFullPath();
-        if (!nlDirPath.isPrefixOf(filePath)
-                && !filePath.removeLastSegments(1).isPrefixOf(nlDirPath)) {
-            return false;
-        }
-        
-        /*
-         * Ensure that there are no other files which could make a standard
-         * resource bundle.
-         */
-        if (StandardResourceFactory.getResources(file).length > 1) {
-             return false;
-        }
-        return true;
-    }
-    
     protected static String getBundleName(IResource file) {
         String name = file.getName();
         String regex = "^(.*?)" //$NON-NLS-1$
@@ -407,15 +352,14 @@ public abstract class ResourceFactory implements IResourceFactory {
 	    
 	    String regex = ResourceFactory.getPropertiesFileRegEx(file);
 	    IResource[] resources = file.getParent().members();
-	    Collection validResources = new ArrayList();
-	    for (int i = 0; i < resources.length; i++) {
-	        IResource resource = resources[i];
+	    Collection<IResource> validResources = new ArrayList<IResource>();
+	    for (IResource resource : resources) {
 	        String resourceName = resource.getName();
 	        if (resource instanceof IFile && resourceName.matches(regex)) {
 	            validResources.add(resource);
 	        }
 	    }
-	    return (IFile[]) validResources.toArray(new IFile[]{});
+	    return validResources.toArray(new IFile[]{});
 	}
 	
 }

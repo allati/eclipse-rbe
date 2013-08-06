@@ -21,7 +21,6 @@
 package com.essiembre.eclipse.rbe.model.tree.visitors;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import com.essiembre.eclipse.rbe.model.bundle.BundleEntry;
 import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
@@ -54,15 +53,14 @@ public class IsMissingValueVisitor extends KeyTreeVisitorAdapter {
      *                 com.essiembre.eclipse.rbe.model.tree.KeyTreeItem,
      *                 java.lang.Object)
      */
+    @Override
     public void visitKeyTreeItem(KeyTreeItem item, Object passAlongArgument) {
         // passed item
         isMissingValue = isItemMissingValue(item);
         
         // chidren items
         if (!isMissingValue) {
-            for (Iterator iter = item.getNestedChildren().iterator(); 
-                    iter.hasNext();) {
-                KeyTreeItem childItem = (KeyTreeItem) iter.next();
+            for (KeyTreeItem childItem : item.getNestedChildren()) {
                 isMissingChildValueOnly = isItemMissingValue(childItem);
                 if (isMissingChildValueOnly) {
                     return;
@@ -112,12 +110,11 @@ public class IsMissingValueVisitor extends KeyTreeVisitorAdapter {
         String key = item.getId();
         BundleGroup bundleGroup = item.getKeyTree().getBundleGroup();
         if (bundleGroup.isKey(key)) {
-            Collection entries = bundleGroup.getBundleEntries(key);
+            Collection<BundleEntry> entries = bundleGroup.getBundleEntries(key);
             if (entries.size() != bundleGroup.getSize()) {
                 return true;
             }
-            for (Iterator iter = entries.iterator(); iter.hasNext();) {
-                BundleEntry entry = (BundleEntry) iter.next();
+            for (BundleEntry entry : entries) {
                 if (entry == null || entry.getValue().length() == 0) {
                     return true;
                 }

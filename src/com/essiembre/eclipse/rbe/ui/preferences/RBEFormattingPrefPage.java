@@ -78,6 +78,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
      * @see org.eclipse.jface.preference.PreferencePage#createContents(
      *         org.eclipse.swt.widgets.Composite)
      */
+    @Override
     protected Control createContents(Composite parent) {
         IPreferenceStore prefs = getPreferenceStore();
         Composite field = null;
@@ -98,6 +99,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         convertUnicodeToEncoded.setSelection(
                 prefs.getBoolean(RBEPreferences.CONVERT_UNICODE_TO_ENCODED));
         convertUnicodeToEncoded.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 refreshEnabledStatuses();
             }
@@ -119,6 +121,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         alignEqualSigns.setSelection(
                 prefs.getBoolean(RBEPreferences.ALIGN_EQUAL_SIGNS));
         alignEqualSigns.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 refreshEnabledStatuses();
             }
@@ -138,6 +141,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         groupKeys = new Button(field, SWT.CHECK);
         groupKeys.setSelection(prefs.getBoolean(RBEPreferences.GROUP_KEYS));
         groupKeys.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 refreshEnabledStatuses();
             }
@@ -184,6 +188,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         wrapLines = new Button(field, SWT.CHECK);
         wrapLines.setSelection(prefs.getBoolean(RBEPreferences.WRAP_LINES));
         wrapLines.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 refreshEnabledStatuses();
             }
@@ -209,6 +214,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         wrapAlignEqualSigns.setSelection(
                 prefs.getBoolean(RBEPreferences.WRAP_ALIGN_EQUAL_SIGNS));
         wrapAlignEqualSigns.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 refreshEnabledStatuses();
             }
@@ -244,6 +250,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         newLineTypeForce.setSelection(
                 prefs.getBoolean(RBEPreferences.FORCE_NEW_LINE_TYPE));
         newLineTypeForce.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 refreshEnabledStatuses();
             }
@@ -285,6 +292,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
     /**
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
+    @Override
     public boolean performOk() {
         IPreferenceStore prefs = getPreferenceStore();
         prefs.setValue(RBEPreferences.SHOW_GENERATOR,
@@ -332,6 +340,7 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
     /**
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
+    @Override
     protected void performDefaults() {
         IPreferenceStore prefs = getPreferenceStore();
         showGeneratedBy.setSelection(prefs.getDefaultBoolean(
@@ -388,8 +397,8 @@ public class RBEFormattingPrefPage extends AbstractRBEPrefPage {
         wrapCharLimit.setEnabled(isWrapEnabled);
         wrapAlignEqualSigns.setEnabled(isWrapEnabled);
         wrapIndentSpaces.setEnabled(isWrapEnabled && !isWrapAlignEqualsEnabled);
-        for (int i = 0; i < newLineTypes.length; i++) {
-            newLineTypes[i].setEnabled(isNewLineStyleForced);
+        for (Button newLineType : newLineTypes) {
+            newLineType.setEnabled(isNewLineStyleForced);
         }
     }
     

@@ -59,6 +59,7 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
      * @see org.eclipse.jface.preference.PreferencePage#createContents(
      *         org.eclipse.swt.widgets.Composite)
      */
+    @Override
     protected Control createContents(Composite parent) {
         IPreferenceStore prefs = getPreferenceStore();
         Composite field = null;
@@ -95,6 +96,7 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
         new Label(field, SWT.NONE).setText(
                 RBEPlugin.getString("prefs.perform.simVals")); //$NON-NLS-1$
         reportSimVals.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 refreshEnabledStatuses();
             }
@@ -144,6 +146,7 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
     /**
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
+    @Override
     public boolean performOk() {
         IPreferenceStore prefs = getPreferenceStore();
         prefs.setValue(RBEPreferences.REPORT_MISSING_VALUES,
@@ -166,6 +169,7 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
     /**
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
+    @Override
     protected void performDefaults() {
         IPreferenceStore prefs = getPreferenceStore();
         reportMissingVals.setSelection(prefs.getDefaultBoolean(
@@ -187,8 +191,8 @@ public class RBEReportingPrefPage extends AbstractRBEPrefPage {
     /*default*/ void refreshEnabledStatuses() {
         boolean isReportingSimilar = reportSimVals.getSelection();
 
-        for (int i = 0; i < reportSimValsMode.length; i++) {
-            reportSimValsMode[i].setEnabled(isReportingSimilar);
+        for (Button element : reportSimValsMode) {
+            element.setEnabled(isReportingSimilar);
         }
         reportSimPrecision.setEnabled(isReportingSimilar);
     }

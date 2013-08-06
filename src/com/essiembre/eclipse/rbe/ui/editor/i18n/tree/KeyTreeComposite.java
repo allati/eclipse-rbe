@@ -22,7 +22,6 @@ package com.essiembre.eclipse.rbe.ui.editor.i18n.tree;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -158,6 +157,7 @@ public class KeyTreeComposite extends Composite {
     /**
      * @see org.eclipse.swt.widgets.Widget#dispose()
      */
+    @Override
     public void dispose() {
        super.dispose();
 
@@ -197,11 +197,10 @@ public class KeyTreeComposite extends Composite {
         msgBox.setText(msgHead);
         if (msgBox.open() == SWT.OK) {
             BundleGroup bundleGroup = keyTree.getBundleGroup();
-            Collection items = new ArrayList();
+            Collection<KeyTreeItem> items = new ArrayList<KeyTreeItem>();
             items.add(selectedItem);
             items.addAll(selectedItem.getNestedChildren());
-            for (Iterator iter = items.iterator(); iter.hasNext();) {
-                KeyTreeItem item = (KeyTreeItem) iter.next();
+            for (KeyTreeItem item : items) {
                 bundleGroup.removeKey(item.getId());
             }
         }
@@ -265,6 +264,7 @@ public class KeyTreeComposite extends Composite {
         }
         //TODO merge the two listeners into one
         hierModeButton.addSelectionListener(new SelectionAdapter () {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 if (hierModeButton.getSelection()) {
                     flatModeButton.setSelection(false);
@@ -287,6 +287,7 @@ public class KeyTreeComposite extends Composite {
             }
         });
         flatModeButton.addSelectionListener(new SelectionAdapter () {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 if (flatModeButton.getSelection()) {
                     hierModeButton.setSelection(false);
@@ -327,6 +328,7 @@ public class KeyTreeComposite extends Composite {
         }
         treeViewer.getTree().setLayoutData(gridData);      
         treeViewer.getTree().addKeyListener(new KeyAdapter() {
+            @Override
             public void keyReleased(KeyEvent event) {
                 if (event.character == SWT.DEL) {
                     deleteKeyOrGroup();
@@ -344,6 +346,7 @@ public class KeyTreeComposite extends Composite {
                     }
         });
         treeViewer.getTree().addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseDoubleClick(MouseEvent event) {
                 Object element = getSelection();
                 if (treeViewer.isExpandable(element)) {
@@ -415,12 +418,14 @@ public class KeyTreeComposite extends Composite {
         addButton.setText(RBEPlugin.getString("key.add")); //$NON-NLS-1$
         addButton.setEnabled(false);
         addButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 addKey();
             }
         });
 
         addTextBox.addKeyListener(new KeyAdapter() {
+           @Override
            public void keyReleased( KeyEvent event ) {
               if ( event.character == SWT.CR  && addButton.isEnabled() ) {
                  addKey();

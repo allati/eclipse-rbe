@@ -21,7 +21,6 @@
 package com.essiembre.eclipse.rbe.model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 //import org.eclipse.core.internal.runtime.ListenerList; >= Eclipse 3.2
@@ -40,15 +39,14 @@ public abstract class Model {
      * https://bugs.eclipse.org/bugs/show_bug.cgi?format=multiple&id=94156
      */
     /** Listeners for this object. */
-    private final List listeners = new ArrayList();
+    private final List<IDeltaListener> listeners = new ArrayList<IDeltaListener>();
     
     /**
      * Fires an "add" event.
      * @param added object added
      */
     protected void fireAdd(Object added) {
-        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-            IDeltaListener listener = (IDeltaListener) iter.next();
+        for (IDeltaListener listener : listeners) {
             listener.add(new DeltaEvent(added));
         }
     }
@@ -58,8 +56,7 @@ public abstract class Model {
      * @param removed object removed
      */
     protected void fireRemove(Object removed) {
-        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-            IDeltaListener listener = (IDeltaListener) iter.next();
+        for (IDeltaListener listener : listeners) {
             listener.remove(new DeltaEvent(removed));
         }
     }
@@ -69,8 +66,7 @@ public abstract class Model {
      * @param modified object modified
      */
     protected void fireModify(Object modified) {
-        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-            IDeltaListener listener = (IDeltaListener) iter.next();
+        for (IDeltaListener listener : listeners) {
             listener.modify(new DeltaEvent(modified));
         }
     }
@@ -80,8 +76,7 @@ public abstract class Model {
      * @param selected the selected object.
      */
     protected void fireSelect(Object selected) {
-        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-            IDeltaListener listener = (IDeltaListener) iter.next();
+        for (IDeltaListener listener : listeners) {
             listener.select(new DeltaEvent(selected));
         }
     }

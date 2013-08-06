@@ -78,6 +78,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
      * Adding the page to the wizard.
      */
 
+    @Override
     public void addPages() {
         page = new ResourceBundleNewWizardPage(selection);
         addPage(page);
@@ -88,6 +89,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
      * the wizard. We will create an operation and run it
      * using wizard as execution context.
      */
+    @Override
     public boolean performFinish() {
         final String containerName = page.getContainerName();
         final String baseName = page.getFileName();
@@ -99,13 +101,13 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
                     monitor.setTaskName(RBEPlugin.getString(
                             "editor.wiz.creating")); //$NON-NLS-1$
                     IFile file = null;
-                    for (int i = 0; i <  locales.length; i++) {
+                    for (String locale : locales) {
                         String fileName = baseName;
-                        if (locales[i].equals(
+                        if (locale.equals(
                                 ResourceBundleNewWizardPage.DEFAULT_LOCALE)) {
                             fileName += ".properties"; //$NON-NLS-1$
                         } else {
-                            fileName += "_" + locales[i] //$NON-NLS-1$
+                            fileName += "_" + locale //$NON-NLS-1$
                                      + ".properties"; //$NON-NLS-1$
                         }
                         file = createFile(containerName, fileName, monitor);

@@ -22,10 +22,8 @@ package com.essiembre.eclipse.rbe.ui.editor;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -93,6 +91,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
      * The <code>MultiPageEditorExample</code> implementation of this method
      * checks that the input is an instance of <code>IFileEditorInput</code>.
      */
+    @Override
     public void init(IEditorSite site, IEditorInput editorInput)
         throws PartInitException {
         super.init(site, editorInput);
@@ -132,6 +131,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     /**
      * Creates the pages of the multi-page editor.
      */
+    @Override
     protected void createPages() {
        // Create I18N page
         int index;
@@ -150,8 +150,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
         // Create text editor pages for each locales
         try {
             SourceEditor[] sourceEditors = resourceMediator.getSourceEditors();
-            for (int i = 0; i < sourceEditors.length; i++) {
-                SourceEditor sourceEditor = sourceEditors[i];
+            for (SourceEditor sourceEditor : sourceEditors) {
                 index = addPage(
                    sourceEditor.getEditor(), 
                    sourceEditor.getEditor().getEditorInput());
@@ -204,6 +203,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     /**
      * {@inheritDoc}
      */
+    @Override
+    @SuppressWarnings("rawtypes")
     public Object getAdapter(Class adapter) {
         Object obj = super.getAdapter(adapter);
         if (obj == null) {
@@ -218,6 +219,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     /**
      * Saves the multi-page editor's document.
      */
+    @Override
     public void doSave(IProgressMonitor monitor) {
         KeyTree keyTree = resourceMediator.getKeyTree();
         String key = keyTree.getSelectedKey();
@@ -233,6 +235,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     /**
      * @see org.eclipse.ui.ISaveablePart#doSaveAs()
      */
+    @Override
     public void doSaveAs() {
         // Save As not allowed.
     }
@@ -240,6 +243,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     /**
      * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
      */
+    @Override
     public boolean isSaveAsAllowed() {
         return false;
     }
@@ -273,8 +277,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     public void gotoMarker(IMarker marker) {
         IPath markerPath = marker.getResource().getProjectRelativePath();
         SourceEditor[] sourceEditors = resourceMediator.getSourceEditors();
-        for (int i = 0; i < sourceEditors.length; i++) {
-            SourceEditor editor = sourceEditors[i];
+        for (SourceEditor editor : sourceEditors) {
             IPath editorPath = editor.getFile().getProjectRelativePath();
             if (markerPath.equals(editorPath)) {
                 setActivePage(editor.getLocale());
@@ -289,6 +292,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     /**
      * Calculates the contents of page GUI page when it is activated.
      */
+    @Override
     protected void pageChange(int newPageIndex) {
         super.pageChange(newPageIndex);
         KeyTree keyTree = resourceMediator.getKeyTree();
@@ -329,8 +333,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
 
     private void closeIfAreadyOpen(final IEditorSite site, final IFile file) {
     	IWorkbenchPage[] pages = site.getWorkbenchWindow().getPages();
-    	for (int i = 0; i < pages.length; i++) {
-    		final IWorkbenchPage page = pages[i];
+    	for (final IWorkbenchPage page : pages) {
     		IEditorReference[] editors = page.getEditorReferences();
     		for (int j = 0; j < editors.length; j++) {
     			final IEditorPart editor = editors[j].getEditor(false);
@@ -355,6 +358,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     /**
      * @see org.eclipse.ui.IWorkbenchPart#dispose()
      */
+    @Override
     public void dispose() {
        
         i18nPage.dispose();

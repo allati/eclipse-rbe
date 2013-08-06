@@ -44,8 +44,9 @@ public class FlatKeyTreeUpdater extends KeyTreeUpdater {
      * @see com.essiembre.eclipse.rbe.model.tree.updater.KeyTreeUpdater#addKey(
      *         com.essiembre.eclipse.rbe.model.tree.KeyTree, java.lang.String)
      */
+    @Override
     public void addKey(KeyTree keyTree, String key) {
-        Map keyCache = keyTree.getKeyItemsCache();
+        Map<String, KeyTreeItem> keyCache = keyTree.getKeyItemsCache();
         if (!keyCache.containsKey(key)) {
             KeyTreeItem item = new KeyTreeItem(keyTree, key, key);
             item.setParent(keyTree);

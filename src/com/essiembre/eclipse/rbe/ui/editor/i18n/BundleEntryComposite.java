@@ -22,12 +22,8 @@ package com.essiembre.eclipse.rbe.ui.editor.i18n;
 
 import java.awt.ComponentOrientation;
 import java.awt.GraphicsEnvironment;
-import java.awt.font.FontRenderContext;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
@@ -187,14 +183,14 @@ public class BundleEntryComposite extends Composite {
     /**
      * @see org.eclipse.swt.widgets.Widget#dispose()
      */
+    @Override
     public void dispose() {
         super.dispose();
         boldFont.dispose();
         smallFont.dispose();
 
         //Addition by Eric Fettweis
-        for(Iterator it = swtFontCache.values().iterator();it.hasNext();){
-            Font font = (Font) it.next();
+        for (Font font : swtFontCache.values()) {
             font.dispose();
         }
         swtFontCache.clear();
@@ -335,6 +331,7 @@ public class BundleEntryComposite extends Composite {
         simButton.setToolTipText(
                 RBEPlugin.getString("value.similar.tooltip")); //$NON-NLS-1$
         simButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 String head = RBEPlugin.getString(
                         "dialog.similar.head"); //$NON-NLS-1$
@@ -342,10 +339,9 @@ public class BundleEntryComposite extends Composite {
                         "dialog.similar.body", activeKey, //$NON-NLS-1$
                         UIUtils.getDisplayName(locale));
                 body += "\n\n"; //$NON-NLS-1$
-                for (Iterator iter = similarVisitor.getSimilars().iterator();
-                iter.hasNext();) {
+                for (BundleEntry bundleEntry : similarVisitor.getSimilars()) {
                     body += "        " //$NON-NLS-1$
-                        + ((BundleEntry) iter.next()).getKey()
+                        + bundleEntry.getKey()
                         + "\n"; //$NON-NLS-1$
                 }
                 MessageDialog.openInformation(getShell(), head, body); 
@@ -363,6 +359,7 @@ public class BundleEntryComposite extends Composite {
                 RBEPlugin.getString("value.duplicate.tooltip")); //$NON-NLS-1$
 
         duplButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 String head = RBEPlugin.getString(
                         "dialog.identical.head"); //$NON-NLS-1$
@@ -370,10 +367,9 @@ public class BundleEntryComposite extends Composite {
                         "dialog.identical.body", activeKey, //$NON-NLS-1$
                         UIUtils.getDisplayName(locale));
                 body += "\n\n"; //$NON-NLS-1$
-                for (Iterator iter = duplVisitor.getDuplicates().iterator();
-                iter.hasNext();) {
+                for (BundleEntry bundleEntry : duplVisitor.getDuplicates()) {
                     body += "        " //$NON-NLS-1$
-                        + ((BundleEntry) iter.next()).getKey()
+                        + bundleEntry.getKey()
                         + "\n"; //$NON-NLS-1$
                 }
                 MessageDialog.openInformation(getShell(), head, body); 
@@ -390,6 +386,7 @@ public class BundleEntryComposite extends Composite {
         commentedCheckbox.setFont(smallFont);
         commentedCheckbox.setLayoutData(gridData);
         commentedCheckbox.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 resetCommented();
                 updateBundleOnChanges();
@@ -413,6 +410,7 @@ public class BundleEntryComposite extends Composite {
                 RBEPlugin.getString("value.goto.tooltip")); //$NON-NLS-1$
         gotoButton.setEnabled(false);
         gotoButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 ITextEditor editor = resourceManager.getSourceEditor(
                         locale).getEditor();
@@ -598,6 +596,7 @@ public class BundleEntryComposite extends Composite {
         });
 
         textBox.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyReleased(KeyEvent event) {
                 if (isKeyCombination(event, SWT.CTRL, 'z')) {
                     undoManager.undo();
@@ -722,7 +721,7 @@ public class BundleEntryComposite extends Composite {
     /**
      * Holds swt fonts used for the textBox. 
      */
-    private Map swtFontCache = new HashMap();
+    private Map<String, Font> swtFontCache = new HashMap<String, Font>();
 
     /**
      * Gets a font by its name. The resulting font is build based on the baseFont parameter.
@@ -734,7 +733,7 @@ public class BundleEntryComposite extends Composite {
      * @return a font with the same style and size as the original.
      */
     private Font getSWTFont(Font baseFont, String name){
-        Font font = (Font) swtFontCache.get(name);
+        Font font = swtFontCache.get(name);
         if(font==null){
             font = createFont(baseFont, getDisplay(), name);
             swtFontCache.put(name, font);
@@ -754,14 +753,14 @@ public class BundleEntryComposite extends Composite {
         String[] fonts = getAvailableFontNames();
         String fontName=null;
         int currentScore = 0;
-        for (int i = 0; i < fonts.length; i++) {
-            int score = canDisplayUpTo(fonts[i], value);
+        for (String font : fonts) {
+            int score = canDisplayUpTo(font, value);
             if(score==-1){//no need to loop further
-                fontName=fonts[i];
+                fontName=font;
                 break;
             }
             if(score>currentScore){
-                fontName=fonts[i];
+                fontName=font;
                 currentScore = score;
             }
         }
@@ -780,7 +779,7 @@ public class BundleEntryComposite extends Composite {
    /**
      * A cache holding an instance of every AWT font tested.
      */
-    private static Map awtFontCache = new HashMap();
+    private static Map<String, java.awt.Font> awtFontCache = new HashMap<String, java.awt.Font>();
     private static String[] _fontFamilyNames;
 
     /**
@@ -792,8 +791,8 @@ public class BundleEntryComposite extends Composite {
      */
     private static Font createFont(Font baseFont, Display display, String name){
         FontData[] fontData = baseFont.getFontData();
-        for (int i = 0; i < fontData.length; i++) {
-            fontData[i].setName(name);
+        for (FontData element : fontData) {
+            element.setName(name);
         }
         return new Font(display, fontData);
     }
@@ -825,7 +824,7 @@ public class BundleEntryComposite extends Composite {
      * @return an AWT Font
      */
     private static java.awt.Font getAWTFont(String name){
-        java.awt.Font font = (java.awt.Font) awtFontCache.get(name);
+        java.awt.Font font = awtFontCache.get(name);
         if(font==null){
             font = new java.awt.Font(name, java.awt.Font.PLAIN, 12);
             awtFontCache.put(name, font);

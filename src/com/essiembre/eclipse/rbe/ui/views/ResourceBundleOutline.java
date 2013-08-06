@@ -21,10 +21,6 @@
 package com.essiembre.eclipse.rbe.ui.views;
 
 
-import com.essiembre.eclipse.rbe.model.tree.updater.GroupedKeyTreeUpdater;
-import com.essiembre.eclipse.rbe.model.tree.updater.FlatKeyTreeUpdater;
-import com.essiembre.eclipse.rbe.model.tree.updater.KeyTreeUpdater;
-
 import com.essiembre.eclipse.rbe.model.tree.KeyTreeItem;
 import com.essiembre.eclipse.rbe.model.tree.KeyTree;
 
@@ -36,7 +32,6 @@ import com.essiembre.eclipse.rbe.model.DeltaEvent;
 import com.essiembre.eclipse.rbe.ui.editor.i18n.tree.KeyTreeContentProvider;
 import com.essiembre.eclipse.rbe.ui.editor.i18n.tree.TreeViewerContributor;
 import com.essiembre.eclipse.rbe.ui.editor.i18n.tree.KeyTreeLabelProvider;
-import com.essiembre.eclipse.rbe.ui.editor.resources.ResourceManager;
 import com.essiembre.eclipse.rbe.ui.UIUtils;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;

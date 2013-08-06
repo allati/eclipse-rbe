@@ -21,7 +21,6 @@
 package com.essiembre.eclipse.rbe.ui.editor.resources;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,7 +44,6 @@ import com.essiembre.eclipse.rbe.model.workbench.files.NLPropertiesFileCreator;
  * @author Pascal Essiembre (essiembre@users.sourceforge.net)
  * @version $Author$ $Revision$ $Date$
  */
-@SuppressWarnings("unchecked")
 public class NLResourceFactory extends ResourceFactory {
 
 //    /**
@@ -139,6 +137,7 @@ public class NLResourceFactory extends ResourceFactory {
 //        init(site, file);
 //    }
     
+    @Override
     public boolean isResponsible(IFile file) throws CoreException {
         /*
          * Check if NL is supported.
@@ -193,6 +192,7 @@ public class NLResourceFactory extends ResourceFactory {
      * @param file The file used to open all related files
      * @throws CoreException problem creating factory
      */
+    @Override
     public void init(IEditorSite site, IFile file) throws CoreException {
         setSite(site);
         String filename = file.getName();        
@@ -203,10 +203,9 @@ public class NLResourceFactory extends ResourceFactory {
         if (!(nlDir instanceof IFolder))
         	throw new CoreException(new Status(IStatus.ERROR, RBEPlugin.ID, 0, "no 'nl'-folder found", null)); //$NON-NLS-1$
         
-        List editors = new ArrayList();
+        List<SourceEditor> editors = new ArrayList<SourceEditor>();
         loadEditors(site, editors, file, nlDir);
-        for (Iterator it = editors.iterator(); it.hasNext();) {
-			SourceEditor editor = (SourceEditor) it.next();
+        for (SourceEditor editor : editors) {
 			addSourceEditor(editor.getLocale(), editor);
 		}
         IResource resource = nlDir.getParent().findMember(filename);
@@ -217,14 +216,13 @@ public class NLResourceFactory extends ResourceFactory {
     }
     
     
-	protected void loadEditors(IEditorSite site, List editors, IFile file, IResource nlDir)
+	protected void loadEditors(IEditorSite site, List<SourceEditor> editors, IFile file, IResource nlDir)
 	throws CoreException {
 //		Load "language" matching files in "nl" tree.
 		SourceEditor sourceEditor = null;
 		IResource[] langResources = nlDir != null ? ((IFolder) nlDir).members() : file.getParent().members();
-		for (int i = 0; i < langResources.length; i++) {
+		for (IResource langResource : langResources) {
 			String language = null;
-			IResource langResource = langResources[i];
 			if (langResource instanceof IFolder) {
 				IFolder langFolder = (IFolder) langResource;
 				language = langFolder.getName();
@@ -239,8 +237,7 @@ public class NLResourceFactory extends ResourceFactory {
 				// Load "country" matching files in "nl" tree.
 				String country = null;
 				IResource[] cntryResources = langFolder.members();
-				for (int j = 0; j < cntryResources.length; j++) {
-					IResource cntryResource = cntryResources[j];
+				for (IResource cntryResource : cntryResources) {
 					if (cntryResource instanceof IFolder) {
 						IFolder cntryFolder = (IFolder) cntryResource;
 						country = cntryFolder.getName();

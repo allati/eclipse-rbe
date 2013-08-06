@@ -111,8 +111,7 @@ public class PDEUtils {
 		if (fragmentId != null)
 			return pluginProject;
     	IProject[] projects = pluginProject.getWorkspace().getRoot().getProjects();
-    	for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+    	for (IProject project : projects) {
 			if (!project.isOpen())
 				continue;
 			if (getFragmentId(project, pluginId) == null)
