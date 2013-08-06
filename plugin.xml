@@ -1,29 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin
-   id="com.essiembre.eclipse.i18n.resourcebundle"
-   name="%plugin.name"
-   version="0.8.0"
-   provider-name="%plugin.provider"
-   class="com.essiembre.eclipse.rbe.RBEPlugin">
-
-   <runtime>
-      <library name="resourcebundle.jar">
-         <export name="*"/>
-      </library>
-   </runtime>
-
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.jdt.ui" optional="true"/>
-      <import plugin="org.eclipse.ui.views"/>
-   </requires>
+<plugin>
 
    <extension-point id="resourceFactory" name="resourceFactory" schema="schema/resourceFactory.exsd"/>
 
