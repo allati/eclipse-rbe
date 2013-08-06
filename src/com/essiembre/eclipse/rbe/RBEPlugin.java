@@ -112,7 +112,7 @@ public class RBEPlugin extends AbstractUIPlugin {
      * @return localized string corresponding to key
      */
     public static String getString(String key, String arg1) {
-        return MessageFormat.format(getString(key), new String[]{arg1});
+        return MessageFormat.format(getString(key), arg1);
     }
     /**
      * Returns the string from the plugin's resource bundle,
@@ -124,7 +124,7 @@ public class RBEPlugin extends AbstractUIPlugin {
      */
     public static String getString(String key, String arg1, String arg2) {
         return MessageFormat.format(
-                getString(key), new String[]{arg1, arg2});
+                getString(key), arg1, arg2);
     }
     /**
      * Returns the string from the plugin's resource bundle,
@@ -138,7 +138,7 @@ public class RBEPlugin extends AbstractUIPlugin {
     public static String getString(
             String key, String arg1, String arg2, String arg3) {
         return MessageFormat.format(
-                getString(key), new String[]{arg1, arg2, arg3});
+                getString(key), arg1, arg2, arg3);
     }
     
     /**
