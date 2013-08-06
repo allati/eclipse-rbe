@@ -359,7 +359,7 @@ public final class PropertiesGenerator {
         // Exit now if we are not aligning equals
         if (!alignEquals || groupKeys && !groupAlignEquals 
                          || groupKeys && group == null) {
-            return key.length();
+            return -1;
         }
         
         // Get equal index
