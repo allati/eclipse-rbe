@@ -20,7 +20,7 @@
  */
 package com.essiembre.eclipse.rbe.model.workbench;
 
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
 
@@ -152,8 +152,8 @@ public final class RBEPreferences {
 
     
     /** RBEPreferences. */
-    private static final Preferences PREFS = 
-            RBEPlugin.getDefault().getPluginPreferences();
+    private static final IPreferenceStore PREFS = 
+			RBEPlugin.getDefault().getPreferenceStore();
     
     /**
      * Constructor.
@@ -437,5 +437,4 @@ public final class RBEPreferences {
     public static int getMinHeight() {
        return PREFS.getInt(MIN_HEIGHT);
     }
-
 }
