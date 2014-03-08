@@ -1,0 +1,18 @@
+*.gif binary
+*.java text
+*.properties text
+*.exsd text
+*.xml text
+
+.checkstyle text
+.classpath text
+.cvsignore text
+.gitattributes text
+.gitignore text
+.project text
+CHANGES text
+CONTRIBUTORS text
+LICENSE text
+README text
+TODO text
+MANIFEST.MF text
