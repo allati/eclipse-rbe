@@ -50,7 +50,7 @@ public abstract class AbstractRBEPrefPage extends PreferencePage implements
     protected final int indentPixels = 20;
     
     /** Controls with errors in them. */
-    protected final Map errors = new HashMap();
+    protected final Map<Text, String> errors = new HashMap<Text, String>();
     
     /**
      * Constructor.
