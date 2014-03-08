@@ -36,6 +36,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
@@ -240,10 +241,17 @@ public class TreeViewerContributor {
      */
     protected void newKey() {
         KeyTreeItem selectedItem = getSelection();
-        String key = selectedItem != null ? selectedItem.getId() : "";
+        String key = selectedItem != null ? (selectedItem.getId() + RBEPreferences.getKeyGroupSeparator()) : "";
         String msgHead = RBEPlugin.getString("dialog.new.head"); //$NON-NLS-1$
         String msgBody = RBEPlugin.getString("dialog.new.body", key); //$NON-NLS-1$
-        InputDialog dialog = new InputDialog(getShell(), msgHead, msgBody, key, null);
+        InputDialog dialog = new InputDialog(getShell(), msgHead, msgBody, key, null) {
+            @Override
+            protected Control createButtonBar(Composite parent) {
+                Control bar = super.createButtonBar(parent);
+                getText().clearSelection();
+                return bar;
+            }
+        };
         dialog.open();
         if (dialog.getReturnCode() == Window.OK ) {
             String newKey = dialog.getValue();
