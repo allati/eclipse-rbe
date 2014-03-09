@@ -34,11 +34,16 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 import com.essiembre.eclipse.rbe.RBEPlugin;
 import com.essiembre.eclipse.rbe.model.bundle.BundleGroup;
@@ -68,11 +73,12 @@ public class TreeViewerContributor {
     public  static final int MENU_RENAME    = 1 ;
     public  static final int MENU_DELETE    = 2 ;
     public  static final int MENU_COPY      = 3 ;
-    public  static final int MENU_COMMENT   = 4 ;
-    public  static final int MENU_UNCOMMENT = 5 ;
-    public  static final int MENU_EXPAND    = 6 ;
-    public  static final int MENU_COLLAPSE  = 7 ;
-    private static final int MENU_COUNT     = 8 ;
+    public  static final int MENU_COPY_NAME = 4 ;
+    public  static final int MENU_COMMENT   = 5 ;
+    public  static final int MENU_UNCOMMENT = 6 ;
+    public  static final int MENU_EXPAND    = 7 ;
+    public  static final int MENU_COLLAPSE  = 8 ;
+    private static final int MENU_COUNT     = 9 ;
     
     
     /** the tree which is controlled through this manager.    */
@@ -151,6 +157,14 @@ public class TreeViewerContributor {
         };
         actions[MENU_COPY].setText(RBEPlugin.getString("key.duplicate")); //$NON-NLS-1$
         
+        actions[MENU_COPY_NAME] = new Action () {
+            @Override
+            public void run() {
+                copyKeyName();
+            }
+        };
+        actions[MENU_COPY_NAME].setText(RBEPlugin.getString("key.copyKeyName")); //$NON-NLS-1$
+        
         actions[MENU_COMMENT] = new Action () {
             @Override
             public void run() {
@@ -196,6 +210,8 @@ public class TreeViewerContributor {
         actions[MENU_DELETE].setEnabled(selectedItem != null);
         manager.add(actions[MENU_COPY]);
         actions[MENU_COPY].setEnabled(selectedItem != null);
+        manager.add(actions[MENU_COPY_NAME]);
+        actions[MENU_COPY_NAME].setEnabled(selectedItem != null);
         manager.add(actions[MENU_COMMENT]);
         actions[MENU_COMMENT].setEnabled(selectedItem != null);
         manager.add(actions[MENU_UNCOMMENT]);
@@ -409,6 +425,18 @@ public class TreeViewerContributor {
         }
     }
     
+
+    /**
+     * Copies selected key name to the clipboard 
+     */
+    protected void copyKeyName() {
+        KeyTreeItem selectedItem = getSelection();
+        String key = selectedItem.getId();
+        Display display = PlatformUI.getWorkbench().getDisplay();
+        Clipboard clipboard = new Clipboard(display);
+        clipboard.setContents(new Object[]{key}, new Transfer[]{TextTransfer.getInstance()});
+        clipboard.dispose();
+    }
 
     /**
      * Returns the currently used Shell instance.
