@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
-Bundle-Version: 0.8.1.SNAPSHOT
+Bundle-Version: 0.9.0
 Bundle-SymbolicName: com.essiembre.eclipse.i18n.resourcebundle; singleton:=true
 Bundle-ClassPath: resourcebundle.jar
 Bundle-Activator: com.essiembre.eclipse.rbe.RBEPlugin

@@ -1,5 +1,18 @@
 Here is an overview of changes for each release:
 
+Release 0.9.0 (2014-03-09)
+--------------------------
+- Fix: equals signs aligning can now be properly disabled 
+- Fix: potential NPE in WordCountAnalyzer and LevenshteinDistanceAnalyzer
+- Fix: obtaining FontRegistry without violating API
+- Fix: use FileLocator to locate NL files instead of deprecated Plugin#find
+
+- New: Java 1.5 is now a minimum requirement
+- New: resource bundle entry context menu action to copy full key name
+  to the clipboard
+- New: resource bundle entry creation dialog got a little tuning: key name
+  no longer initially selected and it is appended with key group separator 
+
 Release 0.8.0 (2012-09-11)
 --------------------------
 2012-07 - 2012-09, cuhiodtick:
