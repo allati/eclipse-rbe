@@ -381,7 +381,6 @@ public class ResourceBundleEditor extends MultiPageEditorPart
 
    private class ResourceChangeListener implements IResourceChangeListener {
 
-      @Override
       public void resourceChanged( IResourceChangeEvent event ) {
          boolean deltaFound = false;
          for ( IPath path : _paths ) {

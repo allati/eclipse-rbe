@@ -154,6 +154,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         gd = new GridData(GridData.FILL_BOTH);
         bundleLocalesList.setLayoutData(gd);
         bundleLocalesList.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 removeButton.setEnabled(
                         bundleLocalesList.getSelectionIndices().length != 0);
@@ -181,6 +182,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         addButton.setText(RBEPlugin.getString(
                 "editor.wiz.add")); //$NON-NLS-1$
         addButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 bundleLocalesList.add(getSelectedLocaleAsString());
                 setAddButtonState();
@@ -194,6 +196,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
                 "editor.wiz.remove")); //$NON-NLS-1$
         removeButton.setEnabled(false);
         removeButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 bundleLocalesList.remove(
                         bundleLocalesList.getSelectionIndices());
@@ -250,6 +253,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         button.setText(RBEPlugin.getString(
                 "editor.wiz.browse")); //$NON-NLS-1$
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 handleBrowse();
             }

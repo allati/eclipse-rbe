@@ -84,7 +84,6 @@ public abstract class ResourceFactory implements IResourceFactory {
      * Sorted by key (Locale).
      */
     private Map<Locale, SourceEditor> sourceEditors = new TreeMap<Locale, SourceEditor>(new Comparator<Locale>() {
-		@Override
 		public int compare(Locale obj1, Locale obj2) {
            String displayName1 = UIUtils.getDisplayName(obj1);
            String displayName2 = UIUtils.getDisplayName(obj2);

@@ -625,7 +625,6 @@ public class BundleEntryComposite extends Composite {
            
            String _oldText=null;
 
-           @Override
            public void textChanged( TextEvent event ) {
               String text = textBox.getText();
               if(text.equals(_oldText)) return;

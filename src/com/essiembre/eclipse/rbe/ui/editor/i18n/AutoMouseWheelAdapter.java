@@ -85,7 +85,6 @@ public class AutoMouseWheelAdapter implements Listener {
       Display.getDefault().removeFilter(SWT.MouseWheel, this);
    }
 
-   @Override
    public final void handleEvent( Event event ) {
       Control cursorControl = event.display.getCursorControl();
       if ( event.widget == cursorControl || cursorControl == null ) {
