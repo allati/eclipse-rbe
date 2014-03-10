@@ -25,7 +25,9 @@ import java.util.Locale;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -284,18 +286,46 @@ public class ResourceBundleNewWizardPage extends WizardPage {
     private void initialize() {
         if (selection!=null && selection.isEmpty()==false && selection instanceof IStructuredSelection) {
             IStructuredSelection ssel = (IStructuredSelection)selection;
-            if (ssel.size()>1) return;
-            Object obj = ssel.getFirstElement();
-            if (obj instanceof IResource) {
-                IContainer container;
-                if (obj instanceof IContainer)
-                    container = (IContainer)obj;
-                else
-                    container = ((IResource)obj).getParent();
-                containerText.setText(container.getFullPath().toString());
+            if (ssel.size() == 1) {
+                IContainer container = adaptSelectionToContainer(ssel);
+                if (container != null) {
+                    containerText.setText(container.getFullPath().toString());
+                }
             }
         }
         fileText.setText("ApplicationResources"); //$NON-NLS-1$
+    }
+
+    /**
+     * Converts selected entry in project tree to IContainer instance
+     * 
+     * @param ssel selection
+     * @return IContainer representation of the current  selection or
+     * null if it can not be coerced to it
+     */
+    private IContainer adaptSelectionToContainer(IStructuredSelection ssel) {
+        Object obj = ssel.getFirstElement();
+        IResource resource = null;
+        if (obj instanceof IResource) {
+            resource = (IResource) obj;
+        } else {
+            resource = (IResource) Platform.getAdapterManager().getAdapter(obj, IResource.class);
+            if (resource == null) {
+                if (obj instanceof IAdaptable) {
+                    resource = (IResource) ((IAdaptable) obj).getAdapter(IResource.class);
+                }
+            }
+        }
+        
+        IContainer container = null;
+        if (resource != null) {
+            if (resource instanceof IContainer) {
+                container = (IContainer) resource;
+            } else {
+                container = resource.getParent();
+            }
+        }
+        return container;
     }
     
     /**
