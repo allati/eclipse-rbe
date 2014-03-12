@@ -84,13 +84,13 @@ public abstract class ResourceFactory implements IResourceFactory {
      * Sorted by key (Locale).
      */
     private Map<Locale, SourceEditor> sourceEditors = new TreeMap<Locale, SourceEditor>(new Comparator<Locale>() {
-		public int compare(Locale obj1, Locale obj2) {
-           String displayName1 = UIUtils.getDisplayName(obj1);
-           String displayName2 = UIUtils.getDisplayName(obj2);
-           return displayName1.compareToIgnoreCase(displayName2);
-		}
+        public int compare(Locale obj1, Locale obj2) {
+            String displayName1 = UIUtils.getDisplayName(obj1);
+            String displayName2 = UIUtils.getDisplayName(obj2);
+            return displayName1.compareToIgnoreCase(displayName2);
+        }
     });
-    	
+        
     /**
      * The {@link PropertiesFileCreator} used to create new files.
      */
@@ -105,10 +105,10 @@ public abstract class ResourceFactory implements IResourceFactory {
     private String displayName;
     
     /* (non-Javadoc)
-	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getEditorDisplayName()
-	 */
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getEditorDisplayName()
+     */
     public String getEditorDisplayName() {
-    	return displayName;
+        return displayName;
     }
     /**
      * Sets the editor display name of this factory.
@@ -116,28 +116,28 @@ public abstract class ResourceFactory implements IResourceFactory {
      * @see #getEditorDisplayName()
      */
     protected void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
+        this.displayName = displayName;
+    }
     
     /* (non-Javadoc)
-	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getSourceEditors()
-	 */
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getSourceEditors()
+     */
     public SourceEditor[] getSourceEditors() {
-    	SourceEditor[] editors = new SourceEditor[sourceEditors.values().size()];
-    	int i = 0;
-    	for (SourceEditor sourceEditor : sourceEditors.values()) {
-			Object obj = sourceEditor;
-			if (obj instanceof SourceEditor) {
-				editors[i] = (SourceEditor) obj;
-			}
-			i++;
-		}
+        SourceEditor[] editors = new SourceEditor[sourceEditors.values().size()];
+        int i = 0;
+        for (SourceEditor sourceEditor : sourceEditors.values()) {
+            Object obj = sourceEditor;
+            if (obj instanceof SourceEditor) {
+                editors[i] = (SourceEditor) obj;
+            }
+            i++;
+        }
         return editors;
     }
 
     /* (non-Javadoc)
-	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#addResource(org.eclipse.core.resources.IResource, java.util.Locale)
-	 */
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#addResource(org.eclipse.core.resources.IResource, java.util.Locale)
+     */
     public SourceEditor addResource(IResource resource, Locale locale) throws PartInitException {
         if (sourceEditors.containsKey(locale))
             throw new IllegalArgumentException("ResourceFactory already contains a resource for locale "+locale);
@@ -146,35 +146,35 @@ public abstract class ResourceFactory implements IResourceFactory {
         return editor;
     }
     
-	protected void addSourceEditor(Locale locale, SourceEditor sourceEditor) {
-		sourceEditors.put(locale, sourceEditor);
-	}
+    protected void addSourceEditor(Locale locale, SourceEditor sourceEditor) {
+        sourceEditors.put(locale, sourceEditor);
+    }
 
-	protected void setSite(IEditorSite site) {
-		this.site = site;
-	}
-	protected IEditorSite getSite() {
-		return site;
-	}
+    protected void setSite(IEditorSite site) {
+        this.site = site;
+    }
+    protected IEditorSite getSite() {
+        return site;
+    }
     /* (non-Javadoc)
-	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getPropertiesFileCreator()
-	 */
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getPropertiesFileCreator()
+     */
     public PropertiesFileCreator getPropertiesFileCreator() {
-    	return propertiesFileCreator;
+        return propertiesFileCreator;
     }
     protected void setPropertiesFileCreator(PropertiesFileCreator fileCreator) {
-    	this.propertiesFileCreator = fileCreator;
+        this.propertiesFileCreator = fileCreator;
     }
     
     
     /* (non-Javadoc)
-	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#isResponsible(org.eclipse.core.resources.IFile)
-	 */
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#isResponsible(org.eclipse.core.resources.IFile)
+     */
     public abstract boolean isResponsible(IFile file) throws CoreException;
     
     /* (non-Javadoc)
-	 * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#init(org.eclipse.ui.IEditorSite, org.eclipse.core.resources.IFile)
-	 */
+     * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#init(org.eclipse.ui.IEditorSite, org.eclipse.core.resources.IFile)
+     */
     public abstract void init(IEditorSite site, IFile file) throws CoreException;
     
     
@@ -203,14 +203,14 @@ public abstract class ResourceFactory implements IResourceFactory {
      * @throws CoreException problem creating factory
      */
     public static IResourceFactory createFactory(IEditorSite site, IFile file)
-            throws CoreException {
-    	IResourceFactory[] factories = ResourceFactoryDescriptor.getContributedResourceFactories();
-    	for (IResourceFactory factory : factories) {
-    		if (factory.isResponsible(file)) {
-				factory.init(site, file);
-				return factory;
-			}
-		}
+    throws CoreException {
+        IResourceFactory[] factories = ResourceFactoryDescriptor.getContributedResourceFactories();
+        for (IResourceFactory factory : factories) {
+            if (factory.isResponsible(file)) {
+                factory.init(site, file);
+                return factory;
+            }
+        }
         return null;
     }
     
@@ -228,57 +228,57 @@ public abstract class ResourceFactory implements IResourceFactory {
      * @throws CoreException problem creating factory
      */
     public static IResourceFactory createParentFactory(IEditorSite site, IFile file, Class<? extends IResourceFactory> childFactoryClass)
-            throws CoreException {
-    	IResourceFactory[] factories = ResourceFactoryDescriptor.getContributedResourceFactories();
-    	for (IResourceFactory factorie : factories) {
-    		IResourceFactory factory = factorie;
-			if (!factory.getClass().equals(childFactoryClass) && factory.isResponsible(file)) {
-				factory.init(site, file);
-				return factory;
-			}
-		}
+    throws CoreException {
+        IResourceFactory[] factories = ResourceFactoryDescriptor.getContributedResourceFactories();
+        for (IResourceFactory factorie : factories) {
+            IResourceFactory factory = factorie;
+            if (!factory.getClass().equals(childFactoryClass) && factory.isResponsible(file)) {
+                factory.init(site, file);
+                return factory;
+            }
+        }
         return null;
     }
     
-	/**
+    /**
      * Parses the specified bundle name and returns the locale.
      * @param resource the resource
      * @return the locale or null if none
      */
-	protected static Locale parseBundleName(IResource resource) {
+    protected static Locale parseBundleName(IResource resource) {
         // Build local title
         String regex = ResourceFactory.getPropertiesFileRegEx(resource);
         String localeText = resource.getName().replaceFirst(regex, "$2"); //$NON-NLS-1$
         StringTokenizer tokens = new StringTokenizer(localeText, "_"); //$NON-NLS-1$
-		List<String> localeSections = new ArrayList<String>();
-		while (tokens.hasMoreTokens()) {
-		    localeSections.add(tokens.nextToken());
-		}
-		Locale locale = null;
-		switch (localeSections.size()) {
-		case 1:
-		    locale = new Locale(localeSections.get(0));
-		    break;
-		case 2:
-		    locale = new Locale(
-		            localeSections.get(0),
-		            localeSections.get(1));
-		    break;
-		case 3:
-		    locale = new Locale(
-		            localeSections.get(0),
-		            localeSections.get(1),
-		            localeSections.get(2));
-		    break;
-		default:
-		    break;
-		}
-		return locale;
-	}
+        List<String> localeSections = new ArrayList<String>();
+        while (tokens.hasMoreTokens()) {
+            localeSections.add(tokens.nextToken());
+        }
+        Locale locale = null;
+        switch (localeSections.size()) {
+            case 1:
+                locale = new Locale(localeSections.get(0));
+                break;
+            case 2:
+                locale = new Locale(
+                    localeSections.get(0),
+                    localeSections.get(1));
+                break;
+            case 3:
+                locale = new Locale(
+                    localeSections.get(0),
+                    localeSections.get(1),
+                    localeSections.get(2));
+                break;
+            default:
+                break;
+        }
+        return locale;
+    }
     
     protected SourceEditor createEditor(
-            IEditorSite site, IResource resource, Locale locale)
-            throws PartInitException {
+        IEditorSite site, IResource resource, Locale locale)
+    throws PartInitException {
         
         ITextEditor textEditor = null;
         if (resource != null && resource instanceof IFile) {
@@ -295,20 +295,20 @@ public abstract class ResourceFactory implements IResourceFactory {
             textEditor.init(site, newEditorInput);
             
             try {
-               /* ugly fix for a memory leak: 
-                * ITextEditor.init(.) Javadoc states: "Clients must not call this method."
-                * but we do in ResourceFactory.createEditor(.), and the way we set-up everything, we have to.
-                * Since duplicate calls to init(.) create a memory leak, due to a zombie ActivationListener registered in 
-                * AbstractTextEditor, we dispose the first ActivationListener we just unintentionally created */
-               Field field = AbstractTextEditor.class.getDeclaredField("fActivationListener");
-               field.setAccessible(true); // enable access to the method - ...hackity hack
-               Object activationListener = field.get(textEditor);
-               Method disposeMethod = activationListener.getClass().getMethod("dispose");
-               disposeMethod.setAccessible(true);
-               disposeMethod.invoke(activationListener);
+                /* ugly fix for a memory leak: 
+                 * ITextEditor.init(.) Javadoc states: "Clients must not call this method."
+                 * but we do in ResourceFactory.createEditor(.), and the way we set-up everything, we have to.
+                 * Since duplicate calls to init(.) create a memory leak, due to a zombie ActivationListener registered in 
+                 * AbstractTextEditor, we dispose the first ActivationListener we just unintentionally created */
+                Field field = AbstractTextEditor.class.getDeclaredField("fActivationListener");
+                field.setAccessible(true); // enable access to the method - ...hackity hack
+                Object activationListener = field.get(textEditor);
+                Method disposeMethod = activationListener.getClass().getMethod("dispose");
+                disposeMethod.setAccessible(true);
+                disposeMethod.invoke(activationListener);
             }
             catch(Exception e) {
-               System.err.println("Failed to apply memory leak work around");
+                System.err.println("Failed to apply memory leak work around");
             }
         }
         if (textEditor != null) {
@@ -327,10 +327,10 @@ public abstract class ResourceFactory implements IResourceFactory {
     }
     
     protected static String getDisplayName(IResource file) {
-    	if (file instanceof IFile)
-    		return getBundleName(file) + "[...]." + file.getFileExtension();
-    	else
-    		return getBundleName(file);
+        if (file instanceof IFile)
+            return getBundleName(file) + "[...]." + file.getFileExtension();
+        else
+            return getBundleName(file);
     }
     
     protected static String getPropertiesFileRegEx(IResource file) {
@@ -340,25 +340,25 @@ public abstract class ResourceFactory implements IResourceFactory {
                         TOKEN_FILE_EXTENSION, file.getFileExtension());
     }
 
-	/**
-	 * Returns the resource bundle file resources that match the specified file name.
-	 *  
-	 * @param file the file to match
-	 * @return array of file resources, empty if none matches
-	 * @throws CoreException
-	 */
-	protected static IFile[] getResources(IFile file) throws CoreException {
-	    
-	    String regex = ResourceFactory.getPropertiesFileRegEx(file);
-	    IResource[] resources = file.getParent().members();
-	    Collection<IResource> validResources = new ArrayList<IResource>();
-	    for (IResource resource : resources) {
-	        String resourceName = resource.getName();
-	        if (resource instanceof IFile && resourceName.matches(regex)) {
-	            validResources.add(resource);
-	        }
-	    }
-	    return validResources.toArray(new IFile[]{});
-	}
-	
+    /**
+     * Returns the resource bundle file resources that match the specified file name.
+     *  
+     * @param file the file to match
+     * @return array of file resources, empty if none matches
+     * @throws CoreException
+     */
+    protected static IFile[] getResources(IFile file) throws CoreException {
+        
+        String regex = ResourceFactory.getPropertiesFileRegEx(file);
+        IResource[] resources = file.getParent().members();
+        Collection<IResource> validResources = new ArrayList<IResource>();
+        for (IResource resource : resources) {
+            String resourceName = resource.getName();
+            if (resource instanceof IFile && resourceName.matches(regex)) {
+                validResources.add(resource);
+            }
+        }
+        return validResources.toArray(new IFile[]{});
+    }
+    
 }

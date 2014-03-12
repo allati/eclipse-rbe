@@ -122,22 +122,22 @@ public class I18nPage extends ScrolledComposite {
         _autoMouseWheelAdapter = new AutoMouseWheelAdapter(parent); 
         
         if(RBEPreferences.getAutoAdjust()) {
-           // performance optimization: we only auto-adjust every 50 ms
-           getShell().getDisplay().timerExec(50, new Runnable() {
+            // performance optimization: we only auto-adjust every 50 ms
+            getShell().getDisplay().timerExec(50, new Runnable() {
             
-              public void run() {
+                public void run() {
                
-                 if(_autoAdjustNeeded) {
-                    _autoAdjustNeeded = false;
-                    Point newMinSize = _rightComposite.computeSize(editingComposite.getClientArea().width, SWT.DEFAULT);
-                    editingComposite.setMinSize(newMinSize);
-                    editingComposite.layout();
-                 }
+                    if(_autoAdjustNeeded) {
+                        _autoAdjustNeeded = false;
+                        Point newMinSize = _rightComposite.computeSize(editingComposite.getClientArea().width, SWT.DEFAULT);
+                        editingComposite.setMinSize(newMinSize);
+                        editingComposite.layout();
+                    }
                
-                 if(!isDisposed())
-                    getShell().getDisplay().timerExec(50,this);
-                 }
-           });
+                    if(!isDisposed())
+                        getShell().getDisplay().timerExec(50,this);
+                }
+            });
         }
     }
     
@@ -177,7 +177,7 @@ public class I18nPage extends ScrolledComposite {
         _rightComposite = new Composite(parent, SWT.BORDER);
         parent.setContent(_rightComposite);
         if ( !RBEPreferences.getAutoAdjust() ) {
-           parent.setMinSize(_rightComposite.computeSize(SWT.DEFAULT, resourceMediator.getLocales().size() * RBEPreferences.getMinHeight()));
+            parent.setMinSize(_rightComposite.computeSize(SWT.DEFAULT, resourceMediator.getLocales().size() * RBEPreferences.getMinHeight()));
         }
         _rightComposite.setLayout(new GridLayout(1, false));
         entryComposites.clear();
@@ -250,7 +250,7 @@ public class I18nPage extends ScrolledComposite {
     }
 
     public IFindReplaceTarget getReplaceTarget() {
-       return new FindReplaceTarget();
+        return new FindReplaceTarget();
     }
     
     /**
@@ -328,13 +328,13 @@ public class I18nPage extends ScrolledComposite {
     }
     
     void setAutoAdjustNeeded( boolean b ) {
-       _autoAdjustNeeded = b;
+        _autoAdjustNeeded = b;
     }
     
     void findActionStart() {
-       if(!keysComposite.getFilter().isEmpty()) {
-          keysComposite.setFilter("");
-       }
+        if(!keysComposite.getFilter().isEmpty()) {
+            keysComposite.setFilter("");
+        }
     }
 
     
@@ -347,8 +347,8 @@ public class I18nPage extends ScrolledComposite {
          * {@inheritDoc}
          */
         public void focusGained(FocusEvent event) {
-           activeEntry = (BundleEntryComposite) event.widget;
-           lastActiveEntry = activeEntry;
+            activeEntry = (BundleEntryComposite) event.widget;
+            lastActiveEntry = activeEntry;
         }
 
         /**
@@ -404,22 +404,22 @@ public class I18nPage extends ScrolledComposite {
     } /* ENDCLASS */
     
     private class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTargetExtension3{
-       
-       public int findAndSelect( int widgetOffset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord ) {
+        
+        public int findAndSelect( int widgetOffset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord ) {
           // replaced by findAndSelect(.,.)
-          return -1;
-       }
+            return -1;
+        }
 
-      public int findAndSelect( int offset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord, boolean regExSearch ) {
+        public int findAndSelect( int offset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord, boolean regExSearch ) {
             if ( lastActiveEntry != null ) {
-               StyledText textWidget = lastActiveEntry.getTextViewer().getTextWidget();
-               String text = textWidget.getText();
-               IRegion region = find(text, findString, textWidget.getSelection().x+(searchForward?1:-1), searchForward, caseSensitive, wholeWord, regExSearch);
-               if ( region != null ) {
-                  focusBundleEntryComposite(lastActiveEntry.locale);
-                  textWidget.setSelection(region.getOffset(), region.getOffset() + region.getLength());
-                  return region.getOffset();
-               }
+                StyledText textWidget = lastActiveEntry.getTextViewer().getTextWidget();
+                String text = textWidget.getText();
+                IRegion region = find(text, findString, textWidget.getSelection().x+(searchForward?1:-1), searchForward, caseSensitive, wholeWord, regExSearch);
+                if ( region != null ) {
+                    focusBundleEntryComposite(lastActiveEntry.locale);
+                    textWidget.setSelection(region.getOffset(), region.getOffset() + region.getLength());
+                    return region.getOffset();
+                }
             }
             BundleGroup bundleGroup = resourceMediator.getBundleGroup();
             ArrayList<String> keys = new ArrayList<String>(bundleGroup.getKeys());
@@ -431,62 +431,62 @@ public class I18nPage extends ScrolledComposite {
             int activeLocaleIndex = locales.indexOf(activeLocale) + (searchForward?1:-1);
 
             for ( int i = 0, length = keys.size(); i < length; i++ ) {
-               String key = keys.get((activeKeyIndex + (searchForward?i:-i)) % length);
-               int j = (i==0?activeLocaleIndex:(searchForward?0:locales.size()-1));
-               while(j<locales.size() && j>= 0) {
-                  Locale locale = locales.get(j);
-                  Bundle bundle = bundleGroup.getBundle(locale);
-                  BundleEntry value = bundle.getEntry(key);
-                  if ( value != null && value.getValue() != null ) {
-                     IRegion region = find(value.getValue(), findString, searchForward?0:value.getValue().length()-1, searchForward, caseSensitive, wholeWord, regExSearch);
-                     if ( region != null ) {
-                        keysComposite.selectKeyTreeItem(key);
-                        focusBundleEntryComposite(locale);
-                        StyledText textWidget = activeEntry.getTextViewer().getTextWidget();
-                        textWidget.setSelection(region.getOffset(), region.getOffset() + region.getLength());
-                        return region.getOffset();
-                     }
-                  }
-                  if(searchForward) ++j; 
-                  else --j;
-               }
+                String key = keys.get((activeKeyIndex + (searchForward?i:-i)) % length);
+                int j = (i==0?activeLocaleIndex:(searchForward?0:locales.size()-1));
+                while(j<locales.size() && j>= 0) {
+                    Locale locale = locales.get(j);
+                    Bundle bundle = bundleGroup.getBundle(locale);
+                    BundleEntry value = bundle.getEntry(key);
+                    if ( value != null && value.getValue() != null ) {
+                        IRegion region = find(value.getValue(), findString, searchForward?0:value.getValue().length()-1, searchForward, caseSensitive, wholeWord, regExSearch);
+                        if ( region != null ) {
+                            keysComposite.selectKeyTreeItem(key);
+                            focusBundleEntryComposite(locale);
+                            StyledText textWidget = activeEntry.getTextViewer().getTextWidget();
+                            textWidget.setSelection(region.getOffset(), region.getOffset() + region.getLength());
+                            return region.getOffset();
+                        }
+                    }
+                    if(searchForward) ++j; 
+                    else --j;
+                }
             }
             return -1;
-      }
+        }
 
-      private IRegion find( String text, String findString, int offset, boolean searchForward, boolean caseSensitive, boolean wholeWord, boolean regExSearch ) {
-         Document document = new Document(text);
-         FindReplaceDocumentAdapter documentAdapter = new FindReplaceDocumentAdapter(document);
-         try {
-            return documentAdapter.find(offset, findString, searchForward, caseSensitive, wholeWord, regExSearch);
-         }
-         catch ( BadLocationException argh ) {
-            return null;
-         }
-      }
+        private IRegion find( String text, String findString, int offset, boolean searchForward, boolean caseSensitive, boolean wholeWord, boolean regExSearch ) {
+            Document document = new Document(text);
+            FindReplaceDocumentAdapter documentAdapter = new FindReplaceDocumentAdapter(document);
+            try {
+                return documentAdapter.find(offset, findString, searchForward, caseSensitive, wholeWord, regExSearch);
+            }
+            catch ( BadLocationException argh ) {
+                return null;
+            }
+        }
        
-       public void replaceSelection( String text ) {
-          // replaced by replaceSelection(.,.)
-       }
-       public void replaceSelection( String text, boolean regExReplace ) {
+        public void replaceSelection( String text ) {
+            // replaced by replaceSelection(.,.)
+        }
+        public void replaceSelection( String text, boolean regExReplace ) {
           
-       }
+        }
 
-       public boolean isEditable() {
-          return false;
-       }
+        public boolean isEditable() {
+            return false;
+        }
 
-       public String getSelectionText() {
-          return activeEntry!=null?activeEntry.getTextViewer().getTextWidget().getSelectionText():"";
-       }
+        public String getSelectionText() {
+            return activeEntry!=null?activeEntry.getTextViewer().getTextWidget().getSelectionText():"";
+        }
 
-       public Point getSelection() {
-          return activeEntry!=null?activeEntry.getTextViewer().getSelectedRange():new Point(0,0);
-       }
+        public Point getSelection() {
+            return activeEntry!=null?activeEntry.getTextViewer().getSelectedRange():new Point(0,0);
+        }
 
-       public boolean canPerformFind() {
-          return true;
-       }
+        public boolean canPerformFind() {
+            return true;
+        }
 
  
     }

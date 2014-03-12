@@ -132,7 +132,7 @@ public final class PropertiesParser {
                         new BundleEntry(key, value, comment, isCommentedLine));
             // parse comment line
             } else if (lineBuf.length()>0 && (lineBuf.charAt(0) == '#' || lineBuf.charAt(0) == '!')) {
-               if (!doneWithFileComment) {
+                if (!doneWithFileComment) {
                     fileComment.append(lineBuf);
                     fileComment.append(SYSTEM_LINE_SEPARATOR);
                 } else {
@@ -172,22 +172,22 @@ public final class PropertiesParser {
                     for (int i = 0; i < 4; i++) {
                         aChar = str.charAt(x++);
                         switch (aChar) {
-                        case '0': case '1': case '2': case '3': case '4':
-                        case '5': case '6': case '7': case '8': case '9':
-                            value = (value << 4) + aChar - '0';
-                            break;
-                        case 'a': case 'b': case 'c':
-                        case 'd': case 'e': case 'f':
-                            value = (value << 4) + 10 + aChar - 'a';
-                            break;
-                        case 'A': case 'B': case 'C':
-                        case 'D': case 'E': case 'F':
-                            value = (value << 4) + 10 + aChar - 'A';
-                            break;
-                        default:
-                            value = aChar;
-                            System.err.println(RBEPlugin.getString(
-                                 "error.init.badencoding") + str); //$NON-NLS-1$
+                            case '0': case '1': case '2': case '3': case '4':
+                            case '5': case '6': case '7': case '8': case '9':
+                                value = (value << 4) + aChar - '0';
+                                break;
+                            case 'a': case 'b': case 'c':
+                            case 'd': case 'e': case 'f':
+                                value = (value << 4) + 10 + aChar - 'a';
+                                break;
+                            case 'A': case 'B': case 'C':
+                            case 'D': case 'E': case 'F':
+                                value = (value << 4) + 10 + aChar - 'A';
+                                break;
+                            default:
+                                value = aChar;
+                                System.err.println(RBEPlugin.getString(
+                                    "error.init.badencoding") + str); //$NON-NLS-1$
                         }
                     }
                     outBuffer.append((char) value);

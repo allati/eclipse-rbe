@@ -56,15 +56,15 @@ public class NLPropertiesFileCreator extends PropertiesFileCreator {
      * @return The currently set nlDir.
      */
     protected String getNlDir() {
-    	return nlDir;
+        return nlDir;
     }
     /**
      * Set the nlDir.
      * @param nlDir The nlDir to set.
      */
     protected void setNlDir(String nlDir) {
-		this.nlDir = nlDir;
-	}
+        this.nlDir = nlDir;
+    }
     
     /**
      * @throws CoreException

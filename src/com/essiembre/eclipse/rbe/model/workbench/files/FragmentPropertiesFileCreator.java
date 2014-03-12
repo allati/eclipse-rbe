@@ -42,91 +42,91 @@ import com.essiembre.eclipse.rbe.ui.editor.resources.PDEUtils;
  * @author Uwe Voigt (http://sourceforge.net/users/uwe_ewald/)
  */
 public class FragmentPropertiesFileCreator extends PropertiesFileCreator {
-	private final IProject fragment;
+    private final IProject fragment;
     private final String targetDir;
     private final String baseFileName;
-	private final String extension;
+    private final String extension;
     
-	/**
-	 * Creates an instance.
-	 * 
-	 * @param fragment the fragment project
-	 * @param targetDir the target directory
-	 * @param baseFileName the base bundle name
-	 * @param extension the file extension
-	 */
-	public FragmentPropertiesFileCreator(IProject fragment, String targetDir, String baseFileName, String extension) {
-		super();
-		this.fragment = fragment;
-		this.targetDir = targetDir;
-		this.baseFileName = baseFileName;
-		this.extension = extension;
-	}
+    /**
+     * Creates an instance.
+     * 
+     * @param fragment the fragment project
+     * @param targetDir the target directory
+     * @param baseFileName the base bundle name
+     * @param extension the file extension
+     */
+    public FragmentPropertiesFileCreator(IProject fragment, String targetDir, String baseFileName, String extension) {
+        super();
+        this.fragment = fragment;
+        this.targetDir = targetDir;
+        this.baseFileName = baseFileName;
+        this.extension = extension;
+    }
 
-	/* (non-Javadoc)
-	 * @see com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator#buildFilePath(java.util.Locale)
-	 */
-	protected IPath buildFilePath(final Locale locale) throws CoreException {
-		/*
-		 * Check where to create the file
-		 */
-		IProject project = null;
-		if (!shouldFileBeCreatedInFragment(fragment)) {
-			project = PDEUtils.getFragmentHost(fragment);
-		}
-		if (project == null) {
-			project = fragment;
-		}
-		/*
-		 * create the resource parent paths if necessary 
-		 */
-		IResource resource = project.findMember(targetDir);
-		if (resource == null || !resource.exists()) {
-			final IPath path = new Path(targetDir);			
-			final List<IPath> paths = new ArrayList<IPath>();
-			IPath parent = path;
-			do {
-				paths.add(parent);
-				parent = parent.uptoSegment(parent.segmentCount() - 1);
-				resource = project.findMember(parent);
-			} while (resource == null || !resource.exists());
-			for (int i = paths.size() - 1; i >= 0; i--) {
-				project.getFolder(paths.get(i)).create(true, true, null);
-			}
-		}
+    /* (non-Javadoc)
+     * @see com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator#buildFilePath(java.util.Locale)
+     */
+    protected IPath buildFilePath(final Locale locale) throws CoreException {
+        /*
+         * Check where to create the file
+         */
+        IProject project = null;
+        if (!shouldFileBeCreatedInFragment(fragment)) {
+            project = PDEUtils.getFragmentHost(fragment);
+        }
+        if (project == null) {
+            project = fragment;
+        }
+        /*
+         * create the resource parent paths if necessary 
+         */
+        IResource resource = project.findMember(targetDir);
+        if (resource == null || !resource.exists()) {
+            final IPath path = new Path(targetDir);			
+            final List<IPath> paths = new ArrayList<IPath>();
+            IPath parent = path;
+            do {
+                paths.add(parent);
+                parent = parent.uptoSegment(parent.segmentCount() - 1);
+                resource = project.findMember(parent);
+            } while (resource == null || !resource.exists());
+            for (int i = paths.size() - 1; i >= 0; i--) {
+                project.getFolder(paths.get(i)).create(true, true, null);
+            }
+        }
 
-		/*
-		 * build the resource path according to the requested language
-		 */
-		IPath filePath = new Path(baseFileName);
-		if (locale != null) {
-			filePath = new Path(filePath.toString() + '_' + locale.toString());
-			filePath = filePath.addFileExtension(extension);
-		}
+        /*
+         * build the resource path according to the requested language
+         */
+        IPath filePath = new Path(baseFileName);
+        if (locale != null) {
+            filePath = new Path(filePath.toString() + '_' + locale.toString());
+            filePath = filePath.addFileExtension(extension);
+        }
         return project.getFullPath().append(targetDir).append(filePath);
-	}
-	
-	/**
-	 * Ask the user where to create the new file 
-	 * the fragment or the host plugin.
-	 * @return Whether the user decided to create the file in the fragment.
-	 */
-	public static boolean shouldFileBeCreatedInFragment(IProject fragment) {
-		if (PDEUtils.getFragmentHost(fragment) == null) {
-			return true; // there is no host plugin, can not create something there
-		}
-		if (RBEPreferences.getLoadOnlyFragmentResources())
-			return true;
-		// TODO externalize/translate this messages
-		MessageDialog dialog = new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
-				"File creation", null, // accept
-				"Resources where loaded from both the host and the fragment plugin. " +
-				"Where do you want to create the new bundle?", 
-				MessageDialog.QUESTION, 
-				new String[] {"Fragment", "Host plugin"}, 0); // Fragment is the default
-		int result = dialog.open();
-		return result == 0;
-	}
-	
+    }
+    
+    /**
+     * Ask the user where to create the new file 
+     * the fragment or the host plugin.
+     * @return Whether the user decided to create the file in the fragment.
+     */
+    public static boolean shouldFileBeCreatedInFragment(IProject fragment) {
+        if (PDEUtils.getFragmentHost(fragment) == null) {
+            return true; // there is no host plugin, can not create something there
+        }
+        if (RBEPreferences.getLoadOnlyFragmentResources())
+            return true;
+        // TODO externalize/translate this messages
+        MessageDialog dialog = new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+                "File creation", null, // accept
+                "Resources where loaded from both the host and the fragment plugin. " +
+                "Where do you want to create the new bundle?", 
+                MessageDialog.QUESTION, 
+                new String[] {"Fragment", "Host plugin"}, 0); // Fragment is the default
+        int result = dialog.open();
+        return result == 0;
+    }
+    
 
 }

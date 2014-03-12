@@ -49,7 +49,7 @@ public abstract class PropertiesFileCreator {
      * @throws IOException problem creating file
      */
     public IFile createPropertiesFile(Locale locale)
-            throws CoreException, IOException {
+    throws CoreException, IOException {
         IPath filePath = buildFilePath(locale);
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IFile file = root.getFile(filePath);

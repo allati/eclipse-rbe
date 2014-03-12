@@ -37,32 +37,32 @@ import com.essiembre.eclipse.rbe.ui.editor.resources.PDEUtils;
  */
 public class FragmentNLPropertiesFileCreator extends NLPropertiesFileCreator {
 
-	private IProject fragment;
-	private String fragmentNlDir;
-	private String hostNlDir;
-	
-	/**
-	 * @param nlDir
-	 * @param fileName
-	 */
-	public FragmentNLPropertiesFileCreator(IProject fragment, String fileName) {
-		super(NLResourceFactory.lookupNLDir(fragment).toString(), fileName);
-		this.fragment = fragment;
-		this.fragmentNlDir = NLResourceFactory.lookupNLDir(fragment).getFullPath().toString();
-		IProject host = PDEUtils.getFragmentHost(fragment);
-		if (host != null) {
-			this.hostNlDir = NLResourceFactory.lookupNLDir(host).getFullPath().toString();
-		}
-	}
-	
-	@Override
-	protected IPath buildFilePath(Locale locale) throws CoreException {
-		if (FragmentPropertiesFileCreator.shouldFileBeCreatedInFragment(fragment)) {
-			setNlDir(fragmentNlDir);
-		} else {
-			setNlDir(hostNlDir);
-		}
-		return super.buildFilePath(locale);
-	}
+    private IProject fragment;
+    private String fragmentNlDir;
+    private String hostNlDir;
+    
+    /**
+     * @param nlDir
+     * @param fileName
+     */
+    public FragmentNLPropertiesFileCreator(IProject fragment, String fileName) {
+        super(NLResourceFactory.lookupNLDir(fragment).toString(), fileName);
+        this.fragment = fragment;
+        this.fragmentNlDir = NLResourceFactory.lookupNLDir(fragment).getFullPath().toString();
+        IProject host = PDEUtils.getFragmentHost(fragment);
+        if (host != null) {
+            this.hostNlDir = NLResourceFactory.lookupNLDir(host).getFullPath().toString();
+        }
+    }
+    
+    @Override
+    protected IPath buildFilePath(Locale locale) throws CoreException {
+        if (FragmentPropertiesFileCreator.shouldFileBeCreatedInFragment(fragment)) {
+            setNlDir(fragmentNlDir);
+        } else {
+            setNlDir(hostNlDir);
+        }
+        return super.buildFilePath(locale);
+    }
 
 }

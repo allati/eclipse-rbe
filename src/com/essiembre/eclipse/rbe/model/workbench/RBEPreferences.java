@@ -153,7 +153,7 @@ public final class RBEPreferences {
     
     /** RBEPreferences. */
     private static final IPreferenceStore PREFS = 
-			RBEPlugin.getDefault().getPreferenceStore();
+            RBEPlugin.getDefault().getPreferenceStore();
     
     /**
      * Constructor.
@@ -431,10 +431,10 @@ public final class RBEPreferences {
 
     
     public static boolean getAutoAdjust() {
-       return PREFS.getBoolean(AUTO_ADJUST);
+        return PREFS.getBoolean(AUTO_ADJUST);
     }
  
     public static int getMinHeight() {
-       return PREFS.getInt(MIN_HEIGHT);
+        return PREFS.getInt(MIN_HEIGHT);
     }
 }

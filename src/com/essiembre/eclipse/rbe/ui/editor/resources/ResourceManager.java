@@ -66,7 +66,7 @@ public class ResourceManager {
      * @throws CoreException problem creating resource manager
      */
     public ResourceManager(final IEditorSite site, final IFile file)
-            throws CoreException {
+    throws CoreException {
         super();
         resourcesFactory = ResourceFactory.createFactory(site, file);
         bundleGroup = new BundleGroup();
@@ -174,7 +174,7 @@ public class ResourceManager {
      * @throws IOException problem creating file
      */
     public IFile createPropertiesFile(Locale locale) 
-            throws CoreException, IOException {
+    throws CoreException, IOException {
         return resourcesFactory.getPropertiesFileCreator().createPropertiesFile(
                 locale);
     }

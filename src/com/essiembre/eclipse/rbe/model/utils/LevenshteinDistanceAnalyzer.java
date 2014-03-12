@@ -55,7 +55,7 @@ public class LevenshteinDistanceAnalyzer implements ProximityAnalyzer {
      * @see com.essiembre.eclipse.rbe.model.utils.ProximityAnalyzer
      *      #analyse(java.lang.Object, java.lang.Object)
      */
-   public double analyse(Object obj1, Object obj2) {
+    public double analyse(Object obj1, Object obj2) {
         if (obj1 == null || obj2 == null) {
             return 0;
         }

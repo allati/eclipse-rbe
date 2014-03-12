@@ -36,55 +36,55 @@ import org.eclipse.core.runtime.Platform;
  */
 public class ResourceFactoryDescriptor {
 
-	private static final String EXTENSION_POINT_ID = "com.essiembre.eclipse.i18n.resourcebundle.resourceFactory"; //$NON-NLS-1$
-	private static final String TAG_FACTORY = "factory"; //$NON-NLS-1$
-	private IConfigurationElement fElement;
+    private static final String EXTENSION_POINT_ID = "com.essiembre.eclipse.i18n.resourcebundle.resourceFactory"; //$NON-NLS-1$
+    private static final String TAG_FACTORY = "factory"; //$NON-NLS-1$
+    private IConfigurationElement fElement;
 
-	private ResourceFactoryDescriptor(IConfigurationElement element) {
-		fElement = element;
-	}
+    private ResourceFactoryDescriptor(IConfigurationElement element) {
+        fElement = element;
+    }
 
-	/**
-	 * Returns new instances of the contributed resource factories order by their
-	 * contributed order value.
-	 * 
-	 * @return
-	 * @throws CoreException
-	 */
-	public static IResourceFactory[] getContributedResourceFactories() throws CoreException {
-		ResourceFactoryDescriptor[] descriptors = getContributedResourceFactoryDescriptors();
-		SortedMap<Integer, Object> factories = new TreeMap<Integer, Object>();
-		for (int i = 0, lastOrder = 0; i < descriptors.length; i++) {
-			Object factory = descriptors[i].fElement.createExecutableExtension("class"); //$NON-NLS-1$
-			String attribute = descriptors[i].fElement.getAttribute("order"); //$NON-NLS-1$
-			Integer order = null;
-			try {
-				order = new Integer(attribute);
-			} catch (Exception e) {
-				order = new Integer(++lastOrder);
-			}
-			while (factories.containsKey(order))
-				order = new Integer(lastOrder = order.intValue());
-			factories.put(order, factory);
-		}
-		return factories.values().toArray(new IResourceFactory[factories.values().size()]);
-	}
+    /**
+     * Returns new instances of the contributed resource factories order by their
+     * contributed order value.
+     * 
+     * @return
+     * @throws CoreException
+     */
+    public static IResourceFactory[] getContributedResourceFactories() throws CoreException {
+        ResourceFactoryDescriptor[] descriptors = getContributedResourceFactoryDescriptors();
+        SortedMap<Integer, Object> factories = new TreeMap<Integer, Object>();
+        for (int i = 0, lastOrder = 0; i < descriptors.length; i++) {
+            Object factory = descriptors[i].fElement.createExecutableExtension("class"); //$NON-NLS-1$
+            String attribute = descriptors[i].fElement.getAttribute("order"); //$NON-NLS-1$
+            Integer order = null;
+            try {
+                order = new Integer(attribute);
+            } catch (Exception e) {
+                order = new Integer(++lastOrder);
+            }
+            while (factories.containsKey(order))
+                order = new Integer(lastOrder = order.intValue());
+            factories.put(order, factory);
+        }
+        return factories.values().toArray(new IResourceFactory[factories.values().size()]);
+    }
 
-	private static ResourceFactoryDescriptor[] getContributedResourceFactoryDescriptors() {
-		IConfigurationElement[] elements = Platform.getExtensionRegistry()
-					.getConfigurationElementsFor(EXTENSION_POINT_ID);
-		return createDescriptors(elements);
-	}
+    private static ResourceFactoryDescriptor[] getContributedResourceFactoryDescriptors() {
+        IConfigurationElement[] elements = Platform.getExtensionRegistry()
+                    .getConfigurationElementsFor(EXTENSION_POINT_ID);
+        return createDescriptors(elements);
+    }
 
-	private static ResourceFactoryDescriptor[] createDescriptors(IConfigurationElement[] elements) {
-		List<ResourceFactoryDescriptor> list = new ArrayList<ResourceFactoryDescriptor>(elements.length);
-		for (IConfigurationElement element : elements) {
-			if (TAG_FACTORY.equals(element.getName())) {
-				ResourceFactoryDescriptor descriptor = new ResourceFactoryDescriptor(element);
-				list.add(descriptor);
-			}
-		}
-		return list.toArray(new ResourceFactoryDescriptor[list.size()]);
-	}
+    private static ResourceFactoryDescriptor[] createDescriptors(IConfigurationElement[] elements) {
+        List<ResourceFactoryDescriptor> list = new ArrayList<ResourceFactoryDescriptor>(elements.length);
+        for (IConfigurationElement element : elements) {
+            if (TAG_FACTORY.equals(element.getName())) {
+                ResourceFactoryDescriptor descriptor = new ResourceFactoryDescriptor(element);
+                list.add(descriptor);
+            }
+        }
+        return list.toArray(new ResourceFactoryDescriptor[list.size()]);
+    }
 
 }

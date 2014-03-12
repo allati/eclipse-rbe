@@ -45,7 +45,7 @@ public class StandardResourceFactory extends ResourceFactory {
 
     @Override
     public boolean isResponsible(IFile file) throws CoreException {
-    	return true;
+        return true;
     }
     
     /**
@@ -56,7 +56,7 @@ public class StandardResourceFactory extends ResourceFactory {
      */
     @Override
     public void init(IEditorSite site, IFile file) 
-             throws CoreException {
+    throws CoreException {
         String bundleName = getBundleName(file);
         IResource[] resources = StandardResourceFactory.getResources(file);
 
@@ -66,14 +66,14 @@ public class StandardResourceFactory extends ResourceFactory {
             SourceEditor sourceEditor = 
                     createEditor(site, resource, locale);
             if (sourceEditor != null) {
-            	addSourceEditor(sourceEditor.getLocale(), sourceEditor);
+                addSourceEditor(sourceEditor.getLocale(), sourceEditor);
             }
         }
         fileCreator = new StandardPropertiesFileCreator(
                 file.getParent().getFullPath().toString(),
                 bundleName,
                 file.getFileExtension());
-		setDisplayName(getDisplayName(file));
+        setDisplayName(getDisplayName(file));
     }
     
     /**

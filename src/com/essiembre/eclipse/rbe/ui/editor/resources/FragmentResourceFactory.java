@@ -49,150 +49,150 @@ import com.essiembre.eclipse.rbe.model.workbench.files.FragmentPropertiesFileCre
  * @author Uwe Voigt (http://sourceforge.net/users/uwe_ewald/)
  */
 public class FragmentResourceFactory extends NLResourceFactory {
-	
-	/**
-	 * {@inheritDoc}}
-	 */
+    
+    /**
+     * {@inheritDoc}}
+     */
     @Override
     public void init(IEditorSite site, IFile file) throws CoreException {
-    	setSite(site);
+        setSite(site);
         List<SourceEditor> editors = new ArrayList<SourceEditor>();
-    	loadEditors(site, editors, file, null);
-    	for (SourceEditor editor : editors) {
-			addSourceEditor(editor.getLocale(), editor);
-		}
-    	setDisplayName(getDisplayName(file));
-	}
+        loadEditors(site, editors, file, null);
+        for (SourceEditor editor : editors) {
+            addSourceEditor(editor.getLocale(), editor);
+        }
+        setDisplayName(getDisplayName(file));
+    }
 
     @Override
     protected void loadEditors(IEditorSite site, List<SourceEditor> editors, IFile file, IResource nlDir)
-    		throws CoreException {
-    	
-    	/*
-    	 * check again and load the fragment
-    	 */
-    	final IProject fragment = PDEUtils.lookupFragment(file.getProject());
+    throws CoreException {
+        
+        /*
+         * check again and load the fragment
+         */
+        final IProject fragment = PDEUtils.lookupFragment(file.getProject());
         if (fragment == null)
-        	throw new CoreException(new Status(IStatus.ERROR, RBEPlugin.ID, 0, "no fragment found", null)); //$NON-NLS-1$
+            throw new CoreException(new Status(IStatus.ERROR, RBEPlugin.ID, 0, "no fragment found", null)); //$NON-NLS-1$
 
         /*
          * extract the path to the resource bundle
          */
-		final IPath resourceBundlePath = file.getParent().getProjectRelativePath();
-		final String regex = getPropertiesFileRegEx(file);
+        final IPath resourceBundlePath = file.getParent().getProjectRelativePath();
+        final String regex = getPropertiesFileRegEx(file);
 
-		IResource folder = fragment.findMember(resourceBundlePath);
-		// this may be the case if no translations exist to date
-		if (folder == null) {
-			folder = fragment.getFolder(resourceBundlePath);
-		}
+        IResource folder = fragment.findMember(resourceBundlePath);
+        // this may be the case if no translations exist to date
+        if (folder == null) {
+            folder = fragment.getFolder(resourceBundlePath);
+        }
 
 
-		 // load editors from the nl-folder, if present
-		nlDir = lookupNLDir(fragment);
-		List<SourceEditor> nlEditors = new ArrayList<SourceEditor>();
-		if (nlDir != null && nlDir.exists())
-			super.loadEditors(site, nlEditors, file, nlDir);
+         // load editors from the nl-folder, if present
+        nlDir = lookupNLDir(fragment);
+        List<SourceEditor> nlEditors = new ArrayList<SourceEditor>();
+        if (nlDir != null && nlDir.exists())
+            super.loadEditors(site, nlEditors, file, nlDir);
 
-		// load editors from the same folder as the base file
-    	List<SourceEditor> fragmentEditors = loadFragmentEditors(site, regex, folder);
+        // load editors from the same folder as the base file
+        List<SourceEditor> fragmentEditors = loadFragmentEditors(site, regex, folder);
 
-		// Load root file, if exists.
-    	IProject hostProject = PDEUtils.getFragmentHost(fragment);
+        // Load root file, if exists.
+        IProject hostProject = PDEUtils.getFragmentHost(fragment);
         SourceEditor sourceEditor = null;
         if (hostProject == null) {
-        	// create root file only if no host could be found, otherwise the 
-        	// factory for the host should find it.
-		    sourceEditor = createEditor(site, file, null);
-		}
-	    if (sourceEditor != null) {
-	        editors.add(sourceEditor);
-	    }
+            // create root file only if no host could be found, otherwise the 
+            // factory for the host should find it.
+            sourceEditor = createEditor(site, file, null);
+        }
+        if (sourceEditor != null) {
+            editors.add(sourceEditor);
+        }
 
-	    if (nlEditors.size() > 0 && fragmentEditors.size() <= 1) {
-	    	// only nl-editors found, the one fragment editor is the file itself
-    		editors.addAll(nlEditors);
-    		setPropertiesFileCreator(new FragmentNLPropertiesFileCreator(fragment, file.getName()));
-	    } else if (nlEditors.size() > 0 && fragmentEditors.size() > 1) {
-		    /*
-		     * if resource bundles have been found within both, the nl-folder and
-		     * the same folder as the base bundle folder, then ask how to handle that
-		     */	    	
-	    	if (hostProject != null || hostProject == null && shouldNLCreatorBeUsed(fragment)) {
-	    		editors.addAll(nlEditors);
-	    		setPropertiesFileCreator(new FragmentNLPropertiesFileCreator(fragment, file.getName()));
-	    	}
-		}
-	    
-	    if (getPropertiesFileCreator() == null) {
-	    	/*
-	    	 * If the files creator is still null here, 
-	    	 * only resources in the same folder as the file could be found.
-	    	 */
-		    editors.addAll(fragmentEditors);
-			setPropertiesFileCreator(new FragmentPropertiesFileCreator(fragment, resourceBundlePath.toString(),
-					getBundleName(file), file.getFullPath().getFileExtension()));
-		}
-	    
-	    /*
-	     * load the resources of host plug-in
-	     */
-	    hostProject = PDEUtils.getFragmentHost(fragment);
-		if (hostProject != null) {
-			if (!RBEPreferences.getLoadOnlyFragmentResources()) {
-				IResourceFactory parentFactory = ResourceFactory.createParentFactory(
-						site, hostProject.getFile(file.getProjectRelativePath()), this.getClass());
-				if (parentFactory != null) {
-					SourceEditor[] parentEditors = parentFactory.getSourceEditors();					
-					for (SourceEditor parentEditor : parentEditors) {
-						if (parentEditor.getLocale() != null) {
-							editors.add(parentEditor);
-						}
-					}
-				}
-			}
-		}
-	}
+        if (nlEditors.size() > 0 && fragmentEditors.size() <= 1) {
+            // only nl-editors found, the one fragment editor is the file itself
+            editors.addAll(nlEditors);
+            setPropertiesFileCreator(new FragmentNLPropertiesFileCreator(fragment, file.getName()));
+        } else if (nlEditors.size() > 0 && fragmentEditors.size() > 1) {
+            /*
+             * if resource bundles have been found within both, the nl-folder and
+             * the same folder as the base bundle folder, then ask how to handle that
+             */	    	
+            if (hostProject != null || hostProject == null && shouldNLCreatorBeUsed(fragment)) {
+                editors.addAll(nlEditors);
+                setPropertiesFileCreator(new FragmentNLPropertiesFileCreator(fragment, file.getName()));
+            }
+        }
+        
+        if (getPropertiesFileCreator() == null) {
+            /*
+             * If the files creator is still null here, 
+             * only resources in the same folder as the file could be found.
+             */
+            editors.addAll(fragmentEditors);
+            setPropertiesFileCreator(new FragmentPropertiesFileCreator(fragment, resourceBundlePath.toString(),
+                    getBundleName(file), file.getFullPath().getFileExtension()));
+        }
+        
+        /*
+         * load the resources of host plug-in
+         */
+        hostProject = PDEUtils.getFragmentHost(fragment);
+        if (hostProject != null) {
+            if (!RBEPreferences.getLoadOnlyFragmentResources()) {
+                IResourceFactory parentFactory = ResourceFactory.createParentFactory(
+                        site, hostProject.getFile(file.getProjectRelativePath()), this.getClass());
+                if (parentFactory != null) {
+                    SourceEditor[] parentEditors = parentFactory.getSourceEditors();					
+                    for (SourceEditor parentEditor : parentEditors) {
+                        if (parentEditor.getLocale() != null) {
+                            editors.add(parentEditor);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	private List<SourceEditor> loadFragmentEditors(IEditorSite site, final String regex,
-			IResource folder) throws CoreException, PartInitException {
-		List<SourceEditor> fragmentEditors = new ArrayList<SourceEditor>();
-		if (folder.exists()) {
-			IResource[] members = ((IContainer) folder).members();
-			for (IResource member : members) {
-				IResource resource = member;
-				if (!(resource instanceof IFile)
-						|| !resource.getName().matches(regex))
-					continue;
-				Locale locale = parseBundleName(resource);
-				SourceEditor editor = createEditor(site, resource, locale);
-				if (editor != null) {
-					fragmentEditors.add(editor);
-				}
-			}
-		}
-		return fragmentEditors;
-	}
+    private List<SourceEditor> loadFragmentEditors(IEditorSite site, final String regex,
+            IResource folder) throws CoreException, PartInitException {
+        List<SourceEditor> fragmentEditors = new ArrayList<SourceEditor>();
+        if (folder.exists()) {
+            IResource[] members = ((IContainer) folder).members();
+            for (IResource member : members) {
+                IResource resource = member;
+                if (!(resource instanceof IFile)
+                        || !resource.getName().matches(regex))
+                    continue;
+                Locale locale = parseBundleName(resource);
+                SourceEditor editor = createEditor(site, resource, locale);
+                if (editor != null) {
+                    fragmentEditors.add(editor);
+                }
+            }
+        }
+        return fragmentEditors;
+    }
 
-	private boolean shouldNLCreatorBeUsed(IProject fragment) {
-		// TODO this decision could be stored within the base file persistent properties 
-		// TODO externalize/translate this message
-		return MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-				"Translations", "Within the fragment project '" + fragment.getName() +
-						"' there is a 'nl'-folder containing matching resource bundles as well " +
-						"as nationalized resource bundles within the same folder as the base file. " +
-						"Press 'yes' to open the files from the 'nl'-folder and 'no' to open the others.");
-	}
+    private boolean shouldNLCreatorBeUsed(IProject fragment) {
+        // TODO this decision could be stored within the base file persistent properties 
+        // TODO externalize/translate this message
+        return MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+            "Translations", "Within the fragment project '" + fragment.getName() +
+                "' there is a 'nl'-folder containing matching resource bundles as well " +
+                "as nationalized resource bundles within the same folder as the base file. " +
+                "Press 'yes' to open the files from the 'nl'-folder and 'no' to open the others.");
+    }
 
-	/**
-	 * Checks whether the {@link FragmentResourceFactory} is responsible 
-	 * to load resources for the given file.
-	 * <p>
-	 * This method will return true
-	 * </p>
-	 */
-	@Override
-	public boolean isResponsible(IFile file) {
+    /**
+     * Checks whether the {@link FragmentResourceFactory} is responsible 
+     * to load resources for the given file.
+     * <p>
+     * This method will return true
+     * </p>
+     */
+    @Override
+    public boolean isResponsible(IFile file) {
         /*
          * Check if NL is supported.
          */
@@ -204,10 +204,10 @@ public class FragmentResourceFactory extends NLResourceFactory {
          * Check whether there is a fragment that extends this project
          * or this project itself is a fragment
          */
-    	if (PDEUtils.lookupFragment(file.getProject()) == null)
-    		return false;
+        if (PDEUtils.lookupFragment(file.getProject()) == null)
+            return false;
 
         return true;
-	}
+    }
 
 }

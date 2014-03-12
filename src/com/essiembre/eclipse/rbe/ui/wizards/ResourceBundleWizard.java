@@ -153,7 +153,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
             String containerName,
             String fileName,
             IProgressMonitor monitor)
-            throws CoreException {
+    throws CoreException {
         
         monitor.beginTask(RBEPlugin.getString(
                 "editor.wiz.creating") + fileName, 2); //$NON-NLS-1$

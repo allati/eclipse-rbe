@@ -95,9 +95,9 @@ public class ResourceBundleOutline extends ContentOutlinePage {
         getTreeViewer().setUseHashlookup(true);
         getTreeViewer().setInput(tree);
         if (RBEPreferences.getKeyTreeExpanded()) {
-           ((Tree)getTreeViewer().getControl()).setRedraw(false);
-           getTreeViewer().expandAll();
-           ((Tree)getTreeViewer().getControl()).setRedraw(true);
+            ((Tree)getTreeViewer().getControl()).setRedraw(false);
+            getTreeViewer().expandAll();
+            ((Tree)getTreeViewer().getControl()).setRedraw(true);
         }
         contributor = new TreeViewerContributor(tree, getTreeViewer());
         contributor.createControl(parent);

@@ -214,9 +214,9 @@ public class BundleEntryComposite extends Composite {
     }
     
     
-   public ITextViewer getTextViewer() {
-      return textViewer;
-   }
+    public ITextViewer getTextViewer() {
+        return textViewer;
+    }
 
     /**
      * Refreshes the text field value with value matching given key.
@@ -533,8 +533,8 @@ public class BundleEntryComposite extends Composite {
      * Creates the text row.
      */
     private void createTextViewerRow() {
-       int vscroll = RBEPreferences.getAutoAdjust() ? 0 : SWT.V_SCROLL;
-       textViewer = new TextViewer(this, SWT.MULTI | SWT.WRAP | SWT.H_SCROLL | vscroll | SWT.BORDER);
+        int vscroll = RBEPreferences.getAutoAdjust() ? 0 : SWT.V_SCROLL;
+        textViewer = new TextViewer(this, SWT.MULTI | SWT.WRAP | SWT.H_SCROLL | vscroll | SWT.BORDER);
 
         textViewer.setDocument(new Document());
         undoManager = new TextViewerUndoManager(20);
@@ -550,7 +550,7 @@ public class BundleEntryComposite extends Composite {
         FontRegistry fontRegistry = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme().getFontRegistry();
         Font font = fontRegistry.get("com.essiembre.eclipse.rbe.ui.preferences.fontDefinition");
         if ( font != null ) {
-           textBox.setFont(font);
+            textBox.setFont(font);
         }
         
         GridData gridData = new GridData();
@@ -623,26 +623,26 @@ public class BundleEntryComposite extends Composite {
         // Eric Fettweis : new listener to automatically change the font 
         textViewer.addTextListener(new ITextListener() {
            
-           String _oldText=null;
+            String _oldText=null;
 
-           public void textChanged( TextEvent event ) {
-              String text = textBox.getText();
-              if(text.equals(_oldText)) return;
-              _oldText=text;
-              
-              Font f = textBox.getFont();
-              String fontName = getBestFont(f.getFontData()[0].getName(), text);
-              if ( fontName != null ) {
-                 f = getSWTFont(f, fontName);
-                 textBox.setFont(f);
-              }
+            public void textChanged( TextEvent event ) {
+                String text = textBox.getText();
+                if(text.equals(_oldText)) return;
+                _oldText=text;
+               
+                Font f = textBox.getFont();
+                String fontName = getBestFont(f.getFontData()[0].getName(), text);
+                if ( fontName != null ) {
+                    f = getSWTFont(f, fontName);
+                    textBox.setFont(f);
+                }
 
-              ScrolledComposite scrolledComposite = (ScrolledComposite)getParent().getParent();
-              Point newMinSize = getParent().computeSize(scrolledComposite.getClientArea().width, SWT.DEFAULT);
-              if ( !newMinSize.equals(new Point(scrolledComposite.getMinWidth(), scrolledComposite.getMinHeight())) ) {
-                 page.setAutoAdjustNeeded(true);
-              }
-           }
+                ScrolledComposite scrolledComposite = (ScrolledComposite)getParent().getParent();
+                Point newMinSize = getParent().computeSize(scrolledComposite.getClientArea().width, SWT.DEFAULT);
+                if ( !newMinSize.equals(new Point(scrolledComposite.getMinWidth(), scrolledComposite.getMinHeight())) ) {
+                    page.setAutoAdjustNeeded(true);
+                }
+            }
         });
         
         textBox.addFocusListener(internalFocusListener);
@@ -665,7 +665,7 @@ public class BundleEntryComposite extends Composite {
         }
         if (countryCode != null && countryCode.length() > 0) {
             String imageName = "countries/" + //$NON-NLS-1$
-            countryCode.toLowerCase() + ".gif"; //$NON-NLS-1$
+                countryCode.toLowerCase() + ".gif"; //$NON-NLS-1$
             image = UIUtils.getImage(imageName);
         }
         if (image == null) {
@@ -767,13 +767,13 @@ public class BundleEntryComposite extends Composite {
         return fontName;
     }
 
-   private static String[] getAvailableFontNames() {
-      if ( _fontFamilyNames == null ) {
-         String[] fontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-         _fontFamilyNames = fontFamilyNames;
-      }
-      return _fontFamilyNames;
-   }
+    private static String[] getAvailableFontNames() {
+        if ( _fontFamilyNames == null ) {
+            String[] fontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+            _fontFamilyNames = fontFamilyNames;
+        }
+        return _fontFamilyNames;
+    }
 
    /**
      * A cache holding an instance of every AWT font tested.

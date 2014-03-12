@@ -66,7 +66,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
 
     /** Editor ID, as defined in plugin.xml. */
     public static final String EDITOR_ID = 
-       "com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditor"; //$NON-NLS-1$
+        "com.essiembre.eclipse.rbe.ui.editor.ResourceBundleEditor"; //$NON-NLS-1$
     
     private ResourceManager resourceMediator;
     private I18nPage i18nPage;
@@ -136,15 +136,15 @@ public class ResourceBundleEditor extends MultiPageEditorPart
        // Create I18N page
         int index;
         try {
-           I18nPageEditor i18PageEditor = new I18nPageEditor(resourceMediator);
-           index = addPage(i18PageEditor, null);
-           i18nPage = i18PageEditor.getI18nPage();
-           setPageText(index, RBEPlugin.getString("editor.properties")); //$NON-NLS-1$
-           setPageImage(index, UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
+            I18nPageEditor i18PageEditor = new I18nPageEditor(resourceMediator);
+            index = addPage(i18PageEditor, null);
+            i18nPage = i18PageEditor.getI18nPage();
+            setPageText(index, RBEPlugin.getString("editor.properties")); //$NON-NLS-1$
+            setPageImage(index, UIUtils.getImage(UIUtils.IMAGE_RESOURCE_BUNDLE));
         }
         catch ( PartInitException argh ) {
-           ErrorDialog.openError(getSite().getShell(), "Error creating i18PageEditor page.", //$NON-NLS-1$
-              null, argh.getStatus());
+            ErrorDialog.openError(getSite().getShell(), "Error creating i18PageEditor page.", //$NON-NLS-1$
+                null, argh.getStatus());
         }
         
         // Create text editor pages for each locales
@@ -152,8 +152,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart
             SourceEditor[] sourceEditors = resourceMediator.getSourceEditors();
             for (SourceEditor sourceEditor : sourceEditors) {
                 index = addPage(
-                   sourceEditor.getEditor(), 
-                   sourceEditor.getEditor().getEditorInput());
+                    sourceEditor.getEditor(), 
+                    sourceEditor.getEditor().getEditorInput());
                 setPageText(index, UIUtils.getDisplayName(
                         sourceEditor.getLocale()));
                 setPageImage(index, 
@@ -332,25 +332,25 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     }
 
     private void closeIfAreadyOpen(final IEditorSite site, final IFile file) {
-    	IWorkbenchPage[] pages = site.getWorkbenchWindow().getPages();
-    	for (final IWorkbenchPage page : pages) {
-    		IEditorReference[] editors = page.getEditorReferences();
-    		for (int j = 0; j < editors.length; j++) {
-    			final IEditorPart editor = editors[j].getEditor(false);
-    			if (editor instanceof ResourceBundleEditor) {
-    				ResourceBundleEditor rbe = (ResourceBundleEditor) editor;
-    				if (rbe.isBundleMember(file)) {
-    					// putting the close operation into the queue
-    					// closing during opening caused errors.
-    					Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-		    					page.closeEditor(editor, true);
-							}
-						});
-    				}
-    			}
-    		}
-    	}
+        IWorkbenchPage[] pages = site.getWorkbenchWindow().getPages();
+        for (final IWorkbenchPage page : pages) {
+            IEditorReference[] editors = page.getEditorReferences();
+            for (int j = 0; j < editors.length; j++) {
+                final IEditorPart editor = editors[j].getEditor(false);
+                if (editor instanceof ResourceBundleEditor) {
+                    ResourceBundleEditor rbe = (ResourceBundleEditor) editor;
+                    if (rbe.isBundleMember(file)) {
+                        // putting the close operation into the queue
+                        // closing during opening caused errors.
+                        Display.getDefault().asyncExec(new Runnable() {
+                            public void run() {
+                                page.closeEditor(editor, true);
+                            }
+                        });
+                    }
+                }
+            }
+        }
     }
 
     
@@ -369,8 +369,8 @@ public class ResourceBundleEditor extends MultiPageEditorPart
         getSite().setSelectionProvider(null);
         SourceEditor[] sourceEditors = resourceMediator.getSourceEditors();
         for ( int i = 0; i < sourceEditors.length; i++ ) {
-           SourceEditor editor = sourceEditors[i];
-           editor.getEditor().getSite().setSelectionProvider(null);
+            SourceEditor editor = sourceEditors[i];
+            editor.getEditor().getSite().setSelectionProvider(null);
         }
 
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceChangeListener);
@@ -379,18 +379,18 @@ public class ResourceBundleEditor extends MultiPageEditorPart
     }
     
 
-   private class ResourceChangeListener implements IResourceChangeListener {
+    private class ResourceChangeListener implements IResourceChangeListener {
 
-      public void resourceChanged( IResourceChangeEvent event ) {
-         boolean deltaFound = false;
-         for ( IPath path : _paths ) {
-            IResourceDelta delta = event.getDelta().findMember(path);
-            deltaFound |= delta!= null;
-         }
-         if ( deltaFound ) {
-            resourceMediator.reloadProperties();
-            i18nPage.refreshTextBoxes();
-         }
-      }
-   }
+        public void resourceChanged( IResourceChangeEvent event ) {
+            boolean deltaFound = false;
+            for ( IPath path : _paths ) {
+                IResourceDelta delta = event.getDelta().findMember(path);
+                deltaFound |= delta!= null;
+            }
+            if ( deltaFound ) {
+                resourceMediator.reloadProperties();
+                i18nPage.refreshTextBoxes();
+            }
+        }
+    }
 }

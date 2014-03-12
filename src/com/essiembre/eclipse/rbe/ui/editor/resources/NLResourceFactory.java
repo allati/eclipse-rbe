@@ -152,7 +152,7 @@ public class NLResourceFactory extends ResourceFactory {
         IResource nlDir = lookupNLDir(file);
         
         if (!(nlDir instanceof IFolder))
-        	return false;
+            return false;
         
         /*
          * Ensures NL directory is part of file path, or that file dir
@@ -170,19 +170,19 @@ public class NLResourceFactory extends ResourceFactory {
          * resource bundle.
          */
         if (file.exists() && ResourceFactory.getResources(file).length > 1) {
-             return false;
+            return false;
         }
         /*
          * Ensure file is wihtin nl-structure
          */
         if (
-        		file.getFullPath().toString().startsWith(
-        				file.getProject().findMember("nl").getFullPath().toString()
-        		)
-        	)
-        	return true;
+            file.getFullPath().toString().startsWith(
+                file.getProject().findMember("nl").getFullPath().toString()
+            )
+        )
+            return true;
         else
-        	return false;
+            return false;
     }
     
     
@@ -196,91 +196,91 @@ public class NLResourceFactory extends ResourceFactory {
     public void init(IEditorSite site, IFile file) throws CoreException {
         setSite(site);
         String filename = file.getName();        
-        	
+            
         IResource nlDir = lookupNLDir(file);
 
         // Load properties files in "nl" structure.
         if (!(nlDir instanceof IFolder))
-        	throw new CoreException(new Status(IStatus.ERROR, RBEPlugin.ID, 0, "no 'nl'-folder found", null)); //$NON-NLS-1$
+            throw new CoreException(new Status(IStatus.ERROR, RBEPlugin.ID, 0, "no 'nl'-folder found", null)); //$NON-NLS-1$
         
         List<SourceEditor> editors = new ArrayList<SourceEditor>();
         loadEditors(site, editors, file, nlDir);
         for (SourceEditor editor : editors) {
-			addSourceEditor(editor.getLocale(), editor);
-		}
+            addSourceEditor(editor.getLocale(), editor);
+        }
         IResource resource = nlDir.getParent().findMember(filename);
         addResource(resource, null);
         
-		setPropertiesFileCreator(new NLPropertiesFileCreator(nlDir.getFullPath().toString(), filename));
-		setDisplayName(getDisplayName(file));
+        setPropertiesFileCreator(new NLPropertiesFileCreator(nlDir.getFullPath().toString(), filename));
+        setDisplayName(getDisplayName(file));
     }
     
     
-	protected void loadEditors(IEditorSite site, List<SourceEditor> editors, IFile file, IResource nlDir)
-	throws CoreException {
+    protected void loadEditors(IEditorSite site, List<SourceEditor> editors, IFile file, IResource nlDir)
+    throws CoreException {
 //		Load "language" matching files in "nl" tree.
-		SourceEditor sourceEditor = null;
-		IResource[] langResources = nlDir != null ? ((IFolder) nlDir).members() : file.getParent().members();
-		for (IResource langResource : langResources) {
-			String language = null;
-			if (langResource instanceof IFolder) {
-				IFolder langFolder = (IFolder) langResource;
-				language = langFolder.getName();
-				sourceEditor = createEditor(
-						site, 
-						langFolder.findMember(file.getName()),
-						new Locale(language));
-				if (sourceEditor != null) {
-					editors.add(sourceEditor);
-				}
+        SourceEditor sourceEditor = null;
+        IResource[] langResources = nlDir != null ? ((IFolder) nlDir).members() : file.getParent().members();
+        for (IResource langResource : langResources) {
+            String language = null;
+            if (langResource instanceof IFolder) {
+                IFolder langFolder = (IFolder) langResource;
+                language = langFolder.getName();
+                sourceEditor = createEditor(
+                        site, 
+                        langFolder.findMember(file.getName()),
+                        new Locale(language));
+                if (sourceEditor != null) {
+                    editors.add(sourceEditor);
+                }
 
-				// Load "country" matching files in "nl" tree.
-				String country = null;
-				IResource[] cntryResources = langFolder.members();
-				for (IResource cntryResource : cntryResources) {
-					if (cntryResource instanceof IFolder) {
-						IFolder cntryFolder = (IFolder) cntryResource;
-						country = cntryFolder.getName();
-						sourceEditor = createEditor(
-								site, 
-								cntryFolder.findMember(file.getName()),
-								new Locale(language, country));
-						if (sourceEditor != null) {
-							editors.add(sourceEditor);
-						}
+                // Load "country" matching files in "nl" tree.
+                String country = null;
+                IResource[] cntryResources = langFolder.members();
+                for (IResource cntryResource : cntryResources) {
+                    if (cntryResource instanceof IFolder) {
+                        IFolder cntryFolder = (IFolder) cntryResource;
+                        country = cntryFolder.getName();
+                        sourceEditor = createEditor(
+                                site, 
+                                cntryFolder.findMember(file.getName()),
+                                new Locale(language, country));
+                        if (sourceEditor != null) {
+                            editors.add(sourceEditor);
+                        }
 
-						// Load "variant" matching files in "nl" tree.
-						IResource[] vrntResources = cntryFolder.members();
-						for (int k = 0; k < vrntResources.length; k++) {
-							IResource vrntResource = vrntResources[k];
-							if (vrntResource instanceof IFolder) {
-								IFolder vrntFolder = (IFolder) vrntResource;
-								sourceEditor = createEditor(
-										site, 
-										vrntFolder.findMember(file.getName()),
-										new Locale(language, country,
-												vrntFolder.getName()));
-								if (sourceEditor != null) {
-									editors.add(sourceEditor);
-								}
-							}
-						}
-					}
-				}                        
-			}
-		}
-	}
+                        // Load "variant" matching files in "nl" tree.
+                        IResource[] vrntResources = cntryFolder.members();
+                        for (int k = 0; k < vrntResources.length; k++) {
+                            IResource vrntResource = vrntResources[k];
+                            if (vrntResource instanceof IFolder) {
+                                IFolder vrntFolder = (IFolder) vrntResource;
+                                sourceEditor = createEditor(
+                                        site, 
+                                        vrntFolder.findMember(file.getName()),
+                                        new Locale(language, country,
+                                                vrntFolder.getName()));
+                                if (sourceEditor != null) {
+                                    editors.add(sourceEditor);
+                                }
+                            }
+                        }
+                    }
+                }                        
+            }
+        }
+    }
     
-	public static IResource lookupNLDir(IResource resource) {
-		// Locate "nl" directory (if any)
+    public static IResource lookupNLDir(IResource resource) {
+        // Locate "nl" directory (if any)
         IContainer container = resource instanceof IContainer ?
-        		(IContainer) resource : resource.getParent();
+                (IContainer) resource : resource.getParent();
         IResource nlDir = null;
         while (container != null 
                 && (nlDir == null || !(nlDir instanceof IFolder))) {
             nlDir = container.findMember("nl"); //$NON-NLS-1$
             container = container.getParent();
         }
-		return nlDir;
-	}
+        return nlDir;
+    }
 }

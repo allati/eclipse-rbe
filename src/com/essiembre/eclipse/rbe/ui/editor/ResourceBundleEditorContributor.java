@@ -60,10 +60,10 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
         return (editor == null ? null : editor.getAction(actionID));
     }
 
-   @Override
-   public void dispose() {
-      activeEditorPart = null;
-   }
+    @Override
+    public void dispose() {
+        activeEditorPart = null;
+    }
 
     /**
      * @see MultiPageEditorActionBarContributor
@@ -81,22 +81,22 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
             ITextEditor editor = (part instanceof ITextEditor) 
                                ? (ITextEditor) part : null;
                                
-             if(editor instanceof I18nPageEditor) {
+            if(editor instanceof I18nPageEditor) {
                 actionBars.clearGlobalActionHandlers();
                 
                 actionBars.setGlobalActionHandler(
-                   ActionFactory.FIND.getId(),
-                   ((I18nPageEditor)editor).getFindReplaceAction());
+                    ActionFactory.FIND.getId(),
+                    ((I18nPageEditor)editor).getFindReplaceAction());
                 actionBars.setGlobalActionHandler(
-                   IWorkbenchActionDefinitionIds.FIND_NEXT,
-                   ((I18nPageEditor)editor).getFindNextAction());
+                    IWorkbenchActionDefinitionIds.FIND_NEXT,
+                    ((I18nPageEditor)editor).getFindNextAction());
                 actionBars.setGlobalActionHandler(
-                   IWorkbenchActionDefinitionIds.FIND_PREVIOUS,
-                   ((I18nPageEditor)editor).getFindPreviousAction());
+                    IWorkbenchActionDefinitionIds.FIND_PREVIOUS,
+                    ((I18nPageEditor)editor).getFindPreviousAction());
                    
                 actionBars.updateActionBars();
                 return;
-             }
+            }
 
             actionBars.setGlobalActionHandler(
                 ActionFactory.DELETE.getId(),
@@ -120,14 +120,14 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
                 ActionFactory.SELECT_ALL.getId(),
                 getAction(editor, ITextEditorActionConstants.SELECT_ALL));
             actionBars.setGlobalActionHandler(
-               ActionFactory.FIND.getId(),
-               getAction(editor, ITextEditorActionConstants.FIND));
+                ActionFactory.FIND.getId(),
+                getAction(editor, ITextEditorActionConstants.FIND));
             actionBars.setGlobalActionHandler(
-               IWorkbenchActionDefinitionIds.FIND_NEXT,
-               getAction(editor, ITextEditorActionConstants.FIND_NEXT));
+                IWorkbenchActionDefinitionIds.FIND_NEXT,
+                getAction(editor, ITextEditorActionConstants.FIND_NEXT));
             actionBars.setGlobalActionHandler(
-               IWorkbenchActionDefinitionIds.FIND_PREVIOUS,
-               getAction(editor, ITextEditorActionConstants.FIND_PREVIOUS));
+                IWorkbenchActionDefinitionIds.FIND_PREVIOUS,
+                getAction(editor, ITextEditorActionConstants.FIND_PREVIOUS));
             actionBars.setGlobalActionHandler(
                 IDEActionFactory.BOOKMARK.getId(),
                 getAction(editor, IDEActionFactory.BOOKMARK.getId()));
