@@ -70,6 +70,7 @@ public class NLPropertiesFileCreator extends PropertiesFileCreator {
      * @throws CoreException
      * @see com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator#buildFilePath(java.util.Locale)
      */
+    @Override
     protected IPath buildFilePath(Locale locale) throws CoreException {
         String folderPath = ""; //$NON-NLS-1$
         IWorkspaceRoot root = 

@@ -174,6 +174,7 @@ public class RBEGeneralPrefPage extends AbstractRBEPrefPage {
         autoAdjust.setSelection(prefs.getBoolean(RBEPreferences.AUTO_ADJUST)); //$NON-NLS-1$
         new Label(field, SWT.NONE).setText(RBEPlugin.getString("prefs.autoAdjust")); //$NON-NLS-1$
         autoAdjust.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 refreshEnabledStatuses();
             }

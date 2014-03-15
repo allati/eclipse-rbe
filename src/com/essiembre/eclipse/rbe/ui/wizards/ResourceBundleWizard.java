@@ -95,6 +95,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
         final String baseName = page.getFileName();
         final String[] locales = page.getLocaleStrings();
         IRunnableWithProgress op = new IRunnableWithProgress() {
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException {
                 try {
                     monitor.worked(1);
@@ -114,6 +115,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
                     }
                     final IFile lastFile = file;
                     getShell().getDisplay().asyncExec(new Runnable() {
+                        @Override
                         public void run() {
                             IWorkbenchPage wbPage = PlatformUI.getWorkbench()
                                     .getActiveWorkbenchWindow().getActivePage();
@@ -201,6 +203,7 @@ public class ResourceBundleWizard extends Wizard implements INewWizard {
      * we can initialize from it.
      * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
      */
+    @Override
     public void init(
             IWorkbench workbench, IStructuredSelection structSelection) {
         this.selection = structSelection;

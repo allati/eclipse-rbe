@@ -51,6 +51,7 @@ public class KeysStartingWithVisitor extends KeyTreeVisitorAdapter {
      *                 com.essiembre.eclipse.rbe.model.tree.KeyTreeItem,
      *                 java.lang.Object)
      */
+    @Override
     public void visitKeyTreeItem(KeyTreeItem item, Object passAlongArgument) {
         String keyStart = (String) passAlongArgument;
         if (item.getId().startsWith(keyStart)) {

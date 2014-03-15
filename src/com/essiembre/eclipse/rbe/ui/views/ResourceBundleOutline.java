@@ -88,6 +88,7 @@ public class ResourceBundleOutline extends ContentOutlinePage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         super.createControl(parent);
         getTreeViewer().setContentProvider(contentprovider);
@@ -110,6 +111,7 @@ public class ResourceBundleOutline extends ContentOutlinePage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
 //		contributor.dispose();
         super.dispose();
@@ -143,6 +145,7 @@ public class ResourceBundleOutline extends ContentOutlinePage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setActionBars(IActionBars actionbars) {
         super.setActionBars(actionbars);
         filterincomplete   = new ToggleAction(UIUtils.IMAGE_INCOMPLETE_ENTRIES);
@@ -198,6 +201,7 @@ public class ResourceBundleOutline extends ContentOutlinePage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run() {
             update(this);
         }
@@ -215,6 +219,7 @@ public class ResourceBundleOutline extends ContentOutlinePage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void selectionChanged(SelectionChangedEvent event) {
             String selected = getSelectedKey();
             if(selected != null) {
@@ -225,24 +230,28 @@ public class ResourceBundleOutline extends ContentOutlinePage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void add(DeltaEvent event) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void remove(DeltaEvent event) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void modify(DeltaEvent event) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void select(DeltaEvent event) {
             KeyTreeItem item = (KeyTreeItem) event.receiver();
             if(item != null) {
@@ -253,6 +262,7 @@ public class ResourceBundleOutline extends ContentOutlinePage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void mouseDoubleClick(MouseEvent event) {
             Object element = getSelection();
             if (getTreeViewer().isExpandable(element)) {

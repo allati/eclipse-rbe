@@ -65,6 +65,7 @@ public class KeyTreeLabelProvider
     /**
      * @see ILabelProvider#getImage(Object)
      */
+    @Override
     public Image getImage(Object element) {
         KeyTreeItem treeItem = ((KeyTreeItem) element);
         
@@ -100,6 +101,7 @@ public class KeyTreeLabelProvider
     /**
      * @see ILabelProvider#getText(Object)
      */
+    @Override
     public String getText(Object element) {
         return ((KeyTreeItem) element).getName(); 
     }
@@ -107,6 +109,7 @@ public class KeyTreeLabelProvider
     /**
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
      */
+    @Override
     public void dispose() {
         groupFontKey.dispose();
         groupFontNoKey.dispose();
@@ -115,6 +118,7 @@ public class KeyTreeLabelProvider
     /**
      * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
      */
+    @Override
     public Font getFont(Object element) {
         KeyTreeItem item = (KeyTreeItem) element; 
         if (item.getChildren().size() > 0) {
@@ -129,6 +133,7 @@ public class KeyTreeLabelProvider
     /**
      * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
      */
+    @Override
     public Color getForeground(Object element) {
         KeyTreeItem treeItem = (KeyTreeItem) element; 
         IsCommentedVisitor commentedVisitor = new IsCommentedVisitor();
@@ -142,6 +147,7 @@ public class KeyTreeLabelProvider
     /**
      * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
      */
+    @Override
     public Color getBackground(Object element) {
         // TODO Auto-generated method stub
         return null;

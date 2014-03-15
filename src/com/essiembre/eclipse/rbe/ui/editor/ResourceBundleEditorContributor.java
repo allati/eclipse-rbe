@@ -69,6 +69,7 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
      * @see MultiPageEditorActionBarContributor
      *         #setActivePage(org.eclipse.ui.IEditorPart)
      */
+    @Override
     public void setActivePage(IEditorPart part) {
         if (activeEditorPart == part)
             return;
@@ -151,6 +152,7 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
      * @see org.eclipse.ui.part.EditorActionBarContributor
      *         #contributeToMenu(org.eclipse.jface.action.IMenuManager)
      */
+    @Override
     public void contributeToMenu(IMenuManager manager) {
 //		IMenuManager menu = new MenuManager("Editor &Menu");
 //		manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
@@ -160,6 +162,7 @@ public class ResourceBundleEditorContributor extends MultiPageEditorActionBarCon
      * @see org.eclipse.ui.part.EditorActionBarContributor
      *         #contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
      */
+    @Override
     public void contributeToToolBar(IToolBarManager manager) {
 //		manager.add(new Separator());
 //		manager.add(sampleAction);

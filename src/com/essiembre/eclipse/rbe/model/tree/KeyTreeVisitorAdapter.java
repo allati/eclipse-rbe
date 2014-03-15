@@ -39,6 +39,7 @@ public class KeyTreeVisitorAdapter implements IKeyTreeVisitor {
      * @see com.essiembre.eclipse.rbe.model.tree.IKeyTreeVisitor#visitKeyTree(
      *         com.essiembre.eclipse.rbe.model.tree.KeyTree, java.lang.Object)
      */
+    @Override
     public void visitKeyTree(KeyTree keyTree, Object passAlongArgument) {
     }
 
@@ -48,6 +49,7 @@ public class KeyTreeVisitorAdapter implements IKeyTreeVisitor {
      *                 com.essiembre.eclipse.rbe.model.tree.KeyTreeItem,
      *                 java.lang.Object)
      */
+    @Override
     public void visitKeyTreeItem(KeyTreeItem item, Object passAlongArgument) {
     }
 }

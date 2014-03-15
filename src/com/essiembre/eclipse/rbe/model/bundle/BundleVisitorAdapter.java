@@ -41,6 +41,7 @@ public class BundleVisitorAdapter implements IBundleVisitor {
      *                 com.essiembre.eclipse.rbe.model.bundle.BundleGroup, 
      *                 java.lang.Object)
      */
+    @Override
     public void visitBundleGroup(BundleGroup group, Object passAlongArgument) {
     }
 
@@ -48,6 +49,7 @@ public class BundleVisitorAdapter implements IBundleVisitor {
      * @see com.essiembre.eclipse.rbe.model.bundle.IBundleVisitor#visitBundle(
      *         com.essiembre.eclipse.rbe.model.bundle.Bundle, java.lang.Object)
      */
+    @Override
     public void visitBundle(Bundle bundle, Object passAlongArgument) {
     }
 
@@ -57,6 +59,7 @@ public class BundleVisitorAdapter implements IBundleVisitor {
      *                 com.essiembre.eclipse.rbe.model.bundle.BundleEntry,
      *                 java.lang.Object)
      */
+    @Override
     public void visitBundleEntry(BundleEntry entry, Object passAlongArgument) {
     }
 }

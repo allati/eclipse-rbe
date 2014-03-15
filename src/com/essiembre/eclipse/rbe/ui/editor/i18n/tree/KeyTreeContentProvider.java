@@ -47,12 +47,14 @@ public class KeyTreeContentProvider implements
     /**
      * @see ITreeContentProvider#dispose()
      */
+    @Override
     public void dispose() {}
 
     
     /**
      * @see ITreeContentProvider#inputChanged(Viewer, Object, Object)
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         this.treeViewer = (TreeViewer) viewer;
         if(oldInput != null) {
@@ -66,6 +68,7 @@ public class KeyTreeContentProvider implements
     /**
      * @see ITreeContentProvider#getChildren(Object)
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         if(parentElement instanceof KeyTree) {
             return ((KeyTree) parentElement).getRootKeyItems().toArray(); 
@@ -78,6 +81,7 @@ public class KeyTreeContentProvider implements
     /**
      * @see ITreeContentProvider#getParent(Object)
      */
+    @Override
     public Object getParent(Object element) {
         if(element instanceof KeyTreeItem) {
             return ((KeyTreeItem) element).getParent();
@@ -88,6 +92,7 @@ public class KeyTreeContentProvider implements
     /**
      * @see ITreeContentProvider#hasChildren(Object)
      */
+    @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length > 0;
     }
@@ -95,6 +100,7 @@ public class KeyTreeContentProvider implements
     /**
      * @see ITreeContentProvider#getElements(Object)
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         return getChildren(inputElement);
     }
@@ -102,6 +108,7 @@ public class KeyTreeContentProvider implements
     /**
      * @see IDeltaListener#add(DeltaEvent)
      */
+    @Override
     public void add(DeltaEvent event) {
         treeViewer.refresh(true);
     }
@@ -109,6 +116,7 @@ public class KeyTreeContentProvider implements
     /**
      * @see IDeltaListener#remove(DeltaEvent)
      */
+    @Override
     public void remove(DeltaEvent event) {
         treeViewer.refresh(true);
     }
@@ -116,6 +124,7 @@ public class KeyTreeContentProvider implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void select(DeltaEvent event) {
         KeyTreeItem treeItem = (KeyTreeItem) event.receiver();
         if (treeItem != null) {
@@ -141,6 +150,7 @@ public class KeyTreeContentProvider implements
     /**
      * @see IDeltaListener#modify(DeltaEvent)
      */
+    @Override
     public void modify(DeltaEvent event) {
         //TODO how to make sure many changes could do a "batch" refresh on tree?
         KeyTreeItem treeItem = (KeyTreeItem) event.receiver();

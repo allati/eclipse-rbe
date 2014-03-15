@@ -46,6 +46,7 @@ public class OverlayImageIcon extends CompositeImageDescriptor {
      * @see org.eclipse.jface.resource.CompositeImageDescriptor
      *         #drawCompositeImage(int, int)
      */
+    @Override
     protected void drawCompositeImage(int width, int height) {
         // Draw the base image
         drawImage(baseImage.getImageData(), 0, 0); 
@@ -78,6 +79,7 @@ public class OverlayImageIcon extends CompositeImageDescriptor {
     /**
      * @see org.eclipse.jface.resource.CompositeImageDescriptor#getSize()
      */
+    @Override
     protected Point getSize() {
         return imgSize;
     }

@@ -66,6 +66,7 @@ public class FragmentPropertiesFileCreator extends PropertiesFileCreator {
     /* (non-Javadoc)
      * @see com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator#buildFilePath(java.util.Locale)
      */
+    @Override
     protected IPath buildFilePath(final Locale locale) throws CoreException {
         /*
          * Check where to create the file

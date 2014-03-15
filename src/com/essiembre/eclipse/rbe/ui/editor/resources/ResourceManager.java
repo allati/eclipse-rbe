@@ -79,8 +79,11 @@ public class ResourceManager {
                     locale, PropertiesParser.parse(sourceEditor.getContent()));			
         }
         bundleGroup.addListener(new IDeltaListener() {
+            @Override
             public void add(DeltaEvent event) {}    // do nothing
+            @Override
             public void remove(DeltaEvent event) {} // do nothing
+            @Override
             public void modify(DeltaEvent event) {
                 final Bundle bundle = (Bundle) event.receiver();
                 final SourceEditor editor = 
@@ -88,6 +91,7 @@ public class ResourceManager {
                 String editorContent = PropertiesGenerator.generate(bundle);
                 editor.setContent(editorContent);
             }
+            @Override
             public void select(DeltaEvent event) {
             }
         });

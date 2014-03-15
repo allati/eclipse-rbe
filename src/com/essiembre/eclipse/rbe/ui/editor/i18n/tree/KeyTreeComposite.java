@@ -224,6 +224,7 @@ public class KeyTreeComposite extends Composite {
 //        filterTextBox.setText("");
         filterTextBox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         filterTextBox.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 keyTree.filterKeyItems(filterTextBox.getText());
                 treeViewer.getControl().setRedraw(false);
@@ -337,6 +338,7 @@ public class KeyTreeComposite extends Composite {
         });
         treeViewer.addSelectionChangedListener(
             new ISelectionChangedListener() {
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     if (syncAddTextBox && getSelectedKey() != null) {
                         addTextBox.setText(getSelectedKey());
@@ -434,6 +436,7 @@ public class KeyTreeComposite extends Composite {
             }
         });
         addTextBox.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent event) {
                 String key = addTextBox.getText();
                 boolean keyExist = keyTree.getBundleGroup().isKey(key);

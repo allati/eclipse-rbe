@@ -274,6 +274,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
      * @see org.eclipse.ui.ide.IGotoMarker#gotoMarker(
      *         org.eclipse.core.resources.IMarker)
      */
+    @Override
     public void gotoMarker(IMarker marker) {
         IPath markerPath = marker.getResource().getProjectRelativePath();
         SourceEditor[] sourceEditors = resourceMediator.getSourceEditors();
@@ -343,6 +344,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
                         // putting the close operation into the queue
                         // closing during opening caused errors.
                         Display.getDefault().asyncExec(new Runnable() {
+                            @Override
                             public void run() {
                                 page.closeEditor(editor, true);
                             }
@@ -381,6 +383,7 @@ public class ResourceBundleEditor extends MultiPageEditorPart
 
     private class ResourceChangeListener implements IResourceChangeListener {
 
+        @Override
         public void resourceChanged( IResourceChangeEvent event ) {
             boolean deltaFound = false;
             for ( IPath path : _paths ) {

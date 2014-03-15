@@ -78,6 +78,7 @@ public final class BundleEntry implements IBundleVisitable {
     /**
      * @see IBundleVisitable#accept(IBundleVisitor, Object)
      */
+    @Override
     public void accept(IBundleVisitor visitor, Object passAlongArgument) {
         visitor.visitBundleEntry(this, passAlongArgument);
         visitor.visitBundle(bundle, passAlongArgument);
@@ -151,6 +152,7 @@ public final class BundleEntry implements IBundleVisitable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof BundleEntry)) {
             return false;
@@ -168,6 +170,7 @@ public final class BundleEntry implements IBundleVisitable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return super.toString() 
                 + "[[key=" + key  //$NON-NLS-1$

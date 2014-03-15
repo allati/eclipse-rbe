@@ -89,6 +89,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
     /**
      * @see IDialogPage#createControl(Composite)
      */
+    @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout();
@@ -218,6 +219,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         localeSelector = 
                 new LocaleSelector(parent);
         localeSelector.addModifyListener(new ModifyListener(){
+            @Override
             public void modifyText(ModifyEvent e) {
                 setAddButtonState();
             }
@@ -247,6 +249,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         gd = new GridData(GridData.FILL_HORIZONTAL);
         containerText.setLayoutData(gd);
         containerText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 dialogChanged();
             }
@@ -270,6 +273,7 @@ public class ResourceBundleNewWizardPage extends WizardPage {
         gd = new GridData(GridData.FILL_HORIZONTAL);
         fileText.setLayoutData(gd);
         fileText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 dialogChanged();
             }

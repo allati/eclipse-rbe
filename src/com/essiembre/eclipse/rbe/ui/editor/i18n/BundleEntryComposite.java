@@ -106,11 +106,13 @@ public class BundleEntryComposite extends Composite {
     
    
     private FocusListener internalFocusListener = new FocusListener() {
+        @Override
         public void focusGained(FocusEvent e) {
             e.widget = BundleEntryComposite.this;
             for (FocusListener listener : focusListeners)
                 listener.focusGained(e);
         }
+        @Override
         public void focusLost(FocusEvent e) {
             e.widget = BundleEntryComposite.this;
             for (FocusListener listener : focusListeners)
@@ -560,15 +562,18 @@ public class BundleEntryComposite extends Composite {
         gridData.grabExcessHorizontalSpace = true;
         textBox.setLayoutData(gridData);
         textBox.addFocusListener(new FocusListener() {
+            @Override
             public void focusGained(FocusEvent event) {
                 textBeforeUpdate = textBox.getText();
             }
+            @Override
             public void focusLost(FocusEvent event) {
                 updateBundleOnChanges();
             }
         });
 
         textBox.addTraverseListener(new TraverseListener() {
+            @Override
             public void keyTraversed(TraverseEvent event) {
                 if (event.detail == SWT.TRAVERSE_TAB_NEXT) {
                     page.focusNextBundleEntryComposite();
@@ -625,6 +630,7 @@ public class BundleEntryComposite extends Composite {
            
             String _oldText=null;
 
+            @Override
             public void textChanged( TextEvent event ) {
                 String text = textBox.getText();
                 if(text.equals(_oldText)) return;

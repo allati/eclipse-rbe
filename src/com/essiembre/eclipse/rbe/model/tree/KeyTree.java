@@ -67,15 +67,19 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
         
         // Set listeners
         bundleGroup.addListener(new IDeltaListener() {
+            @Override
             public void add(DeltaEvent event) {
                 initBundle((Bundle) event.receiver());
             }
+            @Override
             public void remove(DeltaEvent event) {
                 // do nothing
             }
+            @Override
             public void modify(DeltaEvent event) {
                 // do nothing
             }
+            @Override
             public void select(DeltaEvent event) {
                 // do nothing
             }
@@ -93,12 +97,14 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
      */
     protected void initBundle(final Bundle bundle) {
         bundle.addListener(new IDeltaListener() {
+            @Override
             public void add(DeltaEvent event) {
                 //TODO figure out how to filter event that do not add keys.
                 //Probably not necessary with plugin rewrite.
                 String key = ((BundleEntry) event.receiver()).getKey();
                 addKey(key);
             }
+            @Override
             public void remove(DeltaEvent event) {
                 String key = ((BundleEntry) event.receiver()).getKey();
                 Collection<BundleEntry> entries = bundleGroup.getBundleEntries(key);
@@ -106,12 +112,14 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
                     removeKey(((BundleEntry) event.receiver()).getKey());
                 }
             }
+            @Override
             public void modify(DeltaEvent event) {
                 //TODO figure out how to filter event that do not modify keys.
                 //Probably not necessary with plugin rewrite.
                 String key = ((BundleEntry) event.receiver()).getKey();
                 modifyKey(key);
             }
+            @Override
             public void select(DeltaEvent event) {
             }
         });
@@ -229,6 +237,7 @@ public class KeyTree extends Model implements IKeyTreeVisitable {
      *         com.essiembre.eclipse.rbe.model.tree.IKeyTreeVisitor,
      *         java.lang.Object)
      */
+    @Override
     public void accept(IKeyTreeVisitor visitor, Object passAlongArgument) {
         for (KeyTreeItem keyTreeItem : keyItemsCache.values()) {
             visitor.visitKeyTreeItem(

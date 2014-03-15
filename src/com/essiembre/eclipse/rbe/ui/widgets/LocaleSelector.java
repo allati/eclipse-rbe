@@ -73,6 +73,7 @@ public class LocaleSelector extends Composite {
         // Init available locales
         availableLocales = Locale.getAvailableLocales();
         Arrays.sort(availableLocales, new Comparator<Locale>() {
+            @Override
             public int compare(Locale locale1, Locale locale2) {
                 return Collator.getInstance().compare(
                         locale1.getDisplayName(),
@@ -230,16 +231,19 @@ public class LocaleSelector extends Composite {
      */
     public void addModifyListener(final ModifyListener listener) {
         langText.addModifyListener(new ModifyListener(){
+            @Override
             public void modifyText(ModifyEvent e) {
                 listener.modifyText(e);
             }
         });
         countryText.addModifyListener(new ModifyListener(){
+            @Override
             public void modifyText(ModifyEvent e) {
                 listener.modifyText(e);
             }
         });
         variantText.addModifyListener(new ModifyListener(){
+            @Override
             public void modifyText(ModifyEvent e) {
                 listener.modifyText(e);
             }

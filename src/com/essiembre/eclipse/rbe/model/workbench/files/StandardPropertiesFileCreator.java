@@ -53,6 +53,7 @@ public class StandardPropertiesFileCreator extends PropertiesFileCreator {
     /**
      * @see com.essiembre.eclipse.rbe.model.workbench.files.PropertiesFileCreator#buildFilePath(java.util.Locale)
      */
+    @Override
     protected IPath buildFilePath(Locale locale) {
         
         IPath path = new Path(dir);

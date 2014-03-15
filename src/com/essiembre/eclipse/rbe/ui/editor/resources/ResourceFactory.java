@@ -84,6 +84,7 @@ public abstract class ResourceFactory implements IResourceFactory {
      * Sorted by key (Locale).
      */
     private Map<Locale, SourceEditor> sourceEditors = new TreeMap<Locale, SourceEditor>(new Comparator<Locale>() {
+        @Override
         public int compare(Locale obj1, Locale obj2) {
             String displayName1 = UIUtils.getDisplayName(obj1);
             String displayName2 = UIUtils.getDisplayName(obj2);
@@ -107,6 +108,7 @@ public abstract class ResourceFactory implements IResourceFactory {
     /* (non-Javadoc)
      * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getEditorDisplayName()
      */
+    @Override
     public String getEditorDisplayName() {
         return displayName;
     }
@@ -122,6 +124,7 @@ public abstract class ResourceFactory implements IResourceFactory {
     /* (non-Javadoc)
      * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getSourceEditors()
      */
+    @Override
     public SourceEditor[] getSourceEditors() {
         SourceEditor[] editors = new SourceEditor[sourceEditors.values().size()];
         int i = 0;
@@ -138,6 +141,7 @@ public abstract class ResourceFactory implements IResourceFactory {
     /* (non-Javadoc)
      * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#addResource(org.eclipse.core.resources.IResource, java.util.Locale)
      */
+    @Override
     public SourceEditor addResource(IResource resource, Locale locale) throws PartInitException {
         if (sourceEditors.containsKey(locale))
             throw new IllegalArgumentException("ResourceFactory already contains a resource for locale "+locale);
@@ -159,6 +163,7 @@ public abstract class ResourceFactory implements IResourceFactory {
     /* (non-Javadoc)
      * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#getPropertiesFileCreator()
      */
+    @Override
     public PropertiesFileCreator getPropertiesFileCreator() {
         return propertiesFileCreator;
     }
@@ -170,11 +175,13 @@ public abstract class ResourceFactory implements IResourceFactory {
     /* (non-Javadoc)
      * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#isResponsible(org.eclipse.core.resources.IFile)
      */
+    @Override
     public abstract boolean isResponsible(IFile file) throws CoreException;
     
     /* (non-Javadoc)
      * @see com.essiembre.eclipse.rbe.ui.editor.resources.IResourceFactory#init(org.eclipse.ui.IEditorSite, org.eclipse.core.resources.IFile)
      */
+    @Override
     public abstract void init(IEditorSite site, IFile file) throws CoreException;
     
     

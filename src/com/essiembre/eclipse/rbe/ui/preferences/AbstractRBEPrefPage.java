@@ -63,6 +63,7 @@ public abstract class AbstractRBEPrefPage extends PreferencePage implements
      * @see org.eclipse.ui.IWorkbenchPreferencePage
      *      #init(org.eclipse.ui.IWorkbench)
      */
+    @Override
     public void init(IWorkbench workbench) {
         setPreferenceStore(
                 RBEPlugin.getDefault().getPreferenceStore());
@@ -97,6 +98,7 @@ public abstract class AbstractRBEPrefPage extends PreferencePage implements
          * @see org.eclipse.swt.events.KeyAdapter#keyPressed(
          *          org.eclipse.swt.events.KeyEvent)
          */
+        @Override
         public void keyReleased(KeyEvent event) {
             Text text = (Text) event.widget;
             String value = text.getText(); 
@@ -150,6 +152,7 @@ public abstract class AbstractRBEPrefPage extends PreferencePage implements
          * @see org.eclipse.swt.events.KeyAdapter#keyPressed(
          *          org.eclipse.swt.events.KeyEvent)
          */
+        @Override
         public void keyReleased(KeyEvent event) {
             Text text = (Text) event.widget;
             String value = text.getText(); 

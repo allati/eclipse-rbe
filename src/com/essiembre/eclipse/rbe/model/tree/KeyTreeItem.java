@@ -139,6 +139,7 @@ public class KeyTreeItem implements Comparable<KeyTreeItem>, IKeyTreeVisitable {
     /**
      * @see java.lang.Object#toString()
      */    
+    @Override
     public String toString() {
         return id;
     }
@@ -146,6 +147,7 @@ public class KeyTreeItem implements Comparable<KeyTreeItem>, IKeyTreeVisitable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
+    @Override
     public int compareTo(KeyTreeItem o) {
         // TODO consider leaving this out to be configurable
         return this.id.compareTo((o).getId());
@@ -156,6 +158,7 @@ public class KeyTreeItem implements Comparable<KeyTreeItem>, IKeyTreeVisitable {
      *         com.essiembre.eclipse.rbe.model.tree.IKeyTreeVisitor,
      *         java.lang.Object)
      */
+    @Override
     public void accept(IKeyTreeVisitor visitor, Object passAlongArgument) {
         visitor.visitKeyTreeItem(this, passAlongArgument);
     }

@@ -99,6 +99,7 @@ public class NewLocalePage extends Composite {
         gridData.horizontalAlignment = GridData.CENTER;
         createButton.setLayoutData(gridData);
         createButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 final Locale locale = localeSelector.getSelectedLocale();
                 try {
@@ -108,6 +109,7 @@ public class NewLocalePage extends Composite {
                         final IFile file = 
                                 resourceManager.createPropertiesFile(locale);
                         Display.getDefault().asyncExec(new Runnable() {
+                            @Override
                             public void run() {
                                 editor.addResource(file, locale);
                             }
@@ -148,6 +150,7 @@ public class NewLocalePage extends Composite {
     /**
      * @see org.eclipse.swt.widgets.Widget#dispose()
      */
+    @Override
     public void dispose() {
         fontBold.dispose();
         fontBoldBig.dispose();

@@ -58,6 +58,7 @@ public class Bundle extends Model implements IBundleVisitable {
     /**
      * @see IBundleVisitable#accept(IBundleVisitor, Object)
      */
+    @Override
     public void accept(IBundleVisitor visitor, Object passAlongArgument) {
         for (BundleEntry bundleEntry : entries.values()) {
             visitor.visitBundleEntry(

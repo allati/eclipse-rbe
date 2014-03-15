@@ -57,6 +57,7 @@ public class BundleGroup extends Model implements IBundleVisitable {
     /**
      * @see IBundleVisitable#accept(IBundleVisitor, Object)
      */
+    @Override
     public void accept(IBundleVisitor visitor, Object passAlongArgument) {
         for (Bundle bundle : bundles.values()) {
             for (Iterator<BundleEntry> j = bundle.iterator(); j.hasNext();) {

@@ -125,6 +125,7 @@ public class I18nPage extends ScrolledComposite {
             // performance optimization: we only auto-adjust every 50 ms
             getShell().getDisplay().timerExec(50, new Runnable() {
             
+                @Override
                 public void run() {
                
                     if(_autoAdjustNeeded) {
@@ -346,6 +347,7 @@ public class I18nPage extends ScrolledComposite {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void focusGained(FocusEvent event) {
             activeEntry = (BundleEntryComposite) event.widget;
             lastActiveEntry = activeEntry;
@@ -354,6 +356,7 @@ public class I18nPage extends ScrolledComposite {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void focusLost(FocusEvent event) {
             activeEntry = null;
         }
@@ -361,6 +364,7 @@ public class I18nPage extends ScrolledComposite {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void selectionChanged(SelectionChangedEvent event) {
             refreshTextBoxes();
             String selected = getSelectedKey();
@@ -372,24 +376,28 @@ public class I18nPage extends ScrolledComposite {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void add(DeltaEvent event) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void remove(DeltaEvent event) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void modify(DeltaEvent event) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void select(DeltaEvent event) {
             KeyTreeItem item = (KeyTreeItem) event.receiver();
             if(keysComposite != null) {
@@ -405,11 +413,13 @@ public class I18nPage extends ScrolledComposite {
     
     private class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTargetExtension3{
         
+        @Override
         public int findAndSelect( int widgetOffset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord ) {
           // replaced by findAndSelect(.,.)
             return -1;
         }
 
+        @Override
         public int findAndSelect( int offset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord, boolean regExSearch ) {
             if ( lastActiveEntry != null ) {
                 StyledText textWidget = lastActiveEntry.getTextViewer().getTextWidget();
@@ -465,25 +475,31 @@ public class I18nPage extends ScrolledComposite {
             }
         }
        
+        @Override
         public void replaceSelection( String text ) {
             // replaced by replaceSelection(.,.)
         }
+        @Override
         public void replaceSelection( String text, boolean regExReplace ) {
           
         }
 
+        @Override
         public boolean isEditable() {
             return false;
         }
 
+        @Override
         public String getSelectionText() {
             return activeEntry!=null?activeEntry.getTextViewer().getTextWidget().getSelectionText():"";
         }
 
+        @Override
         public Point getSelection() {
             return activeEntry!=null?activeEntry.getTextViewer().getSelectedRange():new Point(0,0);
         }
 
+        @Override
         public boolean canPerformFind() {
             return true;
         }
