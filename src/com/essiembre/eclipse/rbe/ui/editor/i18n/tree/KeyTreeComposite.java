@@ -229,7 +229,7 @@ public class KeyTreeComposite extends Composite {
                 keyTree.filterKeyItems(filterTextBox.getText());
                 treeViewer.getControl().setRedraw(false);
                 treeViewer.refresh();
-                if(!filterTextBox.getText().isEmpty())
+                if(filterTextBox.getText().length() > 0)
                     treeViewer.expandAll();
                 treeViewer.getControl().setRedraw(true);
             }

@@ -333,7 +333,7 @@ public class I18nPage extends ScrolledComposite {
     }
     
     void findActionStart() {
-        if(!keysComposite.getFilter().isEmpty()) {
+        if(keysComposite.getFilter().length() > 0) {
             keysComposite.setFilter("");
         }
     }
